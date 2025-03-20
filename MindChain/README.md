@@ -2,7 +2,7 @@
 Projeto DBW - Ferramenta de trabalho de brainstorming
 
 # Installing React
-npm create vite@latest
+   npm create vite@latest
 
 # if we get this erro  
     + CategoryInfo          : SecurityError: (:) [], PSSecurityException
@@ -13,7 +13,7 @@ npm create vite@latest
 3º step: Get-ExecutionPolicy -list
 
 # Start server
-npm run dev
+    npm run dev
 
 # React + Vite
 
