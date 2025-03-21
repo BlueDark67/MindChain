@@ -1,0 +1,25 @@
+.buttonSimple{
+    background: linear-gradient(
+        #382B38 0%,
+        rgba(115,115,115, 0.25) 100%
+    );
+    color: white;
+    border-radius: 20px;
+    padding: 27px 87px 27px 87px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+    position: relative;
+    text-align: left;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    width: 830px;
+}
+
+.buttonSimple:hover{
+    background-color: #654A65;
+}

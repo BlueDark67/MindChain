@@ -1,0 +1,25 @@
+body{
+    background: linear-gradient(
+    0deg,
+     #4E104D 0%,
+     #000000 100%
+  );
+  height: 1024px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Inter-Regular", sans-serif;
+  color: white;
+}
+
+.container>h1{
+  text-align: center;
+  width: 100%;
+}
+
+.buttonGroup{
+  display: flex;  
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
