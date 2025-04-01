@@ -1,8 +1,8 @@
-import InicialPage from "../views/InicialPage/InicialPage.jsx";
+import HomePage from "../views/HomePage/HomePage.jsx";
 
 function App(){
     return(
-        <InicialPage />
+        <HomePage />
     );
 }
 
