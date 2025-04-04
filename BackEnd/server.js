@@ -10,7 +10,8 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use("/", homeRoutes);
+app.get("/", homeRoutes);
+
 app.use(express.urlencoded({ extended: true }));
 
 const SERVER_PORT = 3000;

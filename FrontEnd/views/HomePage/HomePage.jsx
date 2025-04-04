@@ -8,6 +8,11 @@ function InicialPage() {
         document.title = "HomePage";
         document.body.classList.add('gradient_background_PB');
 
+        fetch("/api")
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+
         return () => {
             document.body.classList.remove('gradient_background_PB');
         }
@@ -24,6 +29,7 @@ function InicialPage() {
                 <ButtonSimple  text="Use chatroom code" variant="grey_purple" size="w830h90"/>
             </div>
             <h1>Old Chatrooms</h1>
+            
         </>
     );
 }

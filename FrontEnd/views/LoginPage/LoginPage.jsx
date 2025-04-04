@@ -7,7 +7,6 @@ import { useState } from "react";
 function LoginPage() {
     useEffect(() => {
             document.title = "Login Page";
-            document.title.
             document.body.classList.add('gradient_background_BPB');
     
             return () => {
@@ -28,7 +27,7 @@ function LoginPage() {
     };
     return (
 
-        <div className="login-page">
+        <div className="center">
           <link rel="icon"  href="/images/MindChain.png" type="image/x-icon"></link>
             <div className="container">
                 <img className="logo" src="../../public/MindChain.png" alt="MindChain Logo" />
