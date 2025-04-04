@@ -19,9 +19,9 @@ function InicialPage() {
     return(
         <>
             <h1>Create a new chatroom</h1>
-            <div className='buttonGroup'>
-                <ButtonSimple  text="Let's unlock ideias connecting your minds" variant="gery_purple" size="w830p90" />
-                <ButtonSimple  text="Use chatroom code" variant="grey_purple" size="w830p90"/>
+            <div className='buttonGroupTop'>
+                <ButtonSimple  text="Let's unlock ideias connecting your minds" variant="grey_purple" size="w830h90" />
+                <ButtonSimple  text="Use chatroom code" variant="grey_purple" size="w830h90"/>
             </div>
             <h1>Old Chatrooms</h1>
         </>

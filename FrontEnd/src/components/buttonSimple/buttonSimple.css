@@ -31,6 +31,7 @@
         rgba(115,115,115, 0.25) 100%
     );
     color: white;
+    border-radius: 30px;
 }
 
 .grey_purple:hover{
