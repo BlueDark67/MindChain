@@ -1,17 +1,30 @@
+import { useEffect } from 'react';
 import ButtonSimple from '../../src/components/buttonSimple/buttonSimple.jsx';
 import './HomePage.css';
+import '../Global.css';
 
 function InicialPage() {
+    useEffect(() => {
+        document.title = "HomePage";
+        document.body.classList.add('gradient_background_PB');
+
+        return () => {
+            document.body.classList.remove('gradient_background_PB');
+        }
+
+    }, []);
+
+
+
     return(
-        <div className='container'>
-            <title>HomePage</title>
+        <>
             <h1>Create a new chatroom</h1>
             <div className='buttonGroup'>
-                <ButtonSimple  text="Let's unlock ideias connecting your minds" />
-                <ButtonSimple  text="Use chatroom code" />
+                <ButtonSimple  text="Let's unlock ideias connecting your minds" variant="gery_purple" size="w830p90" />
+                <ButtonSimple  text="Use chatroom code" variant="grey_purple" size="w830p90"/>
             </div>
             <h1>Old Chatrooms</h1>
-        </div>
+        </>
     );
 }
 

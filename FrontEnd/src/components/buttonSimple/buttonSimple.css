@@ -1,25 +1,61 @@
 .buttonSimple{
-    background: linear-gradient(
-        #382B38 0%,
-        rgba(115,115,115, 0.25) 100%
-    );
-    color: white;
-    border-radius: 20px;
+    
     padding: 27px 87px 27px 87px;
     display: flex;
     flex-direction: row;
     gap: 10px;
     align-items: center;
     justify-content: center;
-    height: 90px;
     position: relative;
     text-align: left;
     font-family: "Inter-Bold", sans-serif;
     font-size: 30px;
     font-weight: 700;
-    width: 830px;
+    border: none;
 }
 
-.buttonSimple:hover{
+
+.w830h90{
+    width: 830px;
+    height: 90px;
+}
+
+.w209h46{
+    width: 209px;
+    height: 46px;
+}
+
+.grey_purple{
+    background: linear-gradient(
+        #382B38 0%,
+        rgba(115,115,115, 0.25) 100%
+    );
+    color: white;
+}
+
+.grey_purple:hover{
+    background-color: #654A65;
+    
+}
+
+.grey{
+    background-color: #7E7B7E;
+    color: white;
+    border-radius: 30px;
+    
+;
+}
+
+.grey:hover{
+    background-color: #654A65;
+}
+
+.purple{
+    background-color: #3B143A;
+    color: white;
+    border-radius: 30px;
+}
+
+.purple:hover{
     background-color: #654A65;
 }

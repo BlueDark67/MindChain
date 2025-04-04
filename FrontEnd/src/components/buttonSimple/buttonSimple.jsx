@@ -1,16 +1,19 @@
 import PropTypes from 'prop-types'
 import './buttonSimple.css'
 
-
-
-function ButtonSimple(props){
-    return(
-        <button className='buttonSimple'> {props.text}</button>
+function ButtonSimple(props) {
+    return (
+        <button onClick={props.onClick} className={`buttonSimple ${props.variant} ${props.size}`}>
+            {props.text}
+        </button>
     );
 }
 
-ButtonSimple.prototype = {
-    text: PropTypes.string
+ButtonSimple.propTypes = {
+    text: PropTypes.string,
+    onClick: PropTypes.func,
+    variant: PropTypes.string,
+    size: PropTypes.string
 }
 
 export default ButtonSimple;

@@ -1,0 +1,27 @@
+.gradient_background_PB{
+    background: linear-gradient(
+        0deg,
+         #4E104D 0%,
+         #000000 100%
+      );
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      overflow: hidden;
+      font-family: "Inter-Regular", sans-serif;
+      color: white;
+}
+
+.gradient_background_BPB{
+    background: linear-gradient(
+        0deg,
+        #171B85 0%,
+        #4E104D 45%, 
+        #000000 75%
+      );
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      overflow: hidden;
+      font-family: "Inter-Regular", sans-serif;
+}

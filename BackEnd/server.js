@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 app.use("/", homeRoutes);
 app.set("view engine", "jsx");
 app.engine("jsx", reactEngine.createEngine());
-app.use(express.static(path.join(__dirname, "views")));
+app.set("views", path.join(__dirname, "../FrontEnd/views"));
 app.use(express.urlencoded({ extended: true }));
 
 const SERVER_PORT = 3000;
