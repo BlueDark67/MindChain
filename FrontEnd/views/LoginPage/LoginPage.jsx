@@ -6,7 +6,8 @@ import { useState } from "react";
 
 function LoginPage() {
     useEffect(() => {
-            document.title = "Forgot Password";
+            document.title = "Login Page";
+            document.title.
             document.body.classList.add('gradient_background_BPB');
     
             return () => {
@@ -28,9 +29,8 @@ function LoginPage() {
     return (
 
         <div className="login-page">
-          <title>Login Page</title>
           <link rel="icon"  href="/images/MindChain.png" type="image/x-icon"></link>
-            <div className="login-container">
+            <div className="container">
                 <img className="logo" src="../../public/MindChain.png" alt="MindChain Logo" />
                 <h1 className="title">Login</h1>
                 <form className="login-form"  onSubmit={handleSubmit}>

@@ -8,18 +8,7 @@
     margin-top: 10px;
   }
   
-  /* Container do login */
-  .login-container {
-    background-color: rgba(210, 210, 210, 0.9); /* Fundo branco com transparência */
-    border-radius: 10px;
-    padding: 30px;
-    width: 350px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    overflow: auto;
-  }
+  
   
   /* Logo */
   .logo {

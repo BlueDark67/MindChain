@@ -24,7 +24,7 @@ function ForgotPassword() {
     return (
         <>
             <div className='center'>
-                <div className='containerFP'>
+                <div className='container'>
                     <img src={MindChain} alt="Logo" className='logo' />
                     <h1>Forgot your password?</h1>
                     <span>Enter your email address and we'll send you a link to set your password.</span>

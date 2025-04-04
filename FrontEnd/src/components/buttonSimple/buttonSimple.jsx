@@ -4,10 +4,8 @@ import './buttonSimple.css'
 
 function ButtonSimple(props) {
 
-    
-
     return (
-        <button onClick={props.onClick} className={`buttonSimple ${props.variant} ${props.size}`}>
+        <button type = "submit" onClick={props.onClick} className={`buttonSimple ${props.variant} ${props.size}`}>
             {props.text}
         </button>
     );
