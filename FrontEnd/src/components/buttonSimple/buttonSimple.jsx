@@ -15,7 +15,7 @@ function ButtonSimple(props) {
 
 ButtonSimple.propTypes = {
     text: PropTypes.string,
-    onClick: PropTypes.func,
+    onClick: PropTypes.string,
     variant: PropTypes.string,
     size: PropTypes.string
 }
