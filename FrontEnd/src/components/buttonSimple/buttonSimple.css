@@ -12,6 +12,7 @@
     font-size: 30px;
     font-weight: 700;
     border: none;
+    cursor: pointer;
 }
 
 
@@ -20,9 +21,9 @@
     height: 90px;
 }
 
-.w209h46{
-    width: 209px;
-    height: 46px;
+.w100h25{
+    width: 100px;
+    height: 25px;
 }
 
 .grey_purple{

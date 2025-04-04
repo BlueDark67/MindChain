@@ -28,11 +28,12 @@ function ForgotPassword() {
                     <img src={MindChain} alt="Logo" className='logo' />
                     <h1>Forgot your password?</h1>
                     <span>Enter your email address and we'll send you a link to set your password.</span>
+                    
                     <h2>Email</h2>
                     <input type="email" placeholder='Enter your email' className='emailInput' />
                     <div className='buttonGroup'>
-                        <ButtonSimple onClick= {()=>changePage("login")} text="Cancel" variant="grey" size="w209h46" />
-                        <ButtonSimple onClick= {()=>changePage("login")} text="Reset" variant="purple" size="w209h46"/>
+                        <ButtonSimple onClick= {()=>changePage("login")} text="Cancel" variant="grey" size="w100h25" />
+                        <ButtonSimple onClick= {()=>changePage("login")} text="Reset" variant="purple" size="w100h25"/>
                     </div>
                 </div>
             </div>
