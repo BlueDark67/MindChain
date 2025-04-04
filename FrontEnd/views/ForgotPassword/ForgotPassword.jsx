@@ -25,7 +25,7 @@ function ForgotPassword() {
                     <h2>Email</h2>
                     <input type="email" placeholder='Enter your email' className='emailInput' />
                     <div className='buttonGroup'>
-                        <ButtonSimple text="Cancel" variant="grey" size="w209h46" />
+                        <ButtonSimple  text="Cancel" variant="grey" size="w209h46" />
                         <ButtonSimple text="Reset" variant="purple" size="w209h46"/>
                     </div>
                 </div>
