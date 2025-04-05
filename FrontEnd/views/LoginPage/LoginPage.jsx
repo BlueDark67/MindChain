@@ -51,14 +51,14 @@ function LoginPage() {
                 body: JSON.stringify({ username, password }),
             });
             */}
-            const data = await response.json();
+            /*const data = await response.json();
     
             if (response.ok) {
                 console.log('Login bem-sucedido:', data);
                 // Salvar token e redirecionar
             } else {
                 setErrorMessage("Invalid username or password");
-            }
+            }*/
         } catch (error) {
             console.error("Login error:", error);
             setErrorMessage("Something went wrong. Try again later");
