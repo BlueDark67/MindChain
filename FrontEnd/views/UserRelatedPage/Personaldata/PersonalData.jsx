@@ -21,7 +21,6 @@ function PersonalData() {
         birthdate: "2005-08-27",
         nationality: "Portuguese",
     });
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -29,7 +28,7 @@ function PersonalData() {
             [name]: value,
         }));
     };
-
+    
     return (
         <div className="container-wrapperPD">
             <div className="containerPD">
