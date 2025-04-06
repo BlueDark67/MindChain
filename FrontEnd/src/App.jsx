@@ -6,6 +6,7 @@ import ForgotPassword from "../views/ForgotPassword/ForgotPassword.jsx";
 import LoginPage from "../views/LoginPage/LoginPage";
 import EmailSent from "../views/EmailSent/EmailSent.jsx";
 import ResetPassword from "../views/ResetPassword/ResetPassword.jsx";
+import SignUp from "../views/SignUp/SignUp.jsx";
 
 function App(){
     return(
@@ -17,6 +18,7 @@ function App(){
                 <Route path="/personal-data" element={<PersonalData />} />
                 <Route path="/email-sent" element={<EmailSent />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
         </BrowserRouter>

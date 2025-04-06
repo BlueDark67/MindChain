@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import './LoginPage.css';
 import '../Global.css';
 import { useState } from "react";
-import MindChain from '../../public/MindChain.png'
+import MindChain from '../../public/MindChain.png';
 
 
 function LoginPage() {
