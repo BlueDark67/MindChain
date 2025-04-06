@@ -6,15 +6,16 @@ import '../Global.css';
 function InicialPage() {
     useEffect(() => {
         document.title = "HomePage";
-        document.body.classList.add('gradient_background_PB');
+        document.body.classList.add('gradient_background_BP');
 
+        /* Ainda não funciona
         fetch("/api")
             .then(res => res.json())
             .then(data => console.log(data))
             .catch(error => console.error(error));
-
+        */
         return () => {
-            document.body.classList.remove('gradient_background_PB');
+            document.body.classList.remove('gradient_background_BP');
         }
 
     }, []);
