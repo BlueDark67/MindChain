@@ -5,6 +5,8 @@ import http from "http";
 import cors from "cors";
 import mongoose, { Mongoose } from "mongoose";
 import methodOverride from "method-override";
+import dotenv from "dotenv";
+dotenv.config({ path: "./MongoDB.env" });
 
 import homeRoutes from "./routes/homeRoutes.js";
 
@@ -16,6 +18,9 @@ app.use(methodOverride("_method"));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const password = process.env.MONGO_DB_PASSWORD;
+const url = `mongodb+srv://admin:${password}@cluster.zfsi1mr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster`;
+
 app.get("/teste", homeRoutes);
 app.get("/teste2", homeRoutes);
 
@@ -25,10 +30,7 @@ const SERVER_PORT = 3000;
 const server = http.createServer(app);
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:adminMind@cluster.zfsi1mr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster",
-    { useUnifiedTopology: true, useNewUrlParser: true }
-  )
+  .connect(url, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => {
     console.log("MongoDB Connected");
   })
