@@ -1,8 +1,67 @@
 function getHomePage(req, res) {
-  return res.status(200).json({
-    message: "Welcome to the home page!",
-    description: "This is a simple message from the server.",
+  return res.json({
+    names: [
+      "Anna",
+      "Bob",
+      "Charlie",
+      "David",
+      "Eve",
+      "Frank",
+      "Grace",
+      "Heidi",
+      "Ivan",
+      "Judy",
+      "Kathy",
+      "Liam",
+      "Mia",
+      "Noah",
+      "Olivia",
+      "Paul",
+      "Quinn",
+      "Ryan",
+      "Sophia",
+      "Tina",
+    ],
   });
 }
 
-export { getHomePage };
+function getHomePage2(req, res) {
+  return res.json({
+    names: [
+      "Anna",
+      "Bob",
+      "Charlie",
+      "David",
+      "Eve",
+      "Frank",
+      "Grace",
+      "Heidi",
+      "Ivan",
+      "Judy",
+      "Kathy",
+      "Liam",
+      "Mia",
+      "Noah",
+      "Olivia",
+      "Paul",
+      "Quinn",
+      "Ryan",
+      "Sophia",
+      "Tina",
+    ],
+    numbers: [
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine",
+      "Ten",
+    ],
+  });
+}
+
+export { getHomePage, getHomePage2 };
