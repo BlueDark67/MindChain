@@ -15,40 +15,67 @@ function LoginPage() {
             }
         }, []);
 
-    const [username, setUsername] = useState("");
+    const [loginIdentifier, setLoginIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    
+    // Função para identificar se é email ou username
+    const isEmail = (value) => {
+        // Esta expressão verifica se há caracteres antes e depois do @, e pelo menos um ponto após o @
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    };
 
+    // Função para verificar se o input parece ser uma tentativa de email (contém @)
+    const containsAtSymbol = (value) => {
+        return value.includes('@');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         setErrorMessage("");
 
-        if (!username && !password) {
+        if (!loginIdentifier && !password) {
             setErrorMessage("Please fill all the fields");
             return;
         }
-        if(!username){
+        if(!loginIdentifier){
             setErrorMessage("Username or Email is required");
             return;
         }
-
         if(!password){
             setErrorMessage("Password is required");
             return;
         }
 
+        // Se o input contém @ mas não é um email válido
+        if (containsAtSymbol(loginIdentifier) && !isEmail(loginIdentifier)) {
+            setErrorMessage("Please enter a valid email format");
+            return;
+        }
+
+
         setLoading(true);
         try {
+            // Define o tipo de login que está sendo usado
+            const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
+            
+            const requestBody = {
+                [loginType]: loginIdentifier,
+                password: password
+            };
+            
+            console.log("Logging in with:", loginType, "Sending login data:", requestBody);
+            
             {/*
             const response = await fetch('http://localhost:3001/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ requestBody }),
             });
             */}
             /*const data = await response.json();
@@ -77,14 +104,14 @@ function LoginPage() {
                 <h1 className="title">Login</h1>
                 {/*Parte do email/password e remeber */}
                 <form className="login-form"  onSubmit={handleSubmit}>
-                    <label htmlFor="username" className="form-label">Username or Email</label>
-                    {/*parte do input do username*/}
+                    <label htmlFor="loginIdentifier" className="form-label">Username or Email</label>
+                    {/*parte do input do loginIdentifier*/}
                     <input type="text" 
-                    id="username" 
+                    id="loginIdentifier" 
                     className="form-input" 
                     placeholder="Enter your username or email" 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={loginIdentifier}
+                    onChange={(e) => setLoginIdentifier(e.target.value)}
                     autoComplete='username'
                     />
 
@@ -100,7 +127,11 @@ function LoginPage() {
                     />
 
                     <div className="form-remember">
-                        <input type="checkbox" id="remember-me" className="custom-checkbox" />
+                        <input type="checkbox" 
+                        id="remember-me" 
+                        className="custom-checkbox"
+                        checked ={rememberMe}
+                        onChange={(e) => setRememberMe (e.target.checked)} />
                         <label htmlFor="remember-me">Remember Me</label>
                     </div>
                     <button type="submit" className="login-button" disabled={loading}>

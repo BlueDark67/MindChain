@@ -1,3 +1,8 @@
+/*Ver a merda dos overflows porque nenhum insta a funcionar, e os fundos 
+estao a ficar pretos em baixo quando a tela é diminuida. Overflow hidden
+nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
+
+
 .gradient_background_BP{
     background: linear-gradient(
         0deg,
