@@ -1,28 +1,32 @@
-"strict mode";
+"use strict";
+
 console.log("connected");
 
-document.addEventListener("DOMContentLoaded", function () {
-  getDadosServidor("");
-});
+import React from "react";
 
-const getDadosServidor = async (page) => {
-  try {
-    const res = await fetch(`${page}`);
-    handleErrors(res);
-    const json = await res.json();
-    addTeste(json);
-  } catch (err) {
-    console.error("Error fetching data:", err);
-  }
-};
+const defaultNames = ["Alice", "Bob", "Charlie", "David"];
 
-function addTeste(json) {
-  console.info(json);
+function namesAsLis(names) {
+  return names.map((n) => React.createElement("li", { key: n }, n));
 }
 
-const handleErrors = (res) => {
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+const handleClick = async (setNames) => {
+  try {
+    const res = await fetch("http://localhost:3000/teste2");
+    handleErros(res);
+    const json = await res.json();
+    setNames(json.names);
+    console.log(json);
+  } catch (err) {
+    console.error(err);
   }
-  return res.json();
 };
+
+const handleErros = (res) => {
+  if (!res.ok) {
+    throw Error(res.status + " - " + res.url);
+  }
+  return res;
+};
+
+export { defaultNames, namesAsLis, handleClick, handleErros };
