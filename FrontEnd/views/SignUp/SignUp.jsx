@@ -6,17 +6,6 @@ import ButtonSubmit from "../../src/components/buttonSubmit/buttonSubmit.jsx";
 import { useNavigate } from 'react-router-dom';
 
 function SignUp(){
-    {/*Para aplicar o background*/}
-    useEffect(() => {
-        document.title = "SignUp Page"
-
-        document.body.classList.add('gradient_background_BPB');
-    
-            return () => {
-                document.body.classList.remove('gradient_background_BPB');
-            }
-    },[]);
-
     {/*Constantes para o registo*/}
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("")
@@ -25,12 +14,32 @@ function SignUp(){
     const [errorMessage, setErrorMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
+    const [page, setPage] = useState("");
     const navigate = useNavigate();
 
 
-    const changePage = (page) => {
-        navigate(`/${page}`);
-    };
+    {/*Para aplicar o background*/}
+    useEffect(() => {
+        document.title = "SignUp Page"
+
+        document.body.classList.add('gradient_background_BPB');
+
+        if(page){
+            navigate(`/${page}`);
+        }
+
+        
+    
+            return () => {
+                document.body.classList.remove('gradient_background_BPB');
+            }
+    },[page, navigate]);
+
+    
+    const changePage = ( page) => {
+        setPage(page);
+    }
+    
 
     const isEmail = (value) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -54,7 +63,7 @@ function SignUp(){
         if (!/[0-9]/.test(password)){
             errors.push("At least one number");
         }
-        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
             errors.push("At least one symbol");
         }
         return errors;
@@ -69,12 +78,18 @@ function SignUp(){
             case 'uppercase': return /[A-Z]/.test(password);
             case 'lowercase': return /[a-z]/.test(password);
             case 'number': return /[0-9]/.test(password);
-            case 'symbol': return /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            case 'symbol': return /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
             default: return false;
         }
         
     };
     
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setErrorMessage("");
+
     const validateForm = () => {
         //Para ver se tem campos nao preenchidos
         if (!username) {
@@ -129,8 +144,7 @@ function SignUp(){
         const requestBody = {username, email, password};
         
         //Se tudo estiver valido é mandado para o backend
-        console.log("Register submitted:", {username, email, password, confirmPassword});
-        console.log("Sending register data:", requestBody);
+
 
         /* ainda nao funciona
         fetch('http://localhost:3001/api/signup', {
@@ -157,11 +171,36 @@ function SignUp(){
         });
         */
 
+        const handleErros = (res) => {
+            if (!res.ok) {
+              throw Error(res.status + " - " + res.url);
+            }
+            return res;
+          };
+
+         try {
+            const res = await fetch("http://localhost:3000/signup",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+            handleErros(res);
+            const json = await res.json();
+            changePage(json.view);
+          } catch (err) {
+            console.error(err);
+          }
+
+          
+
+
         // Apenas para simulação, definimos como false após um delay
-        setTimeout(() => {
+        /*setTimeout(() => {
             setIsSubmitting(false);
-            navigate('/login'); // Use o hook que já está disponível
-        }, 1000);
+            window.location.href = '/login';
+        }, 1000);*/
 
 
         
@@ -171,7 +210,7 @@ function SignUp(){
             <div className="container">
                 <img className="logo" src={MindChain} alt="MindChain logo" />
                 <h1 className="title">Create an Account</h1>
-                <form className="register-form" onSubmit={handleSubmit}>
+                <form className="register-form" onSubmit={handleSubmit} method="POST">
                     {/*Parte do username*/}
                     <label htmlFor="username" className="form-label">Username</label>
                     <input 

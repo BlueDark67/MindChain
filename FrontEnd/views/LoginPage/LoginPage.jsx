@@ -2,34 +2,59 @@ import { useEffect } from 'react';
 import './LoginPage.css';
 import '../Global.css';
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
 
 
 function LoginPage() {
-    useEffect(() => {
-            document.title = "Login Page";
-            document.body.classList.add('gradient_background_BPB');
-    
-            return () => {
-                document.body.classList.remove('gradient_background_BPB');
-            }
-        }, []);
-
     const [loginIdentifier, setLoginIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-    
+    const [page, setPage] = useState("");
+    const navigate = useNavigate();
+
+
+
+    useEffect(() => {
+            document.title = "Login Page";
+            document.body.classList.add('gradient_background_BPB');
+
+            if(page){
+                navigate(`/${page}`);
+            }
+
+            return () => {
+                document.body.classList.remove('gradient_background_BPB');
+            }
+        }, [page, navigate]);
+
+        
+    const changePage = ( page) => {
+        setPage(page);
+    }
+
+
     // Função para identificar se é email ou username
     const isEmail = (value) => {
         // Esta expressão verifica se há caracteres antes e depois do @, e pelo menos um ponto após o @
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     };
 
+
+    
+
     // Função para verificar se o input parece ser uma tentativa de email (contém @)
     const containsAtSymbol = (value) => {
         return value.includes('@');
+    };
+
+    const handleErros = (res) => {
+        if (!res.ok) {
+          throw Error(res.status + " - " + res.url);
+        }
+        return res;
     };
 
     const handleSubmit = async (e) => {
@@ -58,7 +83,15 @@ function LoginPage() {
 
 
         setLoading(true);
-        try {
+
+        const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
+            
+            const requestBody = {
+                [loginType]: loginIdentifier,
+                password: password
+            };
+
+        /*try {
             // Define o tipo de login que está sendo usado
             const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
             
@@ -77,7 +110,7 @@ function LoginPage() {
                 },
                 body: JSON.stringify({ requestBody }),
             });
-            */}
+            */
             /*const data = await response.json();
     
             if (response.ok) {
@@ -85,14 +118,32 @@ function LoginPage() {
                 // Salvar token e redirecionar
             } else {
                 setErrorMessage("Invalid username or password");
-            }*/
+            }
         } catch (error) {
             console.error("Login error:", error);
             setErrorMessage("Something went wrong. Try again later");
         } finally {
             setLoading(false);
+        }*/
+
+        try {
+            const res = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+            handleErros(res);
+            const json = await res.json();
+            changePage(json.view);
+          } catch (err) {
+            console.error(err);
         }
+
+          
     };
+    
     
     
     return (
@@ -103,7 +154,7 @@ function LoginPage() {
                 <img className="logo" src={MindChain} alt="MindChain Logo" />
                 <h1 className="title">Login</h1>
                 {/*Parte do email/password e remeber */}
-                <form className="login-form"  onSubmit={handleSubmit}>
+                <form className="login-form" method='POST' onSubmit={handleSubmit} >
                     <label htmlFor="loginIdentifier" className="form-label">Username or Email</label>
                     {/*parte do input do loginIdentifier*/}
                     <input type="text" 
