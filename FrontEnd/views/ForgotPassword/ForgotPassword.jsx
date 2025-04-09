@@ -64,7 +64,7 @@ function ForgotPassword() {
                         { emailError && <p className="emailError">{emailError}</p> }
                         <div className='buttonGroup'>
                             <ButtonSimple onClick={() => changePage("login")} text="Cancel" variant="grey" size="w100h25" />
-                            <ButtonSimple onClick={() => changePage("")} text="Reset" variant="purple" size="w100h25"/>
+                            <ButtonSimple onClick={() => changePage("email-sent")} text="Reset" variant="purple" size="w100h25"/>
                         </div>
                     </form>
                 </div>

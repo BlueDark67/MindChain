@@ -11,7 +11,7 @@ const userPost = async function (req, res) {
   const { username, password, email } = req.body;
   try {
     await UserModel.register({ username, email }, password);
-    res.json({ view: "home" });
+    res.json({ view: "login" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

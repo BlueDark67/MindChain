@@ -136,38 +136,12 @@ function SignUp(){
         }
         
         const requestBody = {username, email, password};
-        
-        //Se tudo estiver valido é mandado para o backend
-
-
-        /* ainda nao funciona
-        fetch('http://localhost:3001/api/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Tratar resposta de sucesso
-            console.log('Signup successful:', data);
-            // Redirecionar para login ou outra página
-                window.location.href = '/login';
-        })
-        .catch(error => {
-            // Tratar erros
-            console.error('Signup error:', error);
-            setErrorMessage("Something went wrong. Try again later");
-        })
-        .finally(() => {
-            setIsSubmitting(false);
-        });
-        */
+    
 
         const handleErros = (res) => {
             if (!res.ok) {
-              throw Error(res.status + " - " + res.url);
+                setIsSubmitting(false);
+                throw Error(res.status + " - " + res.url);
             }
             return res;
           };
@@ -187,17 +161,6 @@ function SignUp(){
             console.error(err);
           }
 
-          
-
-
-        // Apenas para simulação, definimos como false após um delay
-        /*setTimeout(() => {
-            setIsSubmitting(false);
-            window.location.href = '/login';
-        }, 1000);*/
-
-
-        
     }
     return(
         <div className="center">

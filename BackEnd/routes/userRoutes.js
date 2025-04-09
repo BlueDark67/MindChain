@@ -9,7 +9,7 @@ router.post("/signup", user.userPost);
 router.get("/login", user.loginGet);
 router.post(
   "/login",
-  passport.authenticate("local", { failureRedirect: "/teste" }),
+  passport.authenticate("local", { failureRedirect: "/login" }),
   function (req, res) {
     res.json({ view: "home" });
   }
