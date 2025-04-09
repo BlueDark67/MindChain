@@ -12,6 +12,7 @@
     font-size: 30px;
     font-weight: 700;
     border: none;
+    white-space: nowrap;
     cursor: pointer;
 }
 
@@ -24,6 +25,11 @@
 .w100h25{
     width: 100px;
     height: 25px;
+}
+
+.w250h50{
+    width: 250px;
+    height: 50px;
 }
 
 .grey_purple{
@@ -44,11 +50,19 @@
     background-color: #7E7B7E;
     color: white;
     border-radius: 30px;
-    
-;
 }
 
 .grey:hover{
+    background-color: #654A65;
+}
+
+.darkmagenta{
+    background-color: darkmagenta;
+    color: white;
+    border-radius: 30px;
+}
+
+.blue:hover{
     background-color: #654A65;
 }
 

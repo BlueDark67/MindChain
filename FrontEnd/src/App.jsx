@@ -7,6 +7,7 @@ import LoginPage from "../views/LoginPage/LoginPage";
 import EmailSent from "../views/EmailSent/EmailSent.jsx";
 import ResetPassword from "../views/ResetPassword/ResetPassword.jsx";
 import SignUp from "../views/SignUp/SignUp.jsx";
+import NotFound from "../views/NotFound/NotFound.jsx";
 import Teste from "../views/Teste/Teste.jsx";
 
 function App(){
@@ -21,7 +22,7 @@ function App(){
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/teste" element={<Teste />} />
-                <Route path="*" element={<div>404 Not Found</div>} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
