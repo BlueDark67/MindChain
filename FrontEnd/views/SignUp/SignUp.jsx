@@ -82,13 +82,7 @@ function SignUp(){
             default: return false;
         }
         
-    };
-    
-    
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setErrorMessage("");
+    };    
 
     const validateForm = () => {
         //Para ver se tem campos nao preenchidos
@@ -128,7 +122,7 @@ function SignUp(){
         return null;
     }
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setErrorMessage("");
