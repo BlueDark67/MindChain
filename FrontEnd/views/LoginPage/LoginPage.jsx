@@ -108,7 +108,7 @@ function LoginPage() {
                     {/*parte do input do loginIdentifier*/}
                     <input type="text" 
                     id="loginIdentifier" 
-                    className="form-input" 
+                    className="form-input-login" 
                     placeholder="Enter your username or email" 
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
@@ -119,7 +119,7 @@ function LoginPage() {
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" 
                     id="password" 
-                    className="form-input" 
+                    className="form-input-login" 
                     placeholder="Enter your password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

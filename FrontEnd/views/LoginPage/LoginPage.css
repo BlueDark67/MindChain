@@ -36,7 +36,7 @@
     color: black;
   }
   
-  .form-input {
+  .form-input-login {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -50,7 +50,7 @@
     transition: border 0.2s ease-in-out; /* Suaviza a transição da borda */
   }
   
-  .form-input:focus {
+  .form-input-login:focus {
     border: 2px solid black; /* Borda preta quando focado */
   }
   

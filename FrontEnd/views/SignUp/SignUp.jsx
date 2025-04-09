@@ -75,59 +75,61 @@ function SignUp(){
         
     };
     
+    const validateForm = () => {
+        //Para ver se tem campos nao preenchidos
+        if (!username) {
+            return "Username is required";
+            
+           
+        }
+        if (!email) {
+            return "Email is required";
+            
+        }
+        if (email && !isEmail(email)) {
+            return "Please enter a valid email format";
+            
+        }
+        if (!password) {
+            return "Password is required";
+            
+        }
+        if (!confirmPassword) {
+            return ("Please confirm your password");
+            
+        }
+        //Para validar se a palavra passe abrangiu todos os criterios
+        const passwordErrors = validatePassword(password);
+        if(passwordErrors.length > 0) {
+            return ("Password does not meet all the requirements");
+            
+        }
+        //Para confirmar se o confirmPassword é igual ao password
+        if(password !== confirmPassword) {
+            return ("Password does not match");
+            
+        }
+
+        return null;
+    }
     
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setErrorMessage("");
 
-        //Para ver se tem campos nao preenchidos
-        if (!username) {
-            setErrorMessage("Username is required");
+        //Para validar o formulario
+        const error = validateForm();
+        if (error) {
+            setErrorMessage(error);
             setIsSubmitting(false);
             return;
         }
-        if (!email) {
-            setErrorMessage("Email is required");
-            setIsSubmitting(false);
-            return;
-        }
-        if (email && !isEmail(email)) {
-            setErrorMessage("Please enter a valid email format");
-            setIsSubmitting(false);
-            return;
-        }
-        if (!password) {
-            setErrorMessage("Password is required");
-            setIsSubmitting(false);
-            return;
-        }
-        if (!confirmPassword) {
-            setErrorMessage("Please confirm your password");
-            setIsSubmitting(false);
-            return;
-        }
-        //Para validar se a palavra passe abrangiu todos os criterios
-        const passwordErrors = validatePassword(password);
-        if(passwordErrors.length > 0) {
-            setErrorMessage("Password does not meet all the requirements");
-            setIsSubmitting(false);
-            return;
-        }
-        //Para confirmar se o confirmPassword é igual ao password
-        if(password !== confirmPassword) {
-            setErrorMessage("Password does not match");
-            setIsSubmitting(false);
-            return;
-        }
-
+        
+        const requestBody = {username, email, password};
+        
         //Se tudo estiver valido é mandado para o backend
         console.log("Register submitted:", {username, email, password, confirmPassword});
-
-        const requestBody = {
-            username, email, password
-        };
-
         console.log("Sending register data:", requestBody);
 
         /* ainda nao funciona
@@ -158,7 +160,7 @@ function SignUp(){
         // Apenas para simulação, definimos como false após um delay
         setTimeout(() => {
             setIsSubmitting(false);
-            window.location.href = '/login';
+            navigate('/login'); // Use o hook que já está disponível
         }, 1000);
 
 
@@ -169,13 +171,14 @@ function SignUp(){
             <div className="container">
                 <img className="logo" src={MindChain} alt="MindChain logo" />
                 <h1 className="title">Create an Account</h1>
-                <form className="login-form" onSubmit={handleSubmit}>
+                <form className="register-form" onSubmit={handleSubmit}>
                     {/*Parte do username*/}
                     <label htmlFor="username" className="form-label">Username</label>
                     <input 
                     type="text"
-                    className="form-input"
+                    className="form-input-register"
                     id="username"
+                    placeholder="Enter a username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     />
@@ -183,13 +186,14 @@ function SignUp(){
                     <label htmlFor="email" className="form-label">Email</label>
                     <input
                     type="text"
-                    className="form-input"
+                    className="form-input-register"
                     id="email"
+                    placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     />
                     {/*Parte do email*/}
-                    <div>
+                    <div className="password-label-container">
                         <label htmlFor="password" className="form-label">Password</label>
                         <div className="info-icon"
                             //escolher qual 
@@ -225,19 +229,19 @@ function SignUp(){
                     <input
                     type="password"
                     id="password"
-                    className="form-input"
-
+                    className="form-input-register"
+                    placeholder="Choose a password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     />
 
                     {/*Parte de confirmar a pass*/}
-                    <label htmlFor="confirmPassword" className="form-label">ConfirmPassword</label>
+                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                     <input
                     type="password"
                     id="confirmPassword"
-                    className="form-input"
-
+                    className="form-input-register"
+                    placeholder="Confirm the password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     />
