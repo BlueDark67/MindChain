@@ -131,13 +131,10 @@ function SignUp(){
         }
 
         //Se tudo estiver valido é mandado para o backend
-        console.log("Register submitted:", {username, email, password, confirmPassword});
 
         const requestBody = {
             username, email, password
         };
-
-        console.log("Sending register data:", requestBody);
 
         /* ainda nao funciona
         fetch('http://localhost:3001/api/signup', {
@@ -182,7 +179,6 @@ function SignUp(){
             handleErros(res);
             const json = await res.json();
             changePage(json.view);
-            console.log(json);
           } catch (err) {
             console.error(err);
           }

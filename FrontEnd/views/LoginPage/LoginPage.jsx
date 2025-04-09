@@ -90,8 +90,6 @@ function LoginPage() {
                 [loginType]: loginIdentifier,
                 password: password
             };
-            
-            console.log("Logging in with:", loginType, "Sending login data:", requestBody);
 
         /*try {
             // Define o tipo de login que está sendo usado
@@ -139,7 +137,6 @@ function LoginPage() {
             handleErros(res);
             const json = await res.json();
             changePage(json.view);
-            console.log(json);
           } catch (err) {
             console.error(err);
         }
