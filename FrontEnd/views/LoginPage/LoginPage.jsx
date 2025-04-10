@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
 
 
-function LoginPage() {
+function LoginPage({setIsAuthenticated}) {
     const [loginIdentifier, setLoginIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -136,7 +136,7 @@ function LoginPage() {
             });
             handleErros(res);
             const json = await res.json();
-            localStorage.setItem("isAuthenticated", json.isAuthenticaded);
+            setIsAuthenticated(json.isAuthenticated);
             changePage(json.view);
           } catch (err) {
             console.error(err);

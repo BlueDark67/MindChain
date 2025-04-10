@@ -1,5 +1,5 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-
+import { useState, useEffect } from "react";
 import PersonalData from "../views/UserRelatedPage/Personaldata/PersonalData.jsx";
 import HomePage from "../views/HomePage/HomePage.jsx";
 import ForgotPassword from "../views/ForgotPassword/ForgotPassword.jsx";
@@ -12,13 +12,20 @@ import Teste from "../views/Teste/Teste.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 
 function App(){
-    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        localStorage.getItem("isAuthenticated") === "true"
+      );
+  
+      // Sincroniza o estado com o localStorage sempre que mudar
+      useEffect(() => {
+        localStorage.setItem("isAuthenticated", isAuthenticated ? "true" : "false");
+      }, [isAuthenticated]);
     console.log("isAuthenticated: ", isAuthenticated);
 
     return(
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<LoginPage />} />
+                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/email-sent" element={<EmailSent />} />

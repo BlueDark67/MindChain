@@ -11,7 +11,7 @@ router.post(
   "/login",
   passport.authenticate("local", { failureRedirect: "/login" }),
   function (req, res) {
-    res.json({ view: "home", isAuthenticaded: true });
+    res.json({ view: "home", isAuthenticated: true });
   }
 );
 router.get("/logout", user.logout);
