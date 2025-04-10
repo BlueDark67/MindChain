@@ -52,10 +52,11 @@ const sendEmail = async (req, res) => {
       to: email,
       subject: "Password Reset",
       text: "Aqui está o link para resetar sua senha...",
+      html: ``,
     };
 
     await transporter.sendMail(mailOptions);
-    res.json({ message: "Email enviado com sucesso" });
+    res.json({ isEmailSent: true });
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(500).json({ error: error.message });

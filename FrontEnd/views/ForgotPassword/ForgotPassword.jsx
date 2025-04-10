@@ -6,6 +6,7 @@ import ButtonSimple from '../../src/components/buttonSimple/buttonSimple.jsx';
 import './ForgotPassword.css';
 import '../Global.css';
 
+
 function ForgotPassword() {
     useEffect(() => {
         document.title = "Forgot Password";
@@ -18,6 +19,7 @@ function ForgotPassword() {
 
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
+    const [isEmailSent, setIsEmailSent] = useState(false);
     const requestBody = {email};
 
     const handleErros = (res) => {
@@ -41,6 +43,7 @@ function ForgotPassword() {
             });
             handleErros(res);
             const json = await res.json();
+            setIsEmailSent(json.isEmailSent);
             changePage(json.view);
           } catch (err) {
             console.error(err);
@@ -65,7 +68,12 @@ function ForgotPassword() {
     const navigate = useNavigate();
 
     const changePage = ( page) => {
-        navigate(`/${page}`);
+        if(page==="email-sent"&& isEmailSent){
+            navigate("/"+page);
+        }
+        if(page==="login"){
+            navigate("/"+page);
+        }
     }
                      
     return (
