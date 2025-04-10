@@ -19,7 +19,6 @@ function ForgotPassword() {
 
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
-    const [isEmailSent, setIsEmailSent] = useState(false);
     const requestBody = {email};
 
     const handleErros = (res) => {
@@ -31,8 +30,6 @@ function ForgotPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Email: ", { email });
-
         try {
             const res = await fetch("http://localhost:3000/sendEmail",{
                 method: "POST",
@@ -43,7 +40,6 @@ function ForgotPassword() {
             });
             handleErros(res);
             const json = await res.json();
-            setIsEmailSent(json.isEmailSent);
             changePage(json.view);
           } catch (err) {
             console.error(err);
@@ -68,12 +64,7 @@ function ForgotPassword() {
     const navigate = useNavigate();
 
     const changePage = ( page) => {
-        if(page==="email-sent"&& isEmailSent){
-            navigate("/"+page);
-        }
-        if(page==="login"){
-            navigate("/"+page);
-        }
+        navigate("/" + page);
     }
                      
     return (
@@ -96,7 +87,7 @@ function ForgotPassword() {
                         { emailError && <p className="emailError">{emailError}</p> }
                         <div className='buttonGroup'>
                             <ButtonSimple onClick={() => changePage("login")} text="Cancel" variant="grey" size="w100h25" />
-                            <ButtonSimple  text="Reset" variant="purple" size="w100h25"/>
+                            <ButtonSimple text="Reset" variant="purple" size="w100h25"/>
                         </div>
                     </form>
                 </div>

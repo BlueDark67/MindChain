@@ -1,7 +1,13 @@
 import { createRequire } from "module";
+import path from "path";
+import { fileURLToPath } from "url";
+
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
 dotenv.config({ path: "./MongoDB.env" });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const UserModel = require("../models/userModel").default;
 
@@ -37,6 +43,11 @@ const logout = function (req, res) {
 const sendEmail = async (req, res) => {
   const { email } = req.body;
   try {
+    const userFound = await UserModel.findOne({ email: email });
+    if (!userFound) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -50,13 +61,31 @@ const sendEmail = async (req, res) => {
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
-      subject: "Password Reset",
-      text: "Aqui está o link para resetar sua senha...",
-      html: ``,
+      subject: "MindChain - Reset Your Password",
+      html: `
+        <div style="text-align: center;">
+          <img src="cid:mindchainlogo" alt="MindChain Logo" style="width: 300px; height: auto; margin-bottom: 20px;" />
+        </div>
+        <h1 style="color: #333; text-align: center;">Reset Your Password</h1>
+        <p style="color: #555; text-align: center;">Seems like you forgot your password for Mindchain. If this is true, click below to change your password.</p>
+        <div style="text-align: center;">
+          <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            <a href="http://localhost:3000/reset-password" style="text-decoration: none; color: white;">Reset Password</a>
+          </button>
+        </div>
+        <p style="color: #555; text-align: center;">If you didn't request this, please ignore this email.</p>
+      `,
+      attachments: [
+        {
+          filename: "MindChain.png",
+          path: path.join(__dirname, "../../FrontEnd/public/MindChain.png"),
+          cid: "mindchainlogo", //same cid value as in the html img src
+        },
+      ],
     };
 
     await transporter.sendMail(mailOptions);
-    res.json({ isEmailSent: true });
+    res.json({ view: "email-sent" });
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(500).json({ error: error.message });
