@@ -26,7 +26,7 @@ function EmailSent(){
                 <span className='smallerSize'>For any questions or problems please contact us at</span>
                 <br />
                 <br />
-                <a href="mailto:help@mindchain.com">help@mainchain.com</a>
+                <a href="mailto:help@mindchain.com">helpmindchain@gmail.com</a>
             </div>
         </div>
     );

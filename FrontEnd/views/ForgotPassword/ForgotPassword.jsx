@@ -18,9 +18,33 @@ function ForgotPassword() {
 
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
-    const handleSubmit = (e) => {
+    const requestBody = {email};
+
+    const handleErros = (res) => {
+        if (!res.ok) {
+            throw Error(res.status + " - " + res.url);
+        }
+        return res;
+      };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Email: ", { email });
+
+        try {
+            const res = await fetch("http://localhost:3000/sendEmail",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+            handleErros(res);
+            const json = await res.json();
+            changePage(json.view);
+          } catch (err) {
+            console.error(err);
+          }
     };
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -64,7 +88,7 @@ function ForgotPassword() {
                         { emailError && <p className="emailError">{emailError}</p> }
                         <div className='buttonGroup'>
                             <ButtonSimple onClick={() => changePage("login")} text="Cancel" variant="grey" size="w100h25" />
-                            <ButtonSimple onClick={() => changePage("email-sent")} text="Reset" variant="purple" size="w100h25"/>
+                            <ButtonSimple  text="Reset" variant="purple" size="w100h25"/>
                         </div>
                     </form>
                 </div>

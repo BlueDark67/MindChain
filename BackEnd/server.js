@@ -14,6 +14,8 @@ const localStrategy = require("passport-local");
 import User from "./models/userModel.js";
 const dotenv = require("dotenv");
 dotenv.config({ path: "./MongoDB.env" });
+const bodyParser = require("body-parser");
+const nodeMailer = require("nodemailer");
 
 import homeRoutes from "./routes/homeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -32,6 +34,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(userRoutes);
 

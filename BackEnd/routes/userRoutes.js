@@ -19,4 +19,6 @@ router.post("/teste", (req, res) => {
   res.json({ view: "teste" });
 });
 
+router.post("/sendEmail", user.sendEmail);
+
 export default router;

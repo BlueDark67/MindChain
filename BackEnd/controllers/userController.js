@@ -1,7 +1,11 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const dotenv = require("dotenv");
+dotenv.config({ path: "./MongoDB.env" });
 
 const UserModel = require("../models/userModel").default;
+
+var nodemailer = require("nodemailer");
 
 const userGet = function (req, res) {
   res.json({ view: "signup" });
@@ -30,4 +34,32 @@ const logout = function (req, res) {
   });
 };
 
-export default { userGet, userPost, loginGet, logout };
+const sendEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset",
+      text: "Aqui está o link para resetar sua senha...",
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Email enviado com sucesso" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export default { userGet, userPost, loginGet, logout, sendEmail };

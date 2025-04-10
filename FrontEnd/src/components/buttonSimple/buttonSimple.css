@@ -60,6 +60,11 @@
     background-color: darkmagenta;
     color: white;
     border-radius: 30px;
+    font-size: 20px;
+}
+
+.darkmagenta:hover{
+    background-color: #654A65;
 }
 
 .blue:hover{
