@@ -25,7 +25,7 @@ function App(){
     return(
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/email-sent" element={<EmailSent />} />

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
 
 
-function LoginPage({setIsAuthenticated}) {
+function LoginPage({setIsAuthenticated, isAuthenticated}) {
     const [loginIdentifier, setLoginIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -21,6 +21,10 @@ function LoginPage({setIsAuthenticated}) {
             document.title = "Login Page";
             document.body.classList.add('gradient_background_BPB');
 
+            if(isAuthenticated){
+                navigate("/home");
+            }
+
             if(page){
                 navigate(`/${page}`);
             }
@@ -28,7 +32,7 @@ function LoginPage({setIsAuthenticated}) {
             return () => {
                 document.body.classList.remove('gradient_background_BPB');
             }
-        }, [page, navigate]);
+        }, [page, isAuthenticated,navigate]);
 
         
     const changePage = ( page) => {
