@@ -9,18 +9,24 @@ import ResetPassword from "../views/ResetPassword/ResetPassword.jsx";
 import SignUp from "../views/SignUp/SignUp.jsx";
 import NotFound from "../views/NotFound/NotFound.jsx";
 import Teste from "../views/Teste/Teste.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 function App(){
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    console.log("isAuthenticated: ", isAuthenticated);
+
     return(
         <BrowserRouter>
             <Routes>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/personal-data" element={<PersonalData />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/email-sent" element={<EmailSent />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/personal-data" element={<PersonalData />} />
+                </Route>
                 <Route path="/teste" element={<Teste />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>

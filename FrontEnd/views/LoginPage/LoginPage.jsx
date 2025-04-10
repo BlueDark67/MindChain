@@ -136,6 +136,7 @@ function LoginPage() {
             });
             handleErros(res);
             const json = await res.json();
+            localStorage.setItem("isAuthenticated", json.isAuthenticated);
             changePage(json.view);
           } catch (err) {
             console.error(err);
