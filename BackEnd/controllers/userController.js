@@ -70,7 +70,7 @@ const sendEmail = async (req, res) => {
         <p style="color: #555; text-align: center;">Seems like you forgot your password for Mindchain. If this is true, click below to change your password.</p>
         <div style="text-align: center;">
           <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-            <a href="http://localhost:3000/reset-password" style="text-decoration: none; color: white;">Reset Password</a>
+            <a href="http://localhost:5173/reset-password" style="text-decoration: none; color: white;">Reset Password</a>
           </button>
         </div>
         <p style="color: #555; text-align: center;">If you didn't request this, please ignore this email.</p>
