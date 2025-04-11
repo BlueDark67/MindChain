@@ -9,7 +9,6 @@ var userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   birthdate: { type: Date, required: false },
   nationality: { type: String, required: false },
-  messageContent: { type: String, require: false },
 });
 
 userSchema.plugin(passportLocalMongoose);

@@ -24,7 +24,9 @@ function CreationRoom() {
   }, []);
 
   const requestBody ={
-    themeValue, isThemeChosen, passwordValue, isPrivate, sessionTime
+    theme: isThemeChosen? themeValue : "teste",
+    password: isPrivate ? passwordValue : null,
+    time: sessionTime
   }
 
   const navigate = useNavigate();
@@ -43,11 +45,12 @@ function CreationRoom() {
   const handleSubmit = async (e) =>{
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/",{
+      const res = await fetch("http://localhost:3000/create-room",{
           method: "POST",
           headers: {
               "Content-Type": "application/json",
           },
+          credentials: "include", 
           body: JSON.stringify(requestBody),
       });
       handleErros(res);
@@ -60,7 +63,7 @@ function CreationRoom() {
       
   return (
     <div>
-      <h1>Creation Room</h1>
+      <h1 className="h1-create">Creation Room</h1>
       <form className="creation-room-form-inputs" method="POST" onSubmit={handleSubmit}>
         <div className="creation-room-form">
         <Switch labelSwitch="Is the theme choosen by the creator?"
@@ -69,7 +72,7 @@ function CreationRoom() {
           onSwitchChange={(checked) => setIsThemeChosen(checked)}
           onInputChange={(themeValue) => setThemeValue(themeValue)}
         />
-        <label>
+        <label className="label-create">
           How much time is the session?
           <select className="creation-room-select" onChange={(e) => setSessionTime(e.target.value)} value={sessionTime}>
             <option value = "" disabled>Select an Option</option>

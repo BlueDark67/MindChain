@@ -31,14 +31,14 @@ class SwitchComponent extends Component {
 
     render(){ 
         return(
-            <label>
-                <span>{this.props.labelSwitch}</span>
+            <label className="label-create">
+                <span className="label-span-create">{this.props.labelSwitch}</span>
                 <Switch onChange={this.handleChange} checked={this.state.checked} />
                 {this.state.checked && (
                     <div>
-                        <span>{this.props.labelInput}</span>
+                        <span className="div-span-create">{this.props.labelInput}</span>
                         <br/>
-                        <input type="text" placeholder={this.props.placeholder} value={this.state.inputValue} onChange={this.handleInputChange} />
+                        <input className="input-create" type="text" placeholder={this.props.placeholder} value={this.state.inputValue} onChange={this.handleInputChange} />
                     </div>
                 )}
             </label>

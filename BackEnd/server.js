@@ -13,21 +13,26 @@ const session = require("express-session");
 const localStrategy = require("passport-local");
 import User from "./models/userModel.js";
 const dotenv = require("dotenv");
-dotenv.config({ path: "./MongoDB.env" });
+dotenv.config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const nodeMailer = require("nodemailer");
 
-import homeRoutes from "./routes/homeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import roomRoutes from "./routes/roomRoutes.js";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
   })
@@ -38,6 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(userRoutes);
+app.use(roomRoutes);
 
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -49,7 +55,7 @@ const __dirname = path.dirname(__filename);
 const password = process.env.MONGO_DB_PASSWORD;
 const url = `mongodb+srv://admin:${password}@cluster.zfsi1mr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster`;
 
-const SERVER_PORT = 3000;
+const SERVER_PORT = process.env.SERVER_PORT;
 const server = http.createServer(app);
 
 mongoose

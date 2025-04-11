@@ -7,8 +7,7 @@ import LoginPage from "../views/LoginPage/LoginPage";
 import EmailSent from "../views/EmailSent/EmailSent.jsx";
 import ResetPassword from "../views/ResetPassword/ResetPassword.jsx";
 import SignUp from "../views/SignUp/SignUp.jsx";
-import NotFound from "../views/NotFound/NotFound.jsx";
-import Teste from "../views/Teste/Teste.jsx";   
+import NotFound from "../views/NotFound/NotFound.jsx"; 
 import PrivateRoute from "./PrivateRoute.jsx";
 import CreationRoom from "../views/CreationRoom/CreationRoom.jsx";
 
@@ -35,7 +34,6 @@ function App(){
                     <Route path="/personal-data" element={<PersonalData />} />
                     <Route path="/create-room" element={<CreationRoom />} />
                 </Route>
-                <Route path="/teste" element={<Teste />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

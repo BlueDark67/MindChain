@@ -5,15 +5,15 @@
     flex-direction: column;
 }
 
-label{
+.label-create{
     font-size: 35px;
 }
 
-label, label>select{
+.label-create, .label-create>select{
     vertical-align: middle;
 }
 
-label>select{
+.label-create>select{
     height: 34px;
     margin-left: 25px;
     font-size: 20px;
@@ -22,7 +22,7 @@ label>select{
     border-radius: 5px;
 }
    
-h1{
+.h1-create{
     margin-top: 100px;
     text-align: center;
     font-size: 50px;
@@ -35,4 +35,3 @@ h1{
     gap: 100px;
     justify-content: center;
 }
-

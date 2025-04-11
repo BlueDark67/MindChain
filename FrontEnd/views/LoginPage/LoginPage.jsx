@@ -136,6 +136,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include", 
                 body: JSON.stringify(requestBody),
             });
             handleErros(res);

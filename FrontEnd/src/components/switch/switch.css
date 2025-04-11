@@ -1,15 +1,15 @@
-label>span{
+.label-span-create{
     font-size: 35px;
     margin-right: 25px;
 }
 
-div>span{
+.div-span-create{
     display: inline-block;
     font-size: 25px;
     margin-top: 25px ;
 }
 
-div>input{
+.input-create{
     margin-top: 15px;
     width: 50%;
     height: 28px;
@@ -19,6 +19,6 @@ div>input{
     border-radius: 5px;
 }
 
-label{
+.label-create{
    margin: 20px ;
 }

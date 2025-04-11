@@ -12,6 +12,7 @@ router.post(
   "/login",
   passport.authenticate("local", { failureRedirect: "/loginFail" }),
   function (req, res) {
+    console.log(req.isAuthenticated());
     res.json({ view: "home", isAuthenticated: true });
   }
 );
