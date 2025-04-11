@@ -1,6 +1,7 @@
 import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
+import bcrypt from "bcrypt";
 
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
@@ -17,8 +18,10 @@ import user from "../controllers/userController.js";
 
 var nodemailer = require("nodemailer");
 
+const saltRounds = 12;
+
 function generateRandomCode(length) {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const characters = "6LZC5AYRXJEQHTD93UN4VMBOIWKGS07821PF";
   let result = "";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -30,14 +33,17 @@ const roomPost = async function (req, res) {
   const { theme, password, time } = req.body;
   const code = generateRandomCode(6);
   const creatorId = req.user ? req.user._id : null;
+  const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
   try {
     await roomModel.create({
       theme,
       code,
       time,
-      password,
+      password: hashedPassword,
       users: creatorId ? [creatorId] : [],
     });
+    console.log(password);
+    console.log(hashedPassword);
     res.json({ view: "personal-data" });
   } catch (error) {
     res.status(500).json({ error: error.message });
