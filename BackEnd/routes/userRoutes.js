@@ -7,9 +7,10 @@ import user from "../controllers/userController.js";
 router.get("/signup", user.userGet);
 router.post("/signup", user.userPost);
 router.get("/login", user.loginGet);
+router.get("/loginFail", user.loginFail);
 router.post(
   "/login",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", { failureRedirect: "/loginFail" }),
   function (req, res) {
     res.json({ view: "home", isAuthenticated: true });
   }

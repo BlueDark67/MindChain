@@ -31,6 +31,10 @@ const loginGet = function (req, res) {
   res.json({ view: "login" });
 };
 
+const loginFail = function (req, res) {
+  res.json({ view: "login", isAuthenticated: false });
+};
+
 const logout = function (req, res) {
   req.logout(function (err) {
     if (err) {
@@ -92,4 +96,4 @@ const sendEmail = async (req, res) => {
   }
 };
 
-export default { userGet, userPost, loginGet, logout, sendEmail };
+export default { userGet, userPost, loginGet, logout, sendEmail, loginFail };

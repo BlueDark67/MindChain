@@ -8,15 +8,15 @@ import EmailSent from "../views/EmailSent/EmailSent.jsx";
 import ResetPassword from "../views/ResetPassword/ResetPassword.jsx";
 import SignUp from "../views/SignUp/SignUp.jsx";
 import NotFound from "../views/NotFound/NotFound.jsx";
-import Teste from "../views/Teste/Teste.jsx";
+import Teste from "../views/Teste/Teste.jsx";   
 import PrivateRoute from "./PrivateRoute.jsx";
+import CreationRoom from "../views/CreationRoom/CreationRoom.jsx";
 
 function App(){
     const [isAuthenticated, setIsAuthenticated] = useState(
         localStorage.getItem("isAuthenticated") === "true"
       );
   
-      // Sincroniza o estado com o localStorage sempre que mudar
       useEffect(() => {
         localStorage.setItem("isAuthenticated", isAuthenticated ? "true" : "false");
       }, [isAuthenticated]);
@@ -33,6 +33,7 @@ function App(){
                 <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/personal-data" element={<PersonalData />} />
+                    <Route path="/create-room" element={<CreationRoom />} />
                 </Route>
                 <Route path="/teste" element={<Teste />} />
                 <Route path="*" element={<NotFound />} />

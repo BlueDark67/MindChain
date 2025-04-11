@@ -1,0 +1,24 @@
+label>span{
+    font-size: 35px;
+    margin-right: 25px;
+}
+
+div>span{
+    display: inline-block;
+    font-size: 25px;
+    margin-top: 25px ;
+}
+
+div>input{
+    margin-top: 15px;
+    width: 50%;
+    height: 28px;
+    font-size: 25px;
+    outline: none;
+    border: solid 2px black;
+    border-radius: 5px;
+}
+
+label{
+   margin: 20px ;
+}
