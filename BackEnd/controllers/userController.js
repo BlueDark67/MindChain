@@ -83,7 +83,7 @@ const sendEmail = async (req, res) => {
         {
           filename: "MindChain.png",
           path: path.join(__dirname, "../../FrontEnd/public/MindChain.png"),
-          cid: "mindchainlogo", //same cid value as in the html img src
+          cid: "mindchainlogo",
         },
       ],
     };
