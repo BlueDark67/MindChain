@@ -5,5 +5,6 @@ const passport = require("passport");
 import room from "../controllers/roomController.js";
 
 router.post("/create-room", room.roomPost);
+router.get("/file-txt", room.readFile);
 
 export default router;

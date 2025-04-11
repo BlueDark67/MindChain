@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Switch from "../../src/components/switch/switch";
 import ButtonSimple from "../../src/components/buttonSimple/buttonSimple";
+import { handleErros, validateRoomForm, getRandomTheme } from "../../public/js/CreationRoom.js";
 import './CreationRoom.css';
 import '../Global.css';
 
@@ -13,6 +14,7 @@ function CreationRoom() {
   const [passwordValue, setPasswordValue] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [sessionTime, setSessionTime] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
           document.title = "Forgot Password";
@@ -23,27 +25,35 @@ function CreationRoom() {
           }
   }, []);
 
-  const requestBody ={
-    theme: isThemeChosen? themeValue : "teste",
-    password: isPrivate ? passwordValue : null,
-    time: sessionTime
-  }
-
   const navigate = useNavigate();
 
   const changePage = ( page) => {
     navigate("/" + page);
   }
   
-  const handleErros = (res) => {
-    if (!res.ok) {
-      throw Error(res.status + " - " + res.url);
-    }
-    return res;
-  };
+  
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
+    const validation = validateRoomForm({isThemeChosen, themeValue, isPrivate, passwordValue, sessionTime} );
+    if (!validation.valid) {
+      setErrorMessage(validation.message);
+      return;
+    }
+
+    let finalTheme;
+    if(isThemeChosen){
+      finalTheme = themeValue;
+    }else{
+      finalTheme = await getRandomTheme();
+    }
+
+    const requestBody ={
+      theme: finalTheme,
+      password: isPrivate ? passwordValue : null,
+      time: sessionTime
+    }
+
     try {
       const res = await fetch("http://localhost:3000/create-room",{
           method: "POST",
@@ -90,6 +100,7 @@ function CreationRoom() {
           onSwitchChange={(checked) => setIsPrivate(checked)}
           onInputChange={(passwordValue) => setPasswordValue(passwordValue)}
         />
+        {errorMessage && <p className="error-message-create">{errorMessage}</p>}
           <div className='buttonGroup-create'>
             <ButtonSimple onClick={() => changePage("home")} text="Cancel" variant="grey_purple" size="w400h90" />
             <ButtonSimple text="Create room" variant="grey_purple" size="w400h90"/>

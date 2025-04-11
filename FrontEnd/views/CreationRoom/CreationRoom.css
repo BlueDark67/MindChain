@@ -35,3 +35,9 @@
     gap: 100px;
     justify-content: center;
 }
+
+.error-message-create{
+    text-align: center;
+    color: red;
+    font-size: 25px;
+}

@@ -2,6 +2,7 @@ import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+import fs from "fs";
 
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
@@ -42,12 +43,17 @@ const roomPost = async function (req, res) {
       password: hashedPassword,
       users: creatorId ? [creatorId] : [],
     });
-    console.log(password);
-    console.log(hashedPassword);
     res.json({ view: "personal-data" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export default { roomPost };
+const readFile = function (req, res) {
+  const filePath = "../BackEnd/Themes.json";
+  const themesText = fs.readFileSync(filePath, "utf8");
+  const themesArray = JSON.parse(themesText);
+  res.json(themesArray);
+};
+
+export default { roomPost, readFile };
