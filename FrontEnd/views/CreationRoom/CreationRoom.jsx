@@ -21,7 +21,7 @@ function CreationRoom() {
           document.body.classList.add('gradient_background_BP');
   
           return () => {
-              document.body.classList.remove('gradient_background_BP');
+            document.body.classList.remove('gradient_background_BP');
           }
   }, []);
 
@@ -30,8 +30,6 @@ function CreationRoom() {
   const changePage = ( page) => {
     navigate("/" + page);
   }
-  
-  
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
@@ -48,10 +46,17 @@ function CreationRoom() {
       finalTheme = await getRandomTheme();
     }
 
+    let sessionTimeValue;
+    if (sessionTime === "Unlimited") {
+      sessionTimeValue = -1; // ou sessionTimeValue = -1;
+    } else {
+      sessionTimeValue = Number(sessionTime);
+    }
+
     const requestBody ={
       theme: finalTheme,
       password: isPrivate ? passwordValue : null,
-      time: sessionTime
+      time: sessionTimeValue,
     }
 
     try {

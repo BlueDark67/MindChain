@@ -12,14 +12,10 @@ router.post(
   "/login",
   passport.authenticate("local", { failureRedirect: "/loginFail" }),
   function (req, res) {
-    console.log(req.isAuthenticated());
     res.json({ view: "home", isAuthenticated: true });
   }
 );
 router.get("/logout", user.logout);
-router.post("/teste", (req, res) => {
-  res.json({ view: "teste" });
-});
 
 router.post("/sendEmail", user.sendEmail);
 
