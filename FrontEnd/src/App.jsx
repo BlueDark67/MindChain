@@ -10,6 +10,7 @@ import SignUp from "../views/SignUp/SignUp.jsx";
 import NotFound from "../views/NotFound/NotFound.jsx"; 
 import PrivateRoute from "./PrivateRoute.jsx";
 import CreationRoom from "../views/CreationRoom/CreationRoom.jsx";
+import InvitePage from "../views/InvitePage/InvitePage.jsx";
 
 function App(){
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -19,7 +20,6 @@ function App(){
       useEffect(() => {
         localStorage.setItem("isAuthenticated", isAuthenticated ? "true" : "false");
       }, [isAuthenticated]);
-    console.log("isAuthenticated: ", isAuthenticated);
 
     return(
         <BrowserRouter>
@@ -33,6 +33,7 @@ function App(){
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/personal-data" element={<PersonalData />} />
                     <Route path="/create-room" element={<CreationRoom />} />
+                    <Route path="/invite/:roomId" element={<InvitePage />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

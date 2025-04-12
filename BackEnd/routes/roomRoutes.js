@@ -6,5 +6,7 @@ import room from "../controllers/roomController.js";
 
 router.post("/create-room", room.roomPost);
 router.get("/file-txt", room.readFile);
+router.get("/room-code/:roomId", room.getRoomCode);
+router.post("/sendEmailInviteRoom", room.sendEmailInviteRoom);
 
 export default router;

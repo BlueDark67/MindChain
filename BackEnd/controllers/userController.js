@@ -44,7 +44,7 @@ const logout = function (req, res) {
   });
 };
 
-const sendEmail = async (req, res) => {
+const sendEmailResetPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const userFound = await UserModel.findOne({ email: email });
@@ -96,4 +96,11 @@ const sendEmail = async (req, res) => {
   }
 };
 
-export default { userGet, userPost, loginGet, logout, sendEmail, loginFail };
+export default {
+  userGet,
+  userPost,
+  loginGet,
+  logout,
+  sendEmailResetPassword,
+  loginFail,
+};

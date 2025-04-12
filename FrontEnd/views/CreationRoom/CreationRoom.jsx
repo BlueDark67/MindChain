@@ -17,7 +17,7 @@ function CreationRoom() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-          document.title = "Forgot Password";
+          document.title = "Create Room";
           document.body.classList.add('gradient_background_BP');
   
           return () => {
@@ -70,7 +70,8 @@ function CreationRoom() {
       });
       handleErros(res);
       const json = await res.json();
-      changePage(json.view);
+      var page = json.view+"/"+json.roomId; 
+      changePage(page);
     } catch (err) {
       console.error(err);
     }
