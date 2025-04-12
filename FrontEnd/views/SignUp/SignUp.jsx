@@ -4,7 +4,7 @@ import'../Global.css';
 import MindChain from "../../public/MindChain.png"
 import ButtonSubmit from "../../src/components/buttonSubmit/buttonSubmit.jsx";
 import { useNavigate } from 'react-router-dom';
-
+import { handleErros, isPasswordCriterionMet, validateForm,isEmail } from "../../public/js/SignUp.js";
 function SignUp(){
     {/*Constantes para o registo*/}
     const [username, setUsername] = useState("");
@@ -40,87 +40,7 @@ function SignUp(){
         setPage(page);
     }
     
-
-    const isEmail = (value) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    };
-
     
-    
-    {/*Codigo para validar a palavra passe com todos os seu criterios*/}
-    const validatePassword = (password) => {
-        let errors = [];
-
-        if (password.length < 6){
-            errors.push("At least 6 characters");
-        }
-        if (!/[A-Z]/.test(password)){
-            errors.push("At least one uppercase");
-        }
-        if (!/[a-z]/.test(password)){
-            errors.push("At least one lowercase");
-        }
-        if (!/[0-9]/.test(password)){
-            errors.push("At least one number");
-        }
-        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-            errors.push("At least one symbol");
-        }
-        return errors;
-    }
-
-    //Codigo paraver se a se o criterio de palavra passe foi obtido
-    const isPasswordCriterionMet = (criterion) => {
-        if(!password) return false;
-
-        switch (criterion) {
-            case 'length': return password.length >= 6;
-            case 'uppercase': return /[A-Z]/.test(password);
-            case 'lowercase': return /[a-z]/.test(password);
-            case 'number': return /[0-9]/.test(password);
-            case 'symbol': return /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-            default: return false;
-        }
-        
-    };    
-
-    const validateForm = () => {
-        //Para ver se tem campos nao preenchidos
-        if (!username) {
-            return "Username is required";
-            
-           
-        }
-        if (!email) {
-            return "Email is required";
-            
-        }
-        if (email && !isEmail(email)) {
-            return "Please enter a valid email format";
-            
-        }
-        if (!password) {
-            return "Password is required";
-            
-        }
-        if (!confirmPassword) {
-            return ("Please confirm your password");
-            
-        }
-        //Para validar se a palavra passe abrangiu todos os criterios
-        const passwordErrors = validatePassword(password);
-        if(passwordErrors.length > 0) {
-            return ("Password does not meet all the requirements");
-            
-        }
-        //Para confirmar se o confirmPassword é igual ao password
-        if(password !== confirmPassword) {
-            return ("Password does not match");
-            
-        }
-
-        return null;
-    }
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -128,7 +48,7 @@ function SignUp(){
         setErrorMessage("");
 
         //Para validar o formulario
-        const error = validateForm();
+        const error = validateForm(username, email,password, confirmPassword);
         if (error) {
             setErrorMessage(error);
             setIsSubmitting(false);
@@ -138,15 +58,7 @@ function SignUp(){
         const requestBody = {username, email, password};
     
 
-        const handleErros = (res) => {
-            if (!res.ok) {
-                setIsSubmitting(false);
-                throw Error(res.status + " - " + res.url);
-            }
-            return res;
-          };
-
-         try {
+        try {
             const res = await fetch("http://localhost:3000/signup",{
                 method: "POST",
                 headers: {
@@ -157,9 +69,12 @@ function SignUp(){
             handleErros(res);
             const json = await res.json();
             changePage(json.view);
-          } catch (err) {
-            console.error(err);
-          }
+        } catch (err) {
+            console.error("Register error:",err);
+            setErrorMessage("Something went wrong. Please try again later.");
+        } finally { 
+            setIsSubmitting(false);
+        }
 
     }
     return(
@@ -201,19 +116,19 @@ function SignUp(){
                                 <div className="password-criteria-tooltip">
                                     <h4>Password must have:</h4>
                                     <ul>
-                                            <li className={isPasswordCriterionMet('length') ? "met" : ""}>
+                                            <li className={isPasswordCriterionMet('length', password) ? "met" : ""}>
                                                 At least 6 characters
                                             </li>
-                                            <li className={isPasswordCriterionMet('uppercase') ? "met" : ""}>
+                                            <li className={isPasswordCriterionMet('uppercase', password) ? "met" : ""}>
                                                 At least one uppercase letter
                                             </li>
-                                            <li className={isPasswordCriterionMet('lowercase') ? "met" : ""}>
+                                            <li className={isPasswordCriterionMet('lowercase', password) ? "met" : ""}>
                                                 At least one lowercase letter
                                             </li>
-                                            <li className={isPasswordCriterionMet('number') ? "met" : ""}>
+                                            <li className={isPasswordCriterionMet('number', password) ? "met" : ""}>
                                                 At least one number
                                             </li>
-                                            <li className={isPasswordCriterionMet('symbol') ? "met" : ""}>
+                                            <li className={isPasswordCriterionMet('symbol', password) ? "met" : ""}>
                                                 At least one symbol
                                             </li>
                                         </ul>

@@ -4,6 +4,7 @@ import '../Global.css';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
+import { handleErros, validateForm, isEmail } from '../../public/js/LoginPage.js'
 
 
 function LoginPage({setIsAuthenticated, isAuthenticated}) {
@@ -40,95 +41,24 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
     }
 
 
-    // Função para identificar se é email ou username
-    const isEmail = (value) => {
-        // Esta expressão verifica se há caracteres antes e depois do @, e pelo menos um ponto após o @
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    };
-
-
-    
-
-    // Função para verificar se o input parece ser uma tentativa de email (contém @)
-    const containsAtSymbol = (value) => {
-        return value.includes('@');
-    };
-
-    const handleErros = (res) => {
-        if (!res.ok) {
-          throw Error(res.status + " - " + res.url);
-        }
-        return res;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         setErrorMessage("");
 
-        if (!loginIdentifier && !password) {
-            setErrorMessage("Please fill all the fields");
+        //Para validar o formulario
+        const error = validateForm(loginIdentifier, password);
+        if (error) {
+            setErrorMessage(error);
+            setLoading(false);
             return;
         }
-        if(!loginIdentifier){
-            setErrorMessage("Username or Email is required");
-            return;
-        }
-        if(!password){
-            setErrorMessage("Password is required");
-            return;
-        }
-
-        // Se o input contém @ mas não é um email válido
-        if (containsAtSymbol(loginIdentifier) && !isEmail(loginIdentifier)) {
-            setErrorMessage("Please enter a valid email format");
-            return;
-        }
-
-
-        setLoading(true);
 
         const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
             
-            const requestBody = {
-                [loginType]: loginIdentifier,
-                password: password
-            };
+        const requestBody = {[loginType]: loginIdentifier, password: password};
 
-        /*try {
-            // Define o tipo de login que está sendo usado
-            const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
-            
-            const requestBody = {
-                [loginType]: loginIdentifier,
-                password: password
-            };
-            
-            console.log("Logging in with:", loginType, "Sending login data:", requestBody);
-            
-            {/*
-            const response = await fetch('http://localhost:3001/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ requestBody }),
-            });
-            */
-            /*const data = await response.json();
-    
-            if (response.ok) {
-                console.log('Login bem-sucedido:', data);
-                // Salvar token e redirecionar
-            } else {
-                setErrorMessage("Invalid username or password");
-            }
-        } catch (error) {
-            console.error("Login error:", error);
-            setErrorMessage("Something went wrong. Try again later");
-        } finally {
-            setLoading(false);
-        }*/
+        
 
         try {
             const res = await fetch("http://localhost:3000/login", {
@@ -141,10 +71,17 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
             });
             handleErros(res);
             const json = await res.json();
+            console.log("Login response:", json); // depois eliminar
             setIsAuthenticated(json.isAuthenticated);
+            if(!isAuthenticated){
+                setErrorMessage("Invalid credentials"); 
+            }
             changePage(json.view);
-          } catch (err) {
-            console.error(err);
+        } catch (err) {
+            console.error("Login error:",err);
+            setErrorMessage("Something went wrong. Please try again later.");
+        } finally {
+            setLoading(false);
         }
 
           
