@@ -115,7 +115,7 @@ const sendEmailInviteRoom = async (req, res) => {
             <p style="color: #555; text-align: center;">Seems like you where invited by ${creator} to a brainstorming session. If this is true, click below to enter the session</p>
             <div style="text-align: center;">
             <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-              <a href="http://localhost:5173/reset-password" style="text-decoration: none; color: white;">Enter session</a>
+              <a href="http://localhost:5173/unlock-room/${roomId}" style="text-decoration: none; color: white;">Enter session</a>
             </button>
           </div>
           <p style="color: #555; text-align: center;">If you don't know who ${creator} is, please ignore this email.</p>
@@ -138,4 +138,41 @@ const sendEmailInviteRoom = async (req, res) => {
   }
 };
 
-export default { roomPost, readFile, getRoomCode, sendEmailInviteRoom };
+const enterRoom = async (req, res) => {
+  const { password, code, roomId } = req.body;
+  try {
+    const room = await roomModel.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    if (room.code !== code) {
+      return res.status(401).json({ error: "Invalid code" });
+    }
+    if (room.password === null) {
+      return res.json({ view: "room" });
+    } else {
+      if (!password) {
+        return res.json({ isPrivate: true });
+      }
+
+      const isMatch = await bcrypt.compare(password, room.password);
+      if (!isMatch) {
+        return res.status(401).json({ error: "Incorrect password" });
+      }
+
+      return res.json({ view: "room" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export default {
+  roomPost,
+  readFile,
+  getRoomCode,
+  sendEmailInviteRoom,
+  enterRoom,
+};

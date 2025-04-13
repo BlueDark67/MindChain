@@ -1,0 +1,15 @@
+.unlockroom-input{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 28px;
+    width: 380px;
+    font-size: 25px;
+    outline: none;
+    border: solid 2px black;
+    border-radius: 10px;
+}
+
+.unlockroom-label{
+    font-size: 25px;
+    text-align: center;
+}

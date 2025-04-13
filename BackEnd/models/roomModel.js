@@ -10,6 +10,7 @@ var roomSchema = new mongoose.Schema({
   text: { type: String, required: false },
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   createAt: { type: Date, default: Date.now },
+  messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
 });
 
 export default mongoose.model("Room", roomSchema);
