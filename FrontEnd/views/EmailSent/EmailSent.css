@@ -2,6 +2,10 @@
     width: 120px;
 }
 
+.logo-invite{
+    width: 250px;
+}
+
 .container>hr{
     background-color: black;
     height: 2px;

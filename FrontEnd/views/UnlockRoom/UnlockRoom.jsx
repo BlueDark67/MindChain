@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import ButtonSimple from "../../src/components/buttonSimple/buttonSimple";
 import "./UnlockRoom.css";
 import "../Global.css";
+import Sidebar from '../../src/components/Menu/Menu.jsx';
+
 
 function UnlockRoom(){
     const [isPrivate, setIsPrivate] = useState(false);
@@ -72,25 +74,28 @@ function UnlockRoom(){
     }
 
     return(
-        <div className="center">
-            <form className="unlockroom-form" method="POST" onSubmit={handleSubmit}>
-                <label className="unlockroom-label">
-                    Use the code to enter the room
-                    </label>
-                    <br/>
-                    <input type="text" className="unlockroom-input" placeholder="CODE" onChange={handleCodeInputChange} />
-                    {isPrivate && 
-                        (<div>
-                            <label className="unlockroom-label">
-                                This is room is private
-                            </label>
-                            <br />
-                            <input type="text" className="unlockroom-input" placeholder="Password" onChange={handlePasswordInputChange} />
-                        </div>)
-                    }
-                    <ButtonSimple text = "Enter the room" variant = "grey_purple" size = "w400h90" />
-                
-            </form>
+        <div>
+            <Sidebar/>
+            <div className="center">
+                <form className="unlockroom-form" method="POST" onSubmit={handleSubmit}>
+                    <label className="unlockroom-label">
+                        Use the code to enter the room
+                        </label>
+                        <br/>
+                        <input type="text" className="unlockroom-input" placeholder="CODE" onChange={handleCodeInputChange} />
+                        {isPrivate && 
+                            (<div>
+                                <label className="unlockroom-label">
+                                    This is room is private
+                                </label>
+                                <br />
+                                <input type="text" className="unlockroom-input" placeholder="Password" onChange={handlePasswordInputChange} />
+                            </div>)
+                        }
+                        <ButtonSimple text = "Enter the room" variant = "grey_purple" size = "w400h90" />
+                    
+                </form>
+            </div>
         </div>
     );
 }

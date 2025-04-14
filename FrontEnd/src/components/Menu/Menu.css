@@ -1,0 +1,182 @@
+  /* Sidebar geral */
+.sidebar {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(56, 43, 56, 1) 0%,
+    rgba(115, 115, 115, 0.25) 100%
+  );  color: white;
+  transition: width 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 25px; /* Bordas arredondadas no lado direito */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  margin-left: 10px;
+}
+
+/* Menu aberto */
+.sidebar-open {
+  width: 250px;
+  padding: 20px;
+}
+
+/* Menu fechado */
+.sidebar-closed {
+  width: 60px;
+  padding: 10px;
+}
+
+/* Botão de abrir/fechar */
+.hamburger {
+  position: absolute;
+  top: 15px; /* Ajuste para alinhar o botão */
+  right: 15px; /* Ajuste para manter o botão dentro da sidebar */
+  z-index: 1100; /* Garante que o botão fique acima de outros elementos */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hamburger.menu-closed{
+  width: calc(100% - 30px); /* Subtrai os 15px de cada lado */
+  left: 15px;
+  right: auto;
+  justify-content: center;
+}
+
+.hamburger.menu-open{
+  justify-content: flex-end;
+}
+
+.hamburger img {
+  width: 35px; /* Ajusta o tamanho do ícone */
+  display: block;
+}
+
+.hamburger:hover {
+  transform: scale(1.1); /* Efeito de hover */
+}
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  justify-content: center; /* Centraliza quando fechado */
+  width: 100%;
+  margin-bottom: 20px;
+  padding-top: 60px; /* Espaço para o botão de hambúrguer */
+}
+
+/* Logo */
+.logo-do-demonio {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centraliza quando fechado */
+  gap: 10px;
+  margin-bottom: 30px; /* Espaço entre o logo e os itens do menu */
+  width: 100%;
+}
+
+.logo-do-demonio.logo-open{
+  margin-left: 7px;
+}
+
+.logo-do-demonio.logo-closed{
+  margin-left: 1px;
+  opacity: 0.6; 
+}
+
+.logo-do-demonio img {
+  width: 30px; /* Diminuindo o tamanho do logo (era 40px) */
+  height: 30px; /* Diminuindo o tamanho do logo (era 40px) */
+}
+
+.logo-do-demonio span {
+  font-size: 16px; /* Era 18px - ajuste se necessário */
+  font-weight: bold;
+}
+
+/* Quando o menu está aberto, ajustar o alinhamento do logo */
+.sidebar-open .logo-do-demonio {
+  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+}
+
+/* Navegação */
+.nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* Garantir que a navegação não funcione quando o menu estiver fechado */
+.sidebar-closed .nav {
+  pointer-events: none; /* Impede cliques em toda a navegação */
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 25px;
+  transition: background-color 0.3s;
+  width: 100%;
+  justify-content: center; /* Centraliza quando fechado */
+}
+
+/* Quando o menu está aberto, ajustar o alinhamento do conteúdo */
+.sidebar-open .nav-item {
+  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+}
+
+.nav-item:hover {
+  background-color: rgba(189, 97, 182, 0.7);
+}
+
+.nav-item img {
+  display: block;
+  width: 24px; /* Ajuste o tamanho dos ícones */
+  height: 24px;
+}
+
+/* Esconde o texto dos itens quando o menu está fechado */
+.sidebar-closed .nav-item span {
+  display: none;
+}
+
+.disabled-link {
+  opacity: 0.6; /* Opcional: visualização de que está desabilitado */
+}
+
+.nav-link {
+  width: 100%;
+  text-decoration: none;
+  color: white;
+  display: flex;
+  justify-content: center; /* Centraliza quando fechado */
+}
+
+.sidebar-open .nav-link {
+  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+}
+
+.nav-link:visited,
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-item span {
+  color: white;
+}

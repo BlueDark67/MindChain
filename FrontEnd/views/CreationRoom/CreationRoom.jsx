@@ -6,6 +6,8 @@ import ButtonSimple from "../../src/components/buttonSimple/buttonSimple";
 import { handleErros, validateRoomForm, getRandomTheme } from "../../public/js/CreationRoom.js";
 import './CreationRoom.css';
 import '../Global.css';
+import Sidebar from '../../src/components/Menu/Menu.jsx';
+
 
 
 function CreationRoom() {
@@ -79,6 +81,7 @@ function CreationRoom() {
       
   return (
     <div>
+      <Sidebar/>
       <h1 className="h1-create">Creation Room</h1>
       <form className="creation-room-form-inputs" method="POST" onSubmit={handleSubmit}>
         <div className="creation-room-form">

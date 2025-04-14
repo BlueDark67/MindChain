@@ -73,9 +73,9 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
             const json = await res.json();
             console.log("Login response:", json); // depois eliminar
             setIsAuthenticated(json.isAuthenticated);
-            if(!isAuthenticated){
+            if(!json.isAuthenticated){
                 setErrorMessage("Invalid credentials"); 
-            }
+            }   
             changePage(json.view);
         } catch (err) {
             console.error("Login error:",err);

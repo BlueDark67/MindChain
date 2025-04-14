@@ -18,7 +18,7 @@ function EmailSent(){
     return (
         <div className='center'>
             <div className='container'>
-                <img src={MindChain} alt="Logo" className='logo' />
+                <img src={MindChain} alt="Logo" className='logo-invite' />
                 <img src={Email} alt="Email" className='email' />
                 <h1>Check your email!</h1>
                 <span>We just emailed you with instructions to reset your password!</span>

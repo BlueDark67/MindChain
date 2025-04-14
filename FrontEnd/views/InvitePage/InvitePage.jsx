@@ -6,6 +6,8 @@ import Clipboard from "../../public/Clipboard.png";
 import ButtonSimple from "../../src/components/buttonSimple/buttonSimple";
 import "./InvitePage.css"
 import "../Global.css"
+import Sidebar from '../../src/components/Menu/Menu.jsx';
+
 
 function InvitePage(){
     const { roomId } = useParams();
@@ -108,6 +110,8 @@ function InvitePage(){
 
 
     return(
+      <div>
+        <Sidebar/>
         <div className="center-invite">
             <h1>Invite your friends or colleagues to brainstorm</h1>
             <h2>Invite by email or give them the code</h2>
@@ -139,7 +143,9 @@ function InvitePage(){
                 <img src={Clipboard} alt="Clipboard" className="clipboard-img" onClick={copyRoomCodeToClipboard} />
             </div>
             <ButtonSimple text="Enter session room" variant ="grey_purple" size = "w400h90" />
-        </div>
+        </div>       
+      </div>
+
     );
 }
 
