@@ -12,6 +12,7 @@ import PrivateRoute from "./PrivateRoute.jsx";
 import CreationRoom from "../views/CreationRoom/CreationRoom.jsx";
 import InvitePage from "../views/InvitePage/InvitePage.jsx";
 import UnlockRoom from "../views/UnlockRoom/UnlockRoom.jsx";
+import LogOut from "../views/UserRelatedPage/Logout/LogOut.jsx";
 
 function App(){
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -36,6 +37,7 @@ function App(){
                     <Route path="/create-room" element={<CreationRoom />} />
                     <Route path="/invite/:roomId" element={<InvitePage />} />
                     <Route path="/unlock-room/:roomId" element={<UnlockRoom />} />
+                    <Route path="/logout" element={<LogOut setIsAuthenticated={setIsAuthenticated} />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
