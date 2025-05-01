@@ -1,6 +1,8 @@
 import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
+import passport from "passport"; //adicionei tbm isto
+
 
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
@@ -12,6 +14,23 @@ const __dirname = path.dirname(__filename);
 const UserModel = require("../models/userModel").default;
 
 var nodemailer = require("nodemailer");
+
+//Foi adicionado aqui
+const login = function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) { return res.json({ view: "login", isAuthenticated: false }); }
+    
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.json({ view: "home", isAuthenticated: true });
+    });
+  })(req, res, next);
+};
+//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost 
+// para ver se ha alteraçoes
+
+
 
 const userGet = function (req, res) {
   res.json({ view: "signup" });
@@ -101,6 +120,7 @@ export default {
   userPost,
   loginGet,
   logout,
+  login, // Foi adicionado aqui
   sendEmailResetPassword,
   loginFail,
 };

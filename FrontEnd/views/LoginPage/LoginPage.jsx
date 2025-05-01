@@ -53,12 +53,13 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
             setLoading(false);
             return;
         }
-
+        /*
         const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
             
         const requestBody = {[loginType]: loginIdentifier, password: password};
+        */
+        const requestBody = { username: loginIdentifier, password: password };
 
-        
 
         try {
             const res = await fetch("http://localhost:3000/login", {
