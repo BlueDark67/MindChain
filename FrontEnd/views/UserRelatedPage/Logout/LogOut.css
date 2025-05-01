@@ -1,0 +1,32 @@
+.containerLogout {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+.logout {
+    color: #A37E07;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: -20px;
+    text-align: center;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+.cancel-button,.logout-button {
+    margin: 10px 30px;
+    padding: 15px 30px;
+    border-radius: 20px;
+    color: #A37E07;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #A37E07; 
+    background-color: transparent; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .cancel-button:hover, .logout-button:hover {
+        background-color: #A37E07; /* Fundo muda ao passar o mouse */
+        color: #fff; /* Texto branco ao passar o mouse */
+    }
