@@ -46,7 +46,7 @@ MindChain is a DBW-based brainstorming tool designed to simplify collaborative i
       cd ../BackEnd
       ```
 
-5. **Launch the Server**
+5. **Launch the Server in both directorys**
     - Start the development server:
       ```
       npm run dev
