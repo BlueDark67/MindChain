@@ -3,7 +3,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import passport from "passport"; //adicionei tbm isto
 
-
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
@@ -16,21 +15,32 @@ const UserModel = require("../models/userModel").default;
 var nodemailer = require("nodemailer");
 
 //Foi adicionado aqui
-const login = function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.json({ view: "login", isAuthenticated: false }); }
-    
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      return res.json({ view: "home", isAuthenticated: true });
+const login = function (req, res, next) {
+  passport.authenticate("local", function (err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({
+        view: "login",
+        isAuthenticated: false,
+      });
+    }
+
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      return res.json({
+        view: "home",
+        isAuthenticated: true,
+        userId: user._id,
+      });
     });
   })(req, res, next);
 };
-//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost 
+//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost
 // para ver se ha alteraçoes
-
-
 
 const userGet = function (req, res) {
   res.json({ view: "signup" });

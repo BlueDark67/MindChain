@@ -37,6 +37,20 @@
     height: 50px;
 }
 
+.purple_dark{
+    background: linear-gradient(
+        #3D093D 0%,
+        rgba(37,22,57, 0.25) 100%
+    );
+    color: white;
+    border-radius: 30px;
+}
+
+.purple_dark:hover{
+    background-color: #654A65;
+    
+}
+
 .grey_purple{
     background: linear-gradient(
         #382B38 0%,

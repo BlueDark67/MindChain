@@ -169,10 +169,24 @@ const enterRoom = async (req, res) => {
   }
 };
 
+const fetchHistory = async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const rooms = await roomModel
+      .find({ users: userId })
+      .populate("users", "username");
+
+    res.json(rooms);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   roomPost,
   readFile,
   getRoomCode,
   sendEmailInviteRoom,
   enterRoom,
+  fetchHistory,
 };

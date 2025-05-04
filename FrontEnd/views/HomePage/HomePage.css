@@ -7,7 +7,7 @@ h1{
 .buttonGroupTop{
   display: flex;  
   flex-direction: column;
-  gap: 10px;
+  gap: 25px;
   justify-content: center;
   align-items: center;
 }
@@ -15,8 +15,6 @@ h1{
 .home-container {
   display: flex;
   width: 100%;
-  min-height: 100vh;
-
 }
 
 .content-container {
@@ -24,3 +22,11 @@ h1{
   flex: 1;
   padding: 20px;
 }
+
+.chatrooms-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* ajuste conforme necessário */
+
+}
+

@@ -8,12 +8,14 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
          #4E104D 0%,
          #000000 100%
       );
-      height: 100vh;
+      min-height: 100vh;
       width: 100vw;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       font-family: "Inter-Regular", sans-serif;
       color: white;
+
 }
 
 .gradient_background_BPB{
@@ -64,3 +66,5 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+
