@@ -108,7 +108,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
         if (isAuthenticated && sessionStorage.getItem('authenticated') === 'true') {
             navigate('/home', { replace: true });
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,23 +1,23 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import PrivateRoute from '../PrivateRoute';
+import PrivateRoute from './PrivateRoute';
 
 // Páginas públicas
-import LoginPage from '../../views/LoginPage/LoginPage';
-import SignUp from '../../views/SignUp/SignUp';
-import ForgotPassword from '../../views/ForgotPassword/ForgotPassword';
-import EmailSent from '../../views/EmailSent/EmailSent';
-import ResetPassword from '../../views/ResetPassword/ResetPassword';
-import NotFound from '../../views/NotFound/NotFound';
+import LoginPage from '../views/LoginPage/LoginPage';
+import SignUp from '../views/SignUp/SignUp';
+import ForgotPassword from '../views/ForgotPassword/ForgotPassword';
+import EmailSent from '../views/EmailSent/EmailSent';
+import ResetPassword from '../views/ResetPassword/ResetPassword';
+import NotFound from '../views/NotFound/NotFound';
 
 // Páginas privadas
-import HomePage from '../../views/HomePage/HomePage';
-import PersonalData from '../../views/UserRelatedPage/Personaldata/PersonalData';
-import CreationRoom from '../../views/CreationRoom/CreationRoom';
-import InvitePage from '../../views/InvitePage/InvitePage';
-import UnlockRoom from '../../views/UnlockRoom/UnlockRoom';
-import LogOut from '../../views/UserRelatedPage/Logout/LogOut';
-import Chatroom from '../../views/ChatRoom/Chatroom';
+import HomePage from '../views/HomePage/HomePage';
+import PersonalData from '../views/UserRelatedPage/Personaldata/PersonalData';
+import CreationRoom from '../views/CreationRoom/CreationRoom';
+import InvitePage from '../views/InvitePage/InvitePage';
+import UnlockRoom from '../views/UnlockRoom/UnlockRoom';
+import LogOut from '../views/UserRelatedPage/Logout/LogOut';
+import Chatroom from '../views/ChatRoom/Chatroom';
 
 function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
   return (

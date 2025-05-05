@@ -4,7 +4,7 @@ import'../Global.css';
 import MindChain from "../../public/MindChain.png"
 import ButtonSubmit from "../../src/components/buttonSubmit/buttonSubmit.jsx";
 import { useNavigate } from 'react-router-dom';
-import { handleErros, isPasswordCriterionMet, validateForm,isEmail } from "../../public/js/SignUp.js";
+import { isPasswordCriterionMet, validateForm } from "../../public/js/SignUp.js";
 function SignUp(){
     {/*Constantes para o registo*/}
     const [username, setUsername] = useState("");
@@ -40,7 +40,13 @@ function SignUp(){
         setPage(page);
     }
     
-    
+    const handleErros = (res) => {
+        if (!res.ok) {
+            setIsSubmitting(false);
+            throw Error(res.status + " - " + res.url);
+        }
+        return res;
+    };
     
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "../public/js/useAuth";
 import Loading from "./components/Loading/Loading";
-import AppRoutes from "./routes/AppRoutes";
+import AppRoutes from "./AppRoutes.jsx";
 
 function App() {
   const { isAuthenticated, setIsAuthenticated, isLoading } = useAuth();
