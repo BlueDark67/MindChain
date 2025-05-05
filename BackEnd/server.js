@@ -16,6 +16,8 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const nodeMailer = require("nodemailer");
+const cookieParser = require("cookie-parser");
+
 
 import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
@@ -41,6 +43,41 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// Tente usar o cookie-parser sem opções primeiro
+app.use(require('cookie-parser')());
+
+// E use um middleware super simplificado
+// Substitua o middleware atual por esta versão simplificada
+// Adicione o middleware de autenticação automática AQUI
+app.use(async (req, res, next) => {
+  if (!req.isAuthenticated() && req.cookies.remember_token) {
+    try {
+      // Busca usuário com este token que ainda não expirou
+      const user = await User.findOne({
+        rememberToken: req.cookies.remember_token,
+        tokenExpires: { $gt: new Date() }
+      });
+      
+      if (user) {
+        // Faz login automático
+        req.logIn(user, function(err) {
+          if (err) return next(err);
+          next();
+        });
+      } else {
+        // Token inválido ou expirado, limpa o cookie
+        res.clearCookie('remember_token');
+        next();
+      }
+    } catch (err) {
+      console.error('Erro ao verificar token de autenticação:', err);
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
 
 app.use(userRoutes);
 app.use(roomRoutes);
@@ -75,3 +112,5 @@ server.listen(SERVER_PORT, (err) => {
     console.log(`url: localhost:${SERVER_PORT}`);
   }
 });
+
+

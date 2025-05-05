@@ -17,12 +17,38 @@ var nodemailer = require("nodemailer");
 
 //Foi adicionado aqui
 const login = function(req, res, next) {
+  // Verifica se o checkbox "rememberMe" foi enviado
+  const rememberMe = req.body.rememberMe || false;
+
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
     if (!user) { return res.json({ view: "login", isAuthenticated: false }); }
     
     req.logIn(user, function(err) {
       if (err) { return next(err); }
+
+      // Se "rememberMe" for true, cria uma sessão persistente
+      if (rememberMe) {
+        // Define o tempo da sessão para 30 dias em vez do padrão (geralmente algumas horas)
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 dias em milissegundos
+        // Gera um token de lembrete único
+        const crypto = require('crypto');
+        const rememberToken = crypto.randomBytes(64).toString('hex');
+        const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        
+        // Salva o token no banco de dados
+        UserModel.findByIdAndUpdate(user._id, {
+          rememberToken: rememberToken,
+          tokenExpires: expiry
+        }).catch(err => console.error('Erro ao salvar token:', err));
+        
+        // Define cookie seguro para o token
+        res.cookie('remember_token', rememberToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 30 * 24 * 60 * 60 * 1000
+        });
+      }
       return res.json({ view: "home", isAuthenticated: true });
     });
   })(req, res, next);
@@ -54,7 +80,19 @@ const loginFail = function (req, res) {
   res.json({ view: "login", isAuthenticated: false });
 };
 
-const logout = function (req, res) {
+const logout = function (req, res, next) {
+  // Limpa o token de remember_me do banco de dados
+  if (req.user) {
+    UserModel.findByIdAndUpdate(req.user._id, {
+      rememberToken: null,
+      tokenExpires: null
+    }).catch(err => console.error('Erro ao limpar token:', err));
+  }
+
+  // Limpa o cookie remember_token
+  res.clearCookie('remember_token');
+  
+  // Faz o logout padrão
   req.logout(function (err) {
     if (err) {
       return next(err);

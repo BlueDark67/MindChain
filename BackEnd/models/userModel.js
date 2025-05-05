@@ -9,6 +9,9 @@ var userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   birthdate: { type: Date, required: false },
   nationality: { type: String, required: false },
+  // Campos para lembrar o usuário
+  rememberToken: { type: String },
+  tokenExpires: { type: Date }
 });
 //alterei isto
 //Como é que querias que ele usasse o email se nao defenias isso
