@@ -17,6 +17,7 @@ function LogOut({ setIsAuthenticated }) {
 
     /*const handleLogout = () => {
         setIsAuthenticated(false); // Atualiza o estado global de autenticação
+        localStorage.clear(); // Limpa todos os dados do localStorage
         navigate("/login"); // Redireciona para a página de login
     };*/
 

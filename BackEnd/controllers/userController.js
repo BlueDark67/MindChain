@@ -3,7 +3,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import passport from "passport"; //adicionei tbm isto
 
-
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
@@ -16,16 +15,25 @@ const UserModel = require("../models/userModel").default;
 var nodemailer = require("nodemailer");
 
 //Foi adicionado aqui
-const login = function(req, res, next) {
+const login = function (req, res, next) {
   // Verifica se o checkbox "rememberMe" foi enviado
   const rememberMe = req.body.rememberMe || false;
 
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.json({ view: "login", isAuthenticated: false }); }
-    
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
+  passport.authenticate("local", function (err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({
+        view: "login",
+        isAuthenticated: false,
+      });
+    }
+
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
 
       // Se "rememberMe" for true, cria uma sessão persistente
       if (rememberMe) {
@@ -49,14 +57,16 @@ const login = function(req, res, next) {
           maxAge: 30 * 24 * 60 * 60 * 1000
         });
       }
-      return res.json({ view: "home", isAuthenticated: true });
+      return res.json({
+        view: "home",
+        isAuthenticated: true,
+        userId: user._id,
+      });
     });
   })(req, res, next);
 };
-//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost 
+//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost
 // para ver se ha alteraçoes
-
-
 
 const userGet = function (req, res) {
   res.json({ view: "signup" });

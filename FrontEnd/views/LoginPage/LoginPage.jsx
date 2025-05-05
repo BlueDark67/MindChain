@@ -4,7 +4,7 @@ import '../Global.css';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
-import { handleErros, validateForm, isEmail } from '../../public/js/LoginPage.js';
+import { handleErros, validateForm} from '../../public/js/LoginPage.js';
 import PasswordToggle from '../../src/components/passwordToggle/passwordToggle.jsx';
 import ButtonSubmit from '../../src/components/buttonSubmit/buttonSubmit.jsx';
 function LoginPage({setIsAuthenticated, isAuthenticated}) {
@@ -166,7 +166,8 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
 
             if(!json.isAuthenticated){
                 setErrorMessage("Invalid credentials"); 
-            }   
+            }  
+            localStorage.setItem("userId", json.userId); 
             changePage(json.view);
         } catch (err) {
             console.error("Login error:",err);

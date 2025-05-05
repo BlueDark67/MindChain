@@ -20,10 +20,10 @@ function CreationRoom() {
 
   useEffect(() => {
           document.title = "Create Room";
-          document.body.classList.add('gradient_background_BP');
+          document.body.classList.add('gradient_background_BP','allow_scroll');
   
           return () => {
-            document.body.classList.remove('gradient_background_BP');
+            document.body.classList.remove('gradient_background_BP','allow_scroll');
           }
   }, []);
 
@@ -78,7 +78,7 @@ function CreationRoom() {
       console.error(err);
     }
   }
-      
+       
   return (
     <div>
       <Sidebar/>
