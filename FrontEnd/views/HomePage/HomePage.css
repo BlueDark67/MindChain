@@ -30,3 +30,10 @@ h1{
 
 }
 
+.chatrooms-scroll-container > div > span, .chatrooms-scroll-container > div> div > span  {
+  display: block;
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
+  margin-bottom: 10px;
+}

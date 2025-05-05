@@ -75,6 +75,7 @@ function App(){
                     <Route path="/personal-data" element={<PersonalData />} />
                     <Route path="/create-room" element={<CreationRoom />} />
                     <Route path="/invite/:roomId" element={<InvitePage />} />
+                    <Route path="/unlock-room" element={<UnlockRoom />} />
                     <Route path="/unlock-room/:roomId" element={<UnlockRoom />} />
                     <Route path="/logout" element={<LogOut setIsAuthenticated={setIsAuthenticated} />} />
                 </Route>

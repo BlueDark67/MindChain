@@ -174,6 +174,7 @@ const fetchHistory = async (req, res) => {
   try {
     const rooms = await roomModel
       .find({ users: userId })
+      .sort({ createdAt: -1 })
       .populate("users", "username");
 
     res.json(rooms);
