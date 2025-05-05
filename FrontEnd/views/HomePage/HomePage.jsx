@@ -14,7 +14,7 @@ function InicialPage() {
     useEffect(() => {
         document.title = "HomePage";
 
-        document.body.classList.add('gradient_background_BP');
+        document.body.classList.add('gradient_background_BP', 'allow_scroll');
 
         const userID = localStorage.getItem("userId");
 
@@ -24,7 +24,7 @@ function InicialPage() {
         });
         
         return () => {
-            document.body.classList.remove('gradient_background_BP');
+            document.body.classList.remove('gradient_background_BP', 'allow_scroll');
         }
         
     }, []);

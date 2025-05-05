@@ -14,6 +14,8 @@ router.get("/logout", user.logout);
 
 router.post("/sendEmailResetPassword", user.sendEmailResetPassword);
 
+router.post("/resetPassword", user.resetPassword);
+
 router.get("/check-auth", (req, res) => {
   // req.isAuthenticated() é uma função do Passport que verifica se o usuário está autenticado
   if (req.isAuthenticated()) {
@@ -22,6 +24,5 @@ router.get("/check-auth", (req, res) => {
     res.json({ isAuthenticated: false });
   }
 });
-
 
 export default router;

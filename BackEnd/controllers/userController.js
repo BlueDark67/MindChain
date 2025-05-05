@@ -40,21 +40,21 @@ const login = function (req, res, next) {
         // Define o tempo da sessão para 30 dias em vez do padrão (geralmente algumas horas)
         req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 dias em milissegundos
         // Gera um token de lembrete único
-        const crypto = require('crypto');
-        const rememberToken = crypto.randomBytes(64).toString('hex');
+        const crypto = require("crypto");
+        const rememberToken = crypto.randomBytes(64).toString("hex");
         const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-        
+
         // Salva o token no banco de dados
         UserModel.findByIdAndUpdate(user._id, {
           rememberToken: rememberToken,
-          tokenExpires: expiry
-        }).catch(err => console.error('Erro ao salvar token:', err));
-        
+          tokenExpires: expiry,
+        }).catch((err) => console.error("Erro ao salvar token:", err));
+
         // Define cookie seguro para o token
-        res.cookie('remember_token', rememberToken, {
+        res.cookie("remember_token", rememberToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          maxAge: 30 * 24 * 60 * 60 * 1000
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 30 * 24 * 60 * 60 * 1000,
         });
       }
       return res.json({
@@ -95,13 +95,13 @@ const logout = function (req, res, next) {
   if (req.user) {
     UserModel.findByIdAndUpdate(req.user._id, {
       rememberToken: null,
-      tokenExpires: null
-    }).catch(err => console.error('Erro ao limpar token:', err));
+      tokenExpires: null,
+    }).catch((err) => console.error("Erro ao limpar token:", err));
   }
 
   // Limpa o cookie remember_token
-  res.clearCookie('remember_token');
-  
+  res.clearCookie("remember_token");
+
   // Faz o logout padrão
   req.logout(function (err) {
     if (err) {
@@ -118,6 +118,8 @@ const sendEmailResetPassword = async (req, res) => {
     if (!userFound) {
       return res.status(404).json({ error: "Email not found" });
     }
+
+    const userId = userFound._id.toString();
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -141,7 +143,7 @@ const sendEmailResetPassword = async (req, res) => {
         <p style="color: #555; text-align: center;">Seems like you forgot your password for Mindchain. If this is true, click below to change your password.</p>
         <div style="text-align: center;">
           <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-            <a href="http://localhost:5173/reset-password" style="text-decoration: none; color: white;">Reset Password</a>
+            <a href="http://localhost:5173/reset-password/${userId}" style="text-decoration: none; color: white;">Reset Password</a>
           </button>
         </div>
         <p style="color: #555; text-align: center;">If you didn't request this, please ignore this email.</p>
@@ -163,6 +165,27 @@ const sendEmailResetPassword = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { newPassword, userId } = req.body;
+
+  try {
+    const userFound = await UserModel.findById(userId);
+    if (!userFound) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    userFound.setPassword(newPassword, async (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Error setting new password" });
+      }
+      await userFound.save();
+      res.json({ view: "login" });
+    });
+  } catch (error) {
+    console.error("Error finding user:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -171,4 +194,5 @@ export default {
   login, // Foi adicionado aqui
   sendEmailResetPassword,
   loginFail,
+  resetPassword,
 };

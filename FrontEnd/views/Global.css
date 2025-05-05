@@ -12,7 +12,7 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
       width: 100vw;
       position: relative;
       overflow-x: hidden;
-      overflow-y: auto;
+      overflow-y: hidden;
       font-family: "Inter-Regular", sans-serif;
       color: white;
 
@@ -66,4 +66,6 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
     transform: translate(-50%, -50%);
 }
 
-
+.allow_scroll{
+    overflow-y: scroll !important;
+}

@@ -115,7 +115,7 @@ const sendEmailInviteRoom = async (req, res) => {
             <p style="color: #555; text-align: center;">Seems like you where invited by ${creator} to a brainstorming session. If this is true, click below to enter the session</p>
             <div style="text-align: center;">
             <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-              <a href="http://localhost:5173/unlock-room/${roomId}" style="text-decoration: none; color: white;">Enter session</a>
+              <a href="http://localhost:5173/chatroom/${roomId}" style="text-decoration: none; color: white;">Enter session</a>
             </button>
           </div>
           <p style="color: #555; text-align: center;">If you don't know who ${creator} is, please ignore this email.</p>
