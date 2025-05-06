@@ -191,7 +191,7 @@ export default {
   userPost,
   loginGet,
   logout,
-  login, // Foi adicionado aqui
+  login,
   sendEmailResetPassword,
   loginFail,
   resetPassword,

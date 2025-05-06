@@ -59,6 +59,7 @@ function CreationRoom() {
       theme: finalTheme,
       password: isPrivate ? passwordValue : null,
       time: sessionTimeValue,
+      isPrivate: isPrivate,
     }
 
     try {

@@ -12,12 +12,12 @@ const passport = require("passport");
 const session = require("express-session");
 const localStrategy = require("passport-local");
 import User from "./models/userModel.js";
+import roomModel from "./models/roomModel.js";
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const nodeMailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
-
 
 import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
@@ -44,7 +44,7 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // Tente usar o cookie-parser sem opções primeiro
-app.use(require('cookie-parser')());
+app.use(require("cookie-parser")());
 
 // E use um middleware super simplificado
 // Substitua o middleware atual por esta versão simplificada
@@ -55,29 +55,28 @@ app.use(async (req, res, next) => {
       // Busca usuário com este token que ainda não expirou
       const user = await User.findOne({
         rememberToken: req.cookies.remember_token,
-        tokenExpires: { $gt: new Date() }
+        tokenExpires: { $gt: new Date() },
       });
-      
+
       if (user) {
         // Faz login automático
-        req.logIn(user, function(err) {
+        req.logIn(user, function (err) {
           if (err) return next(err);
           next();
         });
       } else {
         // Token inválido ou expirado, limpa o cookie
-        res.clearCookie('remember_token');
+        res.clearCookie("remember_token");
         next();
       }
     } catch (err) {
-      console.error('Erro ao verificar token de autenticação:', err);
+      console.error("Erro ao verificar token de autenticação:", err);
       next();
     }
   } else {
     next();
   }
 });
-
 
 app.use(userRoutes);
 app.use(roomRoutes);
@@ -97,8 +96,17 @@ const server = http.createServer(app);
 
 mongoose
   .connect(url, { useUnifiedTopology: true, useNewUrlParser: true })
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB Connected");
+
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+    const result = await roomModel.updateMany(
+      { lastActivity: { $lt: twoDaysAgo }, isActive: true },
+      { isActive: false }
+    );
+    console.log(
+      `Salas inativas há mais de 2 dias foram encerradas: ${result.modifiedCount}`
+    );
   })
   .catch((err) => {
     console.log("MongoDB connection error:", err);
@@ -112,5 +120,3 @@ server.listen(SERVER_PORT, (err) => {
     console.log(`url: localhost:${SERVER_PORT}`);
   }
 });
-
-

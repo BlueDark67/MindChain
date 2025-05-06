@@ -31,7 +31,7 @@ function generateRandomCode(length) {
 }
 
 const roomPost = async function (req, res) {
-  const { theme, password, time } = req.body;
+  const { theme, password, time, isPrivate } = req.body;
   const code = generateRandomCode(6);
   const creatorId = req.user ? req.user._id : null;
   const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
@@ -42,6 +42,7 @@ const roomPost = async function (req, res) {
       time,
       password: hashedPassword,
       users: creatorId ? [creatorId] : [],
+      isPrivate: isPrivate,
     });
     res.json({ view: "invite", roomId: newRoom._id });
   } catch (error) {
