@@ -140,19 +140,17 @@ const sendEmailInviteRoom = async (req, res) => {
 };
 
 const enterRoom = async (req, res) => {
-  const { password, code, roomId } = req.body;
+  const { password, code } = req.body;
   try {
-    const room = await roomModel.findById(roomId);
+    // Busca a sala pelo código e ativa
+    const room = await roomModel.findOne({ code, isActive: true });
 
     if (!room) {
-      return res.status(404).json({ error: "Room not found" });
+      return res.json({ errorMessage: "Room not found or inactive" });
     }
 
-    if (room.code !== code) {
-      return res.status(401).json({ error: "Invalid code" });
-    }
-    if (room.password === null) {
-      return res.json({ view: "room" });
+    if (!room.isPrivate) {
+      return res.json({ view: `chatroom/${room._id}` });
     } else {
       if (!password) {
         return res.json({ isPrivate: true });
@@ -160,10 +158,10 @@ const enterRoom = async (req, res) => {
 
       const isMatch = await bcrypt.compare(password, room.password);
       if (!isMatch) {
-        return res.status(401).json({ error: "Incorrect password" });
+        return res.json({ errorMessage: "Incorrect password" });
       }
 
-      return res.json({ view: "room" });
+      return res.json({ view: `chatroom/${room._id}` });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
