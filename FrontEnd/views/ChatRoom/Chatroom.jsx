@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
@@ -50,39 +50,28 @@ const Chatroom = () => {
     const requestBody = {userId: userId, roomId: roomId, content: message};
 
     const handleSendMessage = async (e) => {
-        /*if (message.trim() !== "") {
-            const newMessage = {
-                id: Date.now(),
-                text: message,
-                user: "User1",
-                timestamp: new Date().toLocaleTimeString()
-            };
-            setMessages([...messages, newMessage]);
+        e.preventDefault();
+        try {
+            const res = await fetch("http://localhost:3000/save-message",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+            handleErros(res);
+
+            socket.emit("sendMessage", {
+                roomId: roomId,
+                content: message,
+                userId: userId
+            });
+
             setMessage("");
-        }*/
 
-            e.preventDefault();
-            try {
-                const res = await fetch("http://localhost:3000/save-message",{
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(requestBody),
-                });
-                handleErros(res);
-
-                socket.emit("sendMessage", {
-                    roomId: roomId,
-                    content: message,
-                    userId: userId
-                });
-
-                setMessage("");
-
-              } catch (err) {
-                console.error(err);
-              }
+        } catch (err) {
+            console.error(err);
+        }
     };
     
     const handleKeyPress = (e) => {
