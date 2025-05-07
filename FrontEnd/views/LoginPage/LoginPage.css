@@ -2,7 +2,12 @@
 
   
   /* Logo */
-  
+  .logo {
+    width: 300px;
+    margin-bottom: -10px;
+    margin-top: -15px;
+    padding-top: 0px;
+}
   
   
   .title {
@@ -147,10 +152,13 @@
   .password-field {
     position: relative;
     width: 330px; /* igual ao input */
-    margin: 100 px;
+  }
 
-    
-}
+  .error-message {
+    color: #ff3333;
+    margin-top: 10px;
+    font-size: 14px;
+  }
 
 
   

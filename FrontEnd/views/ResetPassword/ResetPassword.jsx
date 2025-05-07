@@ -6,12 +6,15 @@ import { useEffect } from 'react';
 import ButtonSimple from '../../src/components/buttonSimple/buttonSimple';
 import './ResetPassword.css';
 import '../Global.css';
+import PasswordToggle from '../../src/components/passwordToggle/passwordToggle';
 
 function ResetPassword(){
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const {userId} = useParams();
+    const [showPassword, setShowPassword] = useState(false);
+
     
 
     useEffect(() => {
@@ -63,23 +66,41 @@ function ResetPassword(){
         navigate("/" + page);
     }
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return(
         <div className='center'>
-            <div className='container'>
+            <div className='container-reset'>
                 <img src={MindChain} alt="Logo" className='logo' />
                 <img src={Reset} alt="Reset" className='reset' />
-                <h1>Reset your password</h1>
-                <span>What would you like to set as your new password??</span>
+                <h1 className='Text-reset'>Reset your password</h1>
                 <form className='resetPasswordForm' onSubmit={handleSubmit}>
-                    <span>New Password</span>
-                    <br />
-                    <input type="password" placeholder="Enter your new password" className='newPasswordInput' onChange={(e) => setNewPassword(e.target.value)}/>
-                    <br />
-                    <br />
-                    <span>Confirm Password</span>
-                    <br />
-                    <input type="password" placeholder="Confirm your new password" className='confirmPasswordInput' onChange={(e) => setConfirmPassword(e.target.value)}/>
-                    <br />
+                    <label htmlFor="newPassword">New Password</label>
+                    
+                    <div className='password-field-reset'>
+                        <input 
+                            type={showPassword ? "text" : "password"} 
+                            placeholder="Enter your new password" 
+                            className='newPasswordInput' 
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <PasswordToggle
+                            showPassword={showPassword}
+                            toggleVisibility={togglePasswordVisibility}
+                            />
+                    </div>
+                    
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    
+                        <input 
+                            type={showPassword ? "text" : "password"} 
+                            placeholder="Confirm your new password" 
+                            className='confirmPasswordInput' 
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+
                     {passwordError && <span className='error'>{passwordError}</span>}
                     <div className='middle'>
                     <ButtonSimple text = "Save" variant = "purple" size = "w200h20" className ="middle" />

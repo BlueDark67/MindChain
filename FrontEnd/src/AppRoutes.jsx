@@ -30,6 +30,7 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/email-sent" element={<EmailSent />} />
       <Route path="/reset-password/:userId" element={<ResetPassword />} />
+
       
       {/* Rotas privadas */}
       <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>

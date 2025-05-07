@@ -95,13 +95,18 @@ b:hover {
     color: #0d1260;
 }
 
-p {
-    font-size: 16px;
+/*ALTERA AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+I
+IIIIIIIIIIIIIIIIIIIIIIIII*/
+palgumacoisa {
+    font-size: 16px; 
     color: #555; 
     margin-bottom: 10px;
     line-height: 1.5; 
 }
 
-p:hover {
+palgumacoisa:hover {
     color: #222; 
 }
