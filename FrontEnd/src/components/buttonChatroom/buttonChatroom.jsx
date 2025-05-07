@@ -4,7 +4,7 @@ import "./buttonChatroom.css";
 function ButtonChatroom(props) {
   const participantsList = props.participantsList || [];
   return (
-    <button type="submit" className={`buttonChatroom ${props.variant} ${props.size}`}>
+    <button type="submit" onClick={props.onClick} className={`buttonChatroom ${props.variant} ${props.size}`}>
         <span className="buttonChatroom-theme">Theme: {props.theme}</span>
         <span className="buttonChatroom-participants">
             <span className="participants-label">Participants ({props.participants}):</span>
@@ -19,6 +19,7 @@ function ButtonChatroom(props) {
 }
 
 ButtonChatroom.propTypes = {
+    onClick: PropTypes.func,
     theme: PropTypes.string,
     participants: PropTypes.number,
     participantsList: PropTypes.arrayOf(PropTypes.string),

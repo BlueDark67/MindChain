@@ -2,6 +2,9 @@ import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+
+//const bcrypt = require("bcrypt");
+
 import fs from "fs";
 
 const require = createRequire(import.meta.url);
@@ -182,8 +185,18 @@ const fetchHistory = async (req, res) => {
   }
 };
 
-
-
+const fetchRoomInfo = async (req, res) => {
+  const roomId = req.body.roomId;
+  try {
+    const room = await roomModel.findById(roomId).populate("users", "username");
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+    res.json(room);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 export default {
   roomPost,
@@ -192,5 +205,5 @@ export default {
   sendEmailInviteRoom,
   enterRoom,
   fetchHistory,
-  
+  fetchRoomInfo,
 };

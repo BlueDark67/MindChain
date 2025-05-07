@@ -18,9 +18,12 @@ dotenv.config({ path: "./.env" });
 const bodyParser = require("body-parser");
 const nodeMailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
+import { Server } from "socket.io";
+//const { Server } = require("socket.io");
 
 import userRoutes from "./routes/userRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -80,6 +83,7 @@ app.use(async (req, res, next) => {
 
 app.use(userRoutes);
 app.use(roomRoutes);
+app.use(messageRoutes);
 
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -93,6 +97,17 @@ const url = `mongodb+srv://admin:${password}@cluster.zfsi1mr.mongodb.net/?retryW
 
 const SERVER_PORT = process.env.SERVER_PORT;
 const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+import socketServer from "./socketServerSide.js";
+socketServer(io);
 
 mongoose
   .connect(url, { useUnifiedTopology: true, useNewUrlParser: true })

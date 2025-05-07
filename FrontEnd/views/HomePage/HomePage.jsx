@@ -64,6 +64,7 @@ function InicialPage() {
                                 {grouped.today.map(room => (
                                     <ButtonChatroom
                                         key={room._id}
+                                        onClick={() => changePage(`chatroom/${room._id}`)}
                                         theme={room.theme}
                                         participants={room.users.length}
                                         participantsList={room.users.map(u => u.username)}
@@ -79,6 +80,7 @@ function InicialPage() {
                                 {grouped.thisWeek.map(room => (
                                 <ButtonChatroom
                                     key={room._id}
+                                    onClick={() => changePage(`chatroom/${room._id}`)}
                                     theme={room.theme}
                                     participants={room.users.length}
                                     participantsList={room.users.map(u => u.username)}
@@ -94,6 +96,7 @@ function InicialPage() {
                                 {grouped.lastWeek.map(room => (
                                     <ButtonChatroom
                                         key={room._id}
+                                        onClick={() => changePage(`chatroom/${room._id}`)}
                                         theme={room.theme}
                                         participants={room.users.length}
                                         participantsList={room.users.map(u => u.username)}
@@ -109,6 +112,7 @@ function InicialPage() {
                                 {grouped.lastMonth.map(room => (
                                     <ButtonChatroom
                                         key={room._id}
+                                        onClick={() => changePage(`chatroom/${room._id}`)}
                                         theme={room.theme}
                                         participants={room.users.length}
                                         participantsList={room.users.map(u => u.username)}
@@ -124,6 +128,7 @@ function InicialPage() {
                                 {rooms.map(room => (
                                     <ButtonChatroom
                                         key={room._id}
+                                        onClick={() => changePage(`chatroom/${room._id}`)}
                                         theme={room.theme}
                                         participants={room.users.length}
                                         participantsList={room.users.map(u => u.username)}
@@ -139,6 +144,7 @@ function InicialPage() {
                                 {rooms.map(room => (
                                     <ButtonChatroom
                                         key={room._id}
+                                        onClick={() => changePage(`chatroom/${room._id}`)}
                                         theme={room.theme}
                                         participants={room.users.length}
                                         participantsList={room.users.map(u => u.username)}

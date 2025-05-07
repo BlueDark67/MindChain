@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import passport from "passport"; //adicionei tbm isto
 
+//const passport = require("passport");
+
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });

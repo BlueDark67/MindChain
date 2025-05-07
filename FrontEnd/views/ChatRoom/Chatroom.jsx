@@ -1,21 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
+import { useParams } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble.jsx";
+import { fetchRoomInfo } from "../../public/js/Chatroom.js";
+import { io } from "socket.io-client";
+
+const socket = io("ws://localhost:3000")
 
 const Chatroom = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
-    const [timeLeft, setTimeLeft] = useState(10);
-    const [theme, setTheme] = useState("Farm Animals");
-    const currentUser = "User1"; // This could come from authentication context
+    const [timeLeft, setTimeLeft] = useState();
+    const [theme, setTheme] = useState("");
+    
+    const userId = localStorage.getItem("userId");
+    const roomId = useParams().roomId;
+    //const currentUser = "User1"; // This could come from authentication context
     
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
     
-    const handleSendMessage = () => {
-        if (message.trim() !== "") {
+    const handleErros = (res) => {
+        if (!res.ok) {
+            throw Error(res.status + " - " + res.url);
+        }
+        return res;
+      };
+    
+    const requestBody = {userId: userId, roomId: roomId, content: message};
+
+    const handleSendMessage = async (e) => {
+        /*if (message.trim() !== "") {
             const newMessage = {
                 id: Date.now(),
                 text: message,
@@ -24,7 +41,30 @@ const Chatroom = () => {
             };
             setMessages([...messages, newMessage]);
             setMessage("");
-        }
+        }*/
+
+            e.preventDefault();
+            try {
+                const res = await fetch("http://localhost:3000/save-message",{
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+                handleErros(res);
+
+                socket.emit("sendMessage", {
+                    roomId: roomId,
+                    content: message,
+                    userId: userId
+                });
+
+                setMessage("");
+
+              } catch (err) {
+                console.error(err);
+              }
     };
     
     const handleKeyPress = (e) => {
@@ -32,8 +72,28 @@ const Chatroom = () => {
             handleSendMessage();
         }
     };
+
+    useEffect(() => {
+        document.title = "Chat Room";
+        document.body.classList.add('gradient_background_BP');
+
+        fetchRoomInfo(roomId).then((data) => {
+            if(data){
+                setTheme(data.theme);
+                setTimeLeft(Number(data.time));
+            }else{
+                console.error("Error fetching room info - no data");
+            }
+        });
+        
+        return () => {
+            document.body.classList.remove('gradient_background_BP');
+        };
+    }, []);
     
     useEffect(() => {
+        if(timeLeft === undefined) return; // Exit if timeLeft is not set
+
         // On first mount, initialize the timer
         if (!localStorage.getItem("timerEndTime")) {
             const endTime = Date.now() + (timeLeft * 1000);
@@ -67,16 +127,26 @@ const Chatroom = () => {
         return () => clearInterval(timer);
     }, []); // Empty dependency array means this runs once on mount
 
-    
-    
+
     useEffect(() => {
-        document.title = "Chat Room";
-        document.body.classList.add('gradient_background_BP');
+        socket.emit("joinRoom", roomId);
         
+        socket.on("clientChat", (data) => {
+            const newMessage = {
+                id: Date.now(),
+                content: data.content,
+                userId: data.userId,
+                user: data.username,
+                timestamp: new Date().toLocaleTimeString()
+            };
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+        });
+
         return () => {
-            document.body.classList.remove('gradient_background_BP');
-        };
-    }, []);
+            socket.off("clientChat");
+            socket.emit("leaveRoom", roomId);
+        }
+    }, [roomId]); 
 
     return (
         <div className="page-container">
@@ -84,7 +154,7 @@ const Chatroom = () => {
                 <h1 className="theme-title">Theme: {theme}</h1>
                 <div className="timer">Time left: {timeLeft} s</div>
             </div>
-            
+
             {/* Messages container separated from input area */}
             <div className="chatroom-container">
                 <div className="messages-container">
@@ -94,8 +164,8 @@ const Chatroom = () => {
                         messages.map((msg) => (
                             <MessageBubble 
                                 key={msg.id} 
-                                message={msg} 
-                                isCurrentUser={msg.user === currentUser}
+                                message ={msg}
+                                isCurrentUser={msg.userId === userId}// Assuming userId is the current user's ID
                             />
                         ))
                     )}

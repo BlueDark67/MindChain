@@ -10,4 +10,5 @@ router.get("/room-code/:roomId", room.getRoomCode);
 router.post("/sendEmailInviteRoom", room.sendEmailInviteRoom);
 router.post("/enter-room", room.enterRoom);
 router.post("/fetch-history", room.fetchHistory);
+router.post("/fetch-room-info", room.fetchRoomInfo);
 export default router;

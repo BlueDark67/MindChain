@@ -9,7 +9,7 @@ const MessageBubble = ({ message, isCurrentUser }) => {
         <span className="message-time">{message.timestamp}</span>
       </div>
       <div className="message-content">
-        <p>{message.text}</p>
+        <p>{message.content}</p>
       </div>
     </div>
   );
