@@ -39,7 +39,7 @@
     width: 100%;
     max-width: 800px;
     height: 60vh; /* Reduced height to make room for separate input area */
-    background: rgba(185, 182, 181, 0.8);
+    background: rgba(238, 238, 238, 0.8);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;

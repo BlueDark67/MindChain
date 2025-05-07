@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./Chatroom.css";
 import '../Global.css';
+import MessageBubble from "../../src/components/messageBubble/messageBubble.jsx";
 
 const Chatroom = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [timeLeft, setTimeLeft] = useState(10);
     const [theme, setTheme] = useState("Farm Animals");
+    const currentUser = "User1"; // This could come from authentication context
     
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
@@ -90,11 +92,11 @@ const Chatroom = () => {
                         <p className="no-messages">No messages yet. Start the conversation!</p>
                     ) : (
                         messages.map((msg) => (
-                            <div key={msg.id} className="message-item">
-                                <span className="message-user">{msg.user}: </span>
-                                <span className="message-text">{msg.text}</span>
-                                <span className="message-time">{msg.timestamp}</span>
-                            </div>
+                            <MessageBubble 
+                                key={msg.id} 
+                                message={msg} 
+                                isCurrentUser={msg.user === currentUser}
+                            />
                         ))
                     )}
                 </div>
