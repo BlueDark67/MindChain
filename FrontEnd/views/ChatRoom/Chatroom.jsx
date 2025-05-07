@@ -1,15 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Chatroom.css";
 import '../Global.css';
-import MessageBubble from "../../src/components/messageBubble/messageBubble.jsx";
+import MessageBubble from "../../src/components/messageBubble/messageBubble";
+import Button from "../../src/components/button/Button";
 
 const Chatroom = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [timeLeft, setTimeLeft] = useState(10);
     const [theme, setTheme] = useState("Farm Animals");
-    const currentUser = "User1"; // This could come from authentication context
+    const currentUser = "User1";
     
+    // Trocar a referência do elemento final para o container de mensagens
+    const messagesContainerRef = useRef(null);
+    
+    // Função para fazer scroll até o final usando scrollTop em vez de scrollIntoView
+    const scrollToBottom = () => {
+        if (messagesContainerRef.current) {
+            const { scrollHeight, clientHeight } = messagesContainerRef.current;
+            messagesContainerRef.current.scrollTop = scrollHeight - clientHeight;
+        }
+    };
+    
+    // UseEffect para scroll quando mensagens mudam
+    useEffect(() => {
+        setTimeout(scrollToBottom, 10); // Pequeno atraso para garantir renderização completa
+    }, [messages]);
+    
+    // Suas funções existentes...
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
@@ -85,9 +103,9 @@ const Chatroom = () => {
                 <div className="timer">Time left: {timeLeft} s</div>
             </div>
             
-            {/* Messages container separated from input area */}
             <div className="chatroom-container">
-                <div className="messages-container">
+                {/* Aplicar a ref ao container de mensagens, não a um elemento no final */}
+                <div className="messages-container" ref={messagesContainerRef}>
                     {messages.length === 0 ? (
                         <p className="no-messages">No messages yet. Start the conversation!</p>
                     ) : (
@@ -99,10 +117,11 @@ const Chatroom = () => {
                             />
                         ))
                     )}
+                    {/* Não é mais necessário div adicional no final */}
                 </div>
             </div>
             
-            {/* Input area as a separate component */}
+            {/* Input area */}
             <div className="input-container">
                 <input
                     type="text"
@@ -112,12 +131,12 @@ const Chatroom = () => {
                     onChange={handleMessageChange}
                     onKeyPress={handleKeyPress}
                 />
-                <button 
+                <Button 
                     className="send-button"
                     onClick={handleSendMessage}
                 >
                     Send
-                </button>
+                </Button>
             </div>
         </div>
     );
