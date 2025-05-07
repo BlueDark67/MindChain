@@ -145,7 +145,6 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
             });
             handleErros(res);
             const json = await res.json();
-            console.log("Login response:", json); // depois eliminar
             setIsAuthenticated(json.isAuthenticated);
 
                 // Salva ou remove os dados com base no checkbox "lembrar-me"

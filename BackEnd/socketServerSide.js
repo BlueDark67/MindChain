@@ -2,11 +2,8 @@ import userModel from "./models/userModel.js";
 
 export default function (io) {
   io.on("connection", function (socket) {
-    console.log("A user connected: " + socket.id);
-
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
-      console.log("User joined room: " + roomId);
     });
 
     socket.on("sendMessage", async function (data) {
