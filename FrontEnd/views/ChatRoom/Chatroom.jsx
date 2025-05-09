@@ -23,6 +23,7 @@ const Chatroom = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [chatStarted, setChatStarted] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [chatSynced, setChatSynced] = useState(false);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -97,14 +98,10 @@ const Chatroom = () => {
             if(data){
                 setTheme(data.theme);
                 setTime(Number(data.time));
-                setTimeLeft(Number(data.time));
+                //setTimeLeft(Number(data.time));
                 if(data.users[0]._id === userId){
                     setIsCreator(true);
-                }
-                if (Number(data.time) === -1) {
-                    setElapsedTime(0);
-                }
-            
+                }            
             }else{
                 console.error("Error fetching room info - no data");
             }
@@ -130,13 +127,17 @@ const Chatroom = () => {
         function handleChatStarted({ start, duration }) {
             setCanSend(false);
             if (duration === -1) {
-                setElapsedTime(0);
+                const elapsed = Math.floor((Date.now() - start) / 1000);
+                setElapsedTime(elapsed >= 0 ? elapsed : 0);
                 setChatStarted(true);
             } else {
-                setEndTime(start + duration * 1000);
-                setTimeLeft(duration);
+                const end = start + duration * 1000;
+                setEndTime(end);
+                const secondsLeft = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+                setTimeLeft(secondsLeft);
                 setChatStarted(false);
             }
+            setChatSynced(true);
         }
 
         socket.on("chatStarted", handleChatStarted);
@@ -210,20 +211,6 @@ const Chatroom = () => {
         };
     }, [time, isCreator, roomId, socket]);
 
-    useEffect(() => {
-        function handleChatStarted({ start, duration }) {
-            setCanSend(false);
-            setEndTime(start + duration * 1000);
-            setTimeLeft(duration);
-        }
-
-        socket.on("chatStarted", handleChatStarted);
-
-        return () => {
-            socket.off("chatStarted", handleChatStarted);
-        };
-    }, [socket]);
-
     function getStartStopText() {
         if (time === -1) {
             // Ilimitado: se o chat já começou, mostra Stop, senão Start
@@ -248,13 +235,19 @@ const Chatroom = () => {
                     <h1 className="theme-title">Theme: {theme}</h1>
                     <div className={isCreator ? "creator-container" : "non-creator-container"}>
                         <div className="timer">
-                            {time === -1
-                                ? `Elapsed time: ${Math.floor(elapsedTime / 60)
-                                    .toString()
-                                    .padStart(2, '0')}:${(elapsedTime % 60)
-                                    .toString()
-                                    .padStart(2, '0')} min`
-                                : `Time left: ${timeLeft} s`}
+                            {chatSynced ? (
+                                time === -1
+                                    ? `Elapsed time: ${Math.floor(elapsedTime / 60)
+                                        .toString()
+                                        .padStart(2, '0')}:${(elapsedTime % 60)
+                                        .toString()
+                                        .padStart(2, '0')} min`
+                                    : `Time left: ${timeLeft} s`
+                            ) : (
+                                time === -1
+                                    ? `Elapsed time: 00:00 min`
+                                    : `Time left: ${time} s`
+                            )}
                         </div>
                         {isCreator && (
                             (time === -1 || canSend) && (

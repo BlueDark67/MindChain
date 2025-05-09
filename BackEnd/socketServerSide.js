@@ -1,9 +1,17 @@
 import userModel from "./models/userModel.js";
 
+const roomStates = {};
+
 export default function (io) {
   io.on("connection", function (socket) {
     socket.on("joinRoom", (roomId) => {
       socket.join(roomId);
+      if (roomStates[roomId]?.started) {
+        socket.emit("chatStarted", {
+          start: roomStates[roomId].start,
+          duration: roomStates[roomId].duration,
+        });
+      }
     });
 
     socket.on("startPreCountdown", ({ roomId }) => {
@@ -11,10 +19,7 @@ export default function (io) {
     });
 
     socket.on("startChatNow", ({ roomId, start, duration }) => {
-      io.to(roomId).emit("chatStarted", { start, duration });
-    });
-
-    socket.on("startChatNow", ({ roomId, start, duration }) => {
+      roomStates[roomId] = { started: true, start, duration };
       io.to(roomId).emit("chatStarted", { start, duration });
     });
 
