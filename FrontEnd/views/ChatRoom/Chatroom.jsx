@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
+import ButtonSimple from "../../src/components/buttonSimple/ButtonSimple";
 import Button from "../../src/components/button/Button";
 import { fetchRoomInfo } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
@@ -14,6 +15,9 @@ const Chatroom = () => {
     const [messages, setMessages] = useState([]);
     const [timeLeft, setTimeLeft] = useState();
     const [theme, setTheme] = useState("");
+    const [isCreator, setIsCreator] = useState(false);
+    const [endTime, setEndTime] = useState(null);
+    const[time, setTime] = useState(null);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -87,7 +91,11 @@ const Chatroom = () => {
         fetchRoomInfo(roomId).then((data) => {
             if(data){
                 setTheme(data.theme);
+                setTime(Number(data.time));
                 setTimeLeft(Number(data.time));
+                if(data.users[0]._id === userId){
+                    setIsCreator(true);
+                }
             }else{
                 console.error("Error fetching room info - no data");
             }
@@ -96,44 +104,21 @@ const Chatroom = () => {
         return () => {
             document.body.classList.remove('gradient_background_BP');
         };
-    }, []);
+    }, [roomId]);
     
     useEffect(() => {
-        if(timeLeft === undefined) return; // Exit if timeLeft is not set
-
-        // On first mount, initialize the timer
-        if (!localStorage.getItem("timerEndTime")) {
-            const endTime = Date.now() + (timeLeft * 1000);
-            localStorage.setItem("timerEndTime", endTime.toString());
-        }
+        if (!endTime) return;
     
-        // Calculate remaining time based on stored end time
-        const calculateTimeRemaining = () => {
-            const endTime = localStorage.getItem("timerEndTime");
-            if (!endTime) return 0;
-            
-            const remaining = Math.max(0, Math.floor((parseInt(endTime) - Date.now()) / 1000));
-            return remaining;
-        };
-    
-        // Set initial remaining time
-        setTimeLeft(calculateTimeRemaining());
-        
-        // Update timer every second
-        const timer = setInterval(() => {
-            const remaining = calculateTimeRemaining();
-            
-            if (remaining <= 0) {
-                clearInterval(timer);
-                localStorage.removeItem("timerEndTime"); // Clear timer when done
-            }
-            
-            setTimeLeft(remaining);
+        const interval = setInterval(() => {
+            const now = Date.now();
+            const secondsLeft = Math.max(0, Math.ceil((endTime - now) / 1000));
+            setTimeLeft(secondsLeft);
+            if (secondsLeft <= 0) clearInterval(interval);
         }, 1000);
-        
-        return () => clearInterval(timer);
-    }, []); // Empty dependency array means this runs once on mount
-
+    
+        return () => clearInterval(interval);
+    }, [endTime]);
+    
 
     useEffect(() => {
         socket.emit("joinRoom", roomId);
@@ -155,24 +140,37 @@ const Chatroom = () => {
         }
     }, [roomId]); 
 
+    const startChat = () => {
+        const start = Date.now();
+        const end = start + time * 1000;
+        setEndTime(end);
+        setTimeLeft(time);
+    }
+
+
     return (
         <div className="page-container">
             <div className="header-section">
                 <h1 className="theme-title">Theme: {theme}</h1>
-                <div className="timer">Time left: {timeLeft} s</div>
+                <div className={isCreator ? "creator-container" : "non-creator-container"}>
+                    <div className="timer">Time left: {timeLeft} s</div>
+                    {isCreator  && <ButtonSimple onClick={startChat} text="Start" variant = "grey_purple" size = "w90h47"/>}
+                </div>  
             </div>
 
             <div className="chatroom-container">
                 {/* Aplicar a ref ao container de mensagens, não a um elemento no final */}
                 <div className="messages-container" ref={messagesContainerRef}>
                     {messages.length === 0 ? (
-                        <p className="no-messages">No messages yet. Start the conversation!</p>
+                        isCreator
+                            ? <p className="no-messages">Press start to begin the conversation!</p>
+                            : <p className="no-messages">No messages yet. Start the conversation!</p>
                     ) : (
                         messages.map((msg) => (
                             <MessageBubble 
                                 key={msg.id} 
-                                message ={msg}
-                                isCurrentUser={msg.userId === userId}// Assuming userId is the current user's ID
+                                message={msg}
+                                isCurrentUser={msg.userId === userId}
                             />
                         ))
                     )}

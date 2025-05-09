@@ -151,7 +151,6 @@ const enterRoom = async (req, res) => {
       return res.json({ errorMessage: "Room not found or inactive" });
     }
 
-    // Verifica se o usuário já está na sala
     const user = await userModel.findOne({ userId: userId });
     if (!user) {
       room.users.push(userId);
