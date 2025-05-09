@@ -6,6 +6,18 @@ export default function (io) {
       socket.join(roomId);
     });
 
+    socket.on("startPreCountdown", ({ roomId }) => {
+      io.to(roomId).emit("preCountdown");
+    });
+
+    socket.on("startChatNow", ({ roomId, start, duration }) => {
+      io.to(roomId).emit("chatStarted", { start, duration });
+    });
+
+    socket.on("startChatNow", ({ roomId, start, duration }) => {
+      io.to(roomId).emit("chatStarted", { start, duration });
+    });
+
     socket.on("sendMessage", async function (data) {
       const user = await userModel.findById(data.userId);
       const toClient = {
