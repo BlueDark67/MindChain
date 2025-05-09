@@ -13,10 +13,12 @@ function UnlockRoom(){
     const [passwordValue, setPasswordValue] = useState("");
     const [code, setCode] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const userId = localStorage.getItem("userId");
 
     const requestBody = {
         code:code,
         password: passwordValue,
+        userId: userId,
     }
 
     useEffect(() => {

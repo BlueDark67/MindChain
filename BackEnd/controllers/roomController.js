@@ -17,8 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const roomModel = require("../models/roomModel").default;
-
-import user from "../controllers/userController.js";
+const userModel = require("../models/userModel").default;
 
 var nodemailer = require("nodemailer");
 
@@ -143,13 +142,20 @@ const sendEmailInviteRoom = async (req, res) => {
 };
 
 const enterRoom = async (req, res) => {
-  const { password, code } = req.body;
+  const { password, code, userId } = req.body;
   try {
     // Busca a sala pelo código e ativa
     const room = await roomModel.findOne({ code, isActive: true });
 
     if (!room) {
       return res.json({ errorMessage: "Room not found or inactive" });
+    }
+
+    // Verifica se o usuário já está na sala
+    const user = await userModel.findOne({ userId: userId });
+    if (!user) {
+      room.users.push(userId);
+      await room.save();
     }
 
     if (!room.isPrivate) {
