@@ -5,7 +5,7 @@ import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
 import ButtonSimple from "../../src/components/buttonSimple/ButtonSimple";
 import Button from "../../src/components/button/Button";
-import { fetchMessages, fetchRoomInfo } from "../../public/js/Chatroom.js";
+import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
 
 
@@ -27,6 +27,7 @@ const Chatroom = () => {
     const [chatSynced, setChatSynced] = useState(false);
     const [pausedTime, setPausedTime] = useState(null);
     const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+    const [information, setInformation] = useState(null);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -240,28 +241,14 @@ const Chatroom = () => {
     }
 
     function handleContinueChat() {
-        if (time !== -1) {
-            // Limitado: retoma o tempo
-            if (pausedTime && pausedTime > 0) {
-                const newEndTime = Date.now() + pausedTime * 1000;
-                setEndTime(newEndTime);
-                setCanSend(false);
-                setChatStarted(true);
-                socket.emit("continueChat", { roomId, endTime: newEndTime });
-                setPausedTime(null);
-            }
-        } else {
-            // Ilimitado: apenas retoma o chat
             setCanSend(false);
             setChatStarted(true);
             setPausedTime(null);
             socket.emit("continueChat", { roomId });
-        }
     }
 
     useEffect(() => {
-        function handleChatContinued({ endTime }) {
-            setEndTime(endTime);
+        function handleChatContinued() {
             setCanSend(false);
             setChatStarted(true);
             setPausedTime(null);
@@ -293,13 +280,70 @@ const Chatroom = () => {
         setShowRestartConfirm(false);
     }
 
+    const handleConfirmRestart = () => {
+        setLoading(true);
+        setShowRestartConfirm(false);
+        setMessages([]);
+        setElapsedTime(0);
+        setChatStarted(false);
+        setPausedTime(null); 
+        setCanSend(true);
+        setChatSynced(false);
+        restartRoom(roomId)
+            .then((data) => {
+                if (data && data.deleted) {
+                    socket.emit("restartRoom", { roomId });
+                    setLoading(false);
+                    setInformation(true);
+                    socket.emit("showResetInfo", { roomId });
+                    setTimeout(() => setInformation(false), 3000);
 
+                } else {
+                    console.error("Error restarting room - no data");
+                    setLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error("Error restarting room:", error);
+            });
+    }
+
+    useEffect(() => {
+        function handleShowResetInfo() {
+            setInformation(true);
+            setTimeout(() => setInformation(false), 3000); // ou o tempo que quiseres
+        }
+        socket.on("showResetInfo", handleShowResetInfo);
+        return () => socket.off("showResetInfo", handleShowResetInfo);
+    }, []);
+
+    useEffect(() => {
+        function handleRoomRestarted() {
+            setMessages([]);
+            setElapsedTime(0);
+            setChatStarted(false);
+            setPausedTime(null);
+            setCanSend(true);
+            setChatSynced(false);
+            setEndTime(null);
+            setShowRestartConfirm(false);
+        }
+        socket.on("roomRestarted", handleRoomRestarted);
+        return () => socket.off("roomRestarted", handleRoomRestarted);
+    }, []);
 
     if(loading){
         return (
             <div className="loading-container-chat">
                 <div className="spinner-chat"></div>
                 <h2>Loading...</h2>
+            </div>
+        );
+    }else if (information) {
+        return (
+            <div className="loading-container-chat">
+                <div className="spinner-chat"></div>
+                <h2>Reset in progress: all content will be erased</h2>
             </div>
         );
     }else{
@@ -345,7 +389,7 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Continue aparece quando chat está parado, há tempo restante e não está em modo ilimitado */}
-                                {time ==-1 && !chatStarted && pausedTime && (
+                                {time === -1 && !chatStarted && pausedTime && (
                                     <ButtonSimple
                                         onClick={handleContinueChat}
                                         text="Continue"
@@ -355,10 +399,18 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Restart (opcional) */}
-                                {!chatStarted && canSend && (
+                                {time === -1 && !chatStarted && (canSend ||pausedTime) && (
                                     <ButtonSimple
                                         onClick={handleRestart}
                                         text="Restart"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                    />
+                                )}
+
+                                {time === -1 && !chatStarted && (canSend || pausedTime) && (
+                                    <ButtonSimple
+                                        text="Finish"
                                         variant="grey_purple"
                                         size="w90h47"
                                     />
@@ -374,8 +426,8 @@ const Chatroom = () => {
                             <div className="modal-confirm">
                                 <p>This will erase the chatroom history. Are you sure that you want to restart the room? </p>
                                 <div className="modal-buttons">
-                                    <ButtonSimple text = "I'm sure, restart" variant="grey_purple" size="w180h47"/>
-                                    <ButtonSimple onClick= {handleCancelRestart} text = "Cancel"  variant="grey_purple" size="w90h47" />
+                                    <ButtonSimple onClick={handleConfirmRestart} text = "I'm sure, restart" variant="grey_purple" size="w180h47"/>
+                                    <ButtonSimple onClick={handleCancelRestart} text = "Cancel"  variant="grey_purple" size="w90h47" />
                                 </div>
                             </div>
                         </div>

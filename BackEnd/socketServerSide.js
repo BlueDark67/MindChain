@@ -37,5 +37,17 @@ export default function (io) {
     socket.on("stopChat", ({ roomId }) => {
       io.to(roomId).emit("chatStopped");
     });
+
+    socket.on("restartRoom", ({ roomId }) => {
+      io.to(roomId).emit("roomRestarted");
+    });
+
+    socket.on("continueChat", ({ roomId }) => {
+      io.to(roomId).emit("chatContinued");
+    });
+
+    socket.on("showResetInfo", ({ roomId }) => {
+      io.to(roomId).emit("showResetInfo");
+    });
   });
 }

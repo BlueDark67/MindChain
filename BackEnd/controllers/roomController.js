@@ -18,6 +18,7 @@ const __dirname = path.dirname(__filename);
 
 const roomModel = require("../models/roomModel").default;
 const userModel = require("../models/userModel").default;
+const messageModel = require("../models/messageModel").default;
 
 var nodemailer = require("nodemailer");
 
@@ -203,6 +204,20 @@ const fetchRoomInfo = async (req, res) => {
   }
 };
 
+export const restartRoom = async (req, res) => {
+  const roomId = req.body.roomId;
+  try {
+    await messageModel.deleteMany({ room: roomId });
+    const room = await roomModel.findById(roomId);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    room.messages = [];
+    await room.save();
+    res.json({ deleted: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   roomPost,
   readFile,
@@ -211,4 +226,5 @@ export default {
   enterRoom,
   fetchHistory,
   fetchRoomInfo,
+  restartRoom,
 };

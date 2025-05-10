@@ -11,4 +11,5 @@ router.post("/sendEmailInviteRoom", room.sendEmailInviteRoom);
 router.post("/enter-room", room.enterRoom);
 router.post("/fetch-history", room.fetchHistory);
 router.post("/fetch-room-info", room.fetchRoomInfo);
+router.post("/restart-room", room.restartRoom);
 export default router;
