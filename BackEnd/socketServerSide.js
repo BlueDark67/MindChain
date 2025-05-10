@@ -33,5 +33,9 @@ export default function (io) {
       };
       io.to(data.roomId).emit("clientChat", toClient);
     });
+
+    socket.on("stopChat", ({ roomId }) => {
+      io.to(roomId).emit("chatStopped");
+    });
   });
 }

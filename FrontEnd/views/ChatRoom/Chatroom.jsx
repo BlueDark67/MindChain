@@ -5,8 +5,9 @@ import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
 import ButtonSimple from "../../src/components/buttonSimple/ButtonSimple";
 import Button from "../../src/components/button/Button";
-import { fetchRoomInfo } from "../../public/js/Chatroom.js";
+import { fetchMessages, fetchRoomInfo } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
+
 
 const socket = io("ws://localhost:3000")
 
@@ -24,6 +25,8 @@ const Chatroom = () => {
     const [chatStarted, setChatStarted] = useState(false);
     const [loading, setLoading] = useState(true);
     const [chatSynced, setChatSynced] = useState(false);
+    const [pausedTime, setPausedTime] = useState(null);
+    const [showRestartConfirm, setShowRestartConfirm] = useState(false);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -101,7 +104,20 @@ const Chatroom = () => {
                 //setTimeLeft(Number(data.time));
                 if(data.users[0]._id === userId){
                     setIsCreator(true);
-                }            
+                }      
+                fetchMessages(roomId).then((messagesData) => {
+                    if(messagesData){
+                        const formattedMessages = messagesData.map(msg => ({
+                            ...msg,
+                            timestamp: msg.createdAt
+                                ? new Date(msg.createdAt).toLocaleTimeString()
+                                : ""
+                        }));
+                        setMessages(formattedMessages);
+                    }else{
+                        console.error("Error fetching messages - no data");
+                    }
+                });
             }else{
                 console.error("Error fetching room info - no data");
             }
@@ -115,13 +131,13 @@ const Chatroom = () => {
 
     useEffect(() => {
         let interval;
-        if (chatStarted && time === -1) {
+        if (time === -1) {
             interval = setInterval(() => {
                 setElapsedTime((prev) => prev + 1);
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [chatStarted, time]);
+    }, [time]);
 
     useEffect(() => {
         function handleChatStarted({ start, duration }) {
@@ -135,7 +151,7 @@ const Chatroom = () => {
                 setEndTime(end);
                 const secondsLeft = Math.max(0, Math.ceil((end - Date.now()) / 1000));
                 setTimeLeft(secondsLeft);
-                setChatStarted(false);
+                setChatStarted(true);
             }
             setChatSynced(true);
         }
@@ -154,7 +170,12 @@ const Chatroom = () => {
             const now = Date.now();
             const secondsLeft = Math.max(0, Math.ceil((endTime - now) / 1000));
             setTimeLeft(secondsLeft);
-            if (secondsLeft <= 0) clearInterval(interval);
+            if (secondsLeft <= 0){
+                clearInterval(interval)
+                setChatStarted(false);
+                setCanSend(true);
+                socket.emit("stopChat", { roomId });
+            };
         }, 1000);
     
         return () => clearInterval(interval);
@@ -169,7 +190,7 @@ const Chatroom = () => {
                 id: Date.now(),
                 content: data.content,
                 userId: data.userId,
-                user: data.username,
+                user: { username: data.username, _id: data.userId },
                 timestamp: new Date().toLocaleTimeString()
             };
             setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -211,15 +232,68 @@ const Chatroom = () => {
         };
     }, [time, isCreator, roomId, socket]);
 
-    function getStartStopText() {
-        if (time === -1) {
-            // Ilimitado: se o chat já começou, mostra Stop, senão Start
-            return chatStarted ? "Stop" : "Start";
+    function handleStopChat() {
+        setChatStarted(false);
+        setCanSend(true);
+        setPausedTime(true);
+        socket.emit("stopChat", { roomId });
+    }
+
+    function handleContinueChat() {
+        if (time !== -1) {
+            // Limitado: retoma o tempo
+            if (pausedTime && pausedTime > 0) {
+                const newEndTime = Date.now() + pausedTime * 1000;
+                setEndTime(newEndTime);
+                setCanSend(false);
+                setChatStarted(true);
+                socket.emit("continueChat", { roomId, endTime: newEndTime });
+                setPausedTime(null);
+            }
         } else {
-            // Limitado: sempre Start
-            return "Start";
+            // Ilimitado: apenas retoma o chat
+            setCanSend(false);
+            setChatStarted(true);
+            setPausedTime(null);
+            socket.emit("continueChat", { roomId });
         }
     }
+
+    useEffect(() => {
+        function handleChatContinued({ endTime }) {
+            setEndTime(endTime);
+            setCanSend(false);
+            setChatStarted(true);
+            setPausedTime(null);
+        }
+        socket.on("chatContinued", handleChatContinued);
+        return () => socket.off("chatContinued", handleChatContinued);
+    }, []);
+
+    useEffect(() => {
+        function handleChatStopped() {
+            setChatStarted(false);
+            setCanSend(true); // true para bloquear input (input está disabled={canSend})
+            setEndTime(null);
+            setTimeLeft(0);
+        }
+
+        socket.on("chatStopped", handleChatStopped);
+
+        return () => {
+            socket.off("chatStopped", handleChatStopped);
+        };
+    }, []);
+
+    const handleRestart = () => {
+        setShowRestartConfirm(true);
+    };
+
+    const handleCancelRestart = () => {
+        setShowRestartConfirm(false);
+    }
+
+
 
     if(loading){
         return (
@@ -250,19 +324,62 @@ const Chatroom = () => {
                             )}
                         </div>
                         {isCreator && (
-                            (time === -1 || canSend) && (
-                                <ButtonSimple
-                                    onClick={startChat}
-                                    text={getStartStopText()}
-                                    variant="grey_purple"
-                                    size="w90h47"
-                                />
-                            )
+                            <>
+                                {!chatStarted && !pausedTime && (
+                                    <ButtonSimple
+                                        onClick={startChat}
+                                        text="Start"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                    />
+                                )}
+
+                                {/* Botão Stop: só aparece quando o chat está a decorrer */}
+                                {time === -1 && chatStarted && (
+                                    <ButtonSimple
+                                        onClick={handleStopChat}
+                                        text="Stop"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                    />
+                                )}
+
+                                {/* Botão Continue aparece quando chat está parado, há tempo restante e não está em modo ilimitado */}
+                                {time ==-1 && !chatStarted && pausedTime && (
+                                    <ButtonSimple
+                                        onClick={handleContinueChat}
+                                        text="Continue"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                    />
+                                )}
+
+                                {/* Botão Restart (opcional) */}
+                                {!chatStarted && canSend && (
+                                    <ButtonSimple
+                                        onClick={handleRestart}
+                                        text="Restart"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                    />
+                                )}
+                            </>
                         )}
                     </div>  
                 </div>
 
                 <div className="chatroom-container">
+                    {showRestartConfirm && (
+                        <div className="modal-overlay">
+                            <div className="modal-confirm">
+                                <p>This will erase the chatroom history. Are you sure that you want to restart the room? </p>
+                                <div className="modal-buttons">
+                                    <ButtonSimple text = "I'm sure, restart" variant="grey_purple" size="w180h47"/>
+                                    <ButtonSimple onClick= {handleCancelRestart} text = "Cancel"  variant="grey_purple" size="w90h47" />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     {/* Aplicar a ref ao container de mensagens, não a um elemento no final */}
                     <div className="messages-container" ref={messagesContainerRef}>
                         {preCountdown !== null ? (
@@ -276,9 +393,11 @@ const Chatroom = () => {
                         ) : (
                             messages.map((msg) => (
                                 <MessageBubble 
-                                    key={msg.id} 
+                                    key={msg.id || msg._id} 
                                     message={msg}
-                                    isCurrentUser={msg.userId === userId}
+                                    isCurrentUser={(msg.user && String(msg.user._id) === String(userId)) ||
+                                                    (msg.userId && String(msg.userId) === String(userId)) ||
+                                                    (msg.userId === userId)}
                                 />
                             ))
                         )}

@@ -23,3 +23,22 @@ export const fetchRoomInfo = async (roomId) => {
     return null;
   }
 };
+
+export const fetchMessages = async (roomId) => {
+  try {
+    const res = await fetch(`http://localhost:3000/get-messages/${roomId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    handleErros(res);
+    const json = await res.json();
+    console.log(json);
+    return json;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};

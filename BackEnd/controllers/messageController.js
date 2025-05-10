@@ -33,6 +33,20 @@ const saveMessage = async (req, res) => {
   }
 };
 
+const getMessagesRoom = async (req, res) => {
+  const { roomId } = req.params;
+  try {
+    const messages = await MessageModel.find({ room: roomId }).populate(
+      "user",
+      "username"
+    );
+    return res.json(messages);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   saveMessage,
+  getMessagesRoom,
 };
