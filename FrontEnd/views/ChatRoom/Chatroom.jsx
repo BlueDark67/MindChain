@@ -10,6 +10,7 @@ import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatr
 import { io } from "socket.io-client";
 
 
+
 const socket = io("ws://localhost:3000")
 
 const Chatroom = () => {
@@ -29,6 +30,9 @@ const Chatroom = () => {
     const [pausedTime, setPausedTime] = useState(null);
     const [showRestartConfirm, setShowRestartConfirm] = useState(false);
     const [information, setInformation] = useState(null);
+    const [showUserTooltip, setShowUserTooltip] = useState(false);
+    const [allUsers, setAllUsers] = useState([]); 
+    const [activeUsers, setActiveUsers] = useState([]); 
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -103,7 +107,7 @@ const Chatroom = () => {
             if(data){
                 setTheme(data.theme);
                 setTime(Number(data.time));
-                //setTimeLeft(Number(data.time));
+                setAllUsers(data.users);
                 if(data.users[0]._id === userId){
                     setIsCreator(true);
                 }      
@@ -185,7 +189,7 @@ const Chatroom = () => {
     
 
     useEffect(() => {
-        socket.emit("joinRoom", roomId);
+        socket.emit("joinRoom", { roomId, userId: userId });
         
         socket.on("clientChat", (data) => {
             const newMessage = {
@@ -333,6 +337,13 @@ const Chatroom = () => {
         return () => socket.off("roomRestarted", handleRoomRestarted);
     }, []);
 
+    useEffect(() => {
+        socket.on("activeUsers", (users) => {
+            setActiveUsers(users);
+        });
+        return () => socket.off("activeUsers");
+    }, []);
+
     if(loading){
         return (
             <div className="loading-container-chat">
@@ -351,6 +362,26 @@ const Chatroom = () => {
         return (
             <div className="page-container">
                 <BackButton customClass="chat-room-back-button" />
+                <div className="user-on-page-tooltip" onClick={() => setShowUserTooltip(!showUserTooltip)}>
+                    {activeUsers.length}/{allUsers.length} 
+                    {showUserTooltip && 
+                    <div className="user-tooltip"><strong>Participantes:</strong>
+                        <ul>
+                            {allUsers.map(u => {
+                                const isActive = activeUsers.some(a => String(a._id) === String(u._id));
+                                const isCreatorUser = String(u._id) === String(allUsers[0]._id);
+                                return (
+                                    <li
+                                        key={u._id}
+                                        className={isActive ? "user-active" : "user-inactive"}
+                                    >
+                                        {u.username}{isCreatorUser && " (C)"}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>}
+                </div>
 
                 <div className="header-section">
                     <h1 className="theme-title">Theme: {theme}</h1>

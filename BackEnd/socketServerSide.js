@@ -1,11 +1,33 @@
 import userModel from "./models/userModel.js";
 
 const roomStates = {};
+const activeUsersByRoom = {};
 
 export default function (io) {
   io.on("connection", function (socket) {
-    socket.on("joinRoom", (roomId) => {
+    socket.on("joinRoom", async ({ roomId, userId }) => {
       socket.join(roomId);
+      socket.roomId = roomId;
+      socket.userId = userId;
+
+      const user = await userModel.findById(userId);
+      if (!user) return;
+
+      const userData = {
+        _id: user._id,
+        username: user.username,
+      };
+
+      if (!activeUsersByRoom[roomId]) activeUsersByRoom[roomId] = [];
+      if (
+        !activeUsersByRoom[roomId].some(
+          (u) => String(u._id) === String(userData._id)
+        )
+      ) {
+        activeUsersByRoom[roomId].push(userData);
+      }
+      socket.user = userData;
+      io.to(roomId).emit("activeUsers", activeUsersByRoom[roomId]);
       if (roomStates[roomId]?.started) {
         socket.emit("chatStarted", {
           start: roomStates[roomId].start,
@@ -48,6 +70,26 @@ export default function (io) {
 
     socket.on("showResetInfo", ({ roomId }) => {
       io.to(roomId).emit("showResetInfo");
+    });
+
+    socket.on("leaveRoom", (roomId) => {
+      socket.leave(roomId);
+      if (activeUsersByRoom[roomId]) {
+        activeUsersByRoom[roomId] = activeUsersByRoom[roomId].filter(
+          (u) => String(u._id) !== String(socket.userId)
+        );
+        io.to(roomId).emit("activeUsers", activeUsersByRoom[roomId]);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      const { roomId, userId } = socket;
+      if (roomId && userId && activeUsersByRoom[roomId]) {
+        activeUsersByRoom[roomId] = activeUsersByRoom[roomId].filter(
+          (u) => String(u._id) !== String(socket.userId)
+        );
+        io.to(roomId).emit("activeUsers", activeUsersByRoom[roomId]);
+      }
     });
   });
 }
