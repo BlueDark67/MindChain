@@ -187,4 +187,9 @@
     justify-content: center;
     margin-top: 24px;
 }
+.chat-room-back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
 

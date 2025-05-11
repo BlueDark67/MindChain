@@ -18,6 +18,7 @@ import InvitePage from '../views/InvitePage/InvitePage';
 import UnlockRoom from '../views/UnlockRoom/UnlockRoom';
 import LogOut from '../views/UserRelatedPage/Logout/LogOut';
 import Chatroom from '../views/ChatRoom/Chatroom';
+import ChatRoomAiText from '../views/ChatRoomAiText/ChatRoomAiText';
 
 function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
   return (
@@ -42,6 +43,8 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/unlock-room" element={<UnlockRoom />} />
         <Route path="/logout" element={<LogOut setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/chatroom/:roomId" element={<Chatroom />} />
+        {/**Quero que metas isto a funcionar */}
+        <Route path='/chatroom-aitext' element={< ChatRoomAiText/>} />
       </Route>
       
       <Route path="*" element={<NotFound />} />

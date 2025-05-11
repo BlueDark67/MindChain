@@ -3,6 +3,7 @@ import editIcon from '../../../public/editlogo.png';
 import { useState, useEffect } from 'react';
 import './PersonalData.css';
 import '../../Global.css';
+import BackButton from '../../../src/components/backButton/backButton';
 
 function PersonalData() {
     useEffect(() => {
@@ -31,6 +32,8 @@ function PersonalData() {
     
     return (
         <div className="container-wrapperPD">
+            <BackButton customClass="chat-room-back-button" />
+            
             <div className="containerPD">
                 <img className="avatar" src={profilePic} alt="profile picture" />
                 <b className="changeavatar">Change Avatar</b>

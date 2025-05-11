@@ -110,3 +110,9 @@ palgumacoisa {
 palgumacoisa:hover {
     color: #222; 
 }
+
+.chat-room-back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}

@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
-import ButtonSimple from "../../src/components/buttonSimple/ButtonSimple";
+import ButtonSimple from "../../src/components/buttonSimple/buttonSimple.jsx";
 import Button from "../../src/components/button/Button";
+import BackButton from "../../src/components/backButton/backButton.jsx";
 import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
 
@@ -90,7 +91,7 @@ const Chatroom = () => {
     
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
-            handleSendMessage();
+            handleSendMessage(e);
         }
     };
 
@@ -349,6 +350,8 @@ const Chatroom = () => {
     }else{
         return (
             <div className="page-container">
+                <BackButton customClass="chat-room-back-button" />
+
                 <div className="header-section">
                     <h1 className="theme-title">Theme: {theme}</h1>
                     <div className={isCreator ? "creator-container" : "non-creator-container"}>
