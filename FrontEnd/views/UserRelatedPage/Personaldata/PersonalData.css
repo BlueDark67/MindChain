@@ -107,6 +107,12 @@
 .ppersonaldata:hover {
     color: #222; 
 }
+
+.chat-room-back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
 .inputuserpage {
     color: #000; 
     background-color: #fff; 

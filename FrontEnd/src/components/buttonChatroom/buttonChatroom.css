@@ -1,0 +1,84 @@
+.buttonChatroom {
+    padding: 27px 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    text-align: left;
+    font-family: "Inter-Bold", sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    /* Remova white-space: nowrap; */
+}
+
+.buttonChatroom-theme {
+    max-width: 350px;       /* ajuste conforme necessário */
+    min-width: 200px; /* garante um espaço mínimo */
+    margin-right: 30px; /* espaço fixo à direita */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.buttonChatroom-participants {
+    display: flex;
+    align-items: center;
+    position: relative;
+    gap: 10px;
+    flex: 1 1 0;
+}
+
+.participants-label {
+    flex-shrink: 0;
+    z-index: 1;
+    background: transparent;
+    position: relative;
+    /* Defina uma largura fixa ou padding-right se quiser mais espaço */
+}
+
+.participants-marquee {
+    display: block;
+    width: 250px;         /* ajuste conforme necessário */
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    padding-left: 0;
+    background: transparent;
+}
+
+.participants-marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(15%); }
+    100% { transform: translateX(-65%); }
+}
+
+.grey_purple{
+    background: linear-gradient(
+        #382B38 0%,
+        rgba(115,115,115, 0.25) 100%
+    );
+    color: white;
+    border-radius: 30px;
+}
+
+.grey_purple:hover{
+    background-color: #654A65;
+    
+}
+
+.w830h90{
+    width: 830px;
+    height: 90px;
+}

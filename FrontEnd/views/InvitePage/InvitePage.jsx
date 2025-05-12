@@ -142,7 +142,8 @@ function InvitePage(){
                 </div>
                 <img src={Clipboard} alt="Clipboard" className="clipboard-img" onClick={copyRoomCodeToClipboard} />
             </div>
-            <ButtonSimple text="Enter session room" variant ="grey_purple" size = "w400h90" />
+            <ButtonSimple text="Enter session room" variant ="grey_purple" size = "w400h90" 
+            onClick={() => changePage(`chatroom/${roomId}`)} />
         </div>       
       </div>
 

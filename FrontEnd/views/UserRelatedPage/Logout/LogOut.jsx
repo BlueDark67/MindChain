@@ -15,9 +15,35 @@ function LogOut({ setIsAuthenticated }) {
         };
     }, []);
 
-    const handleLogout = () => {
+    /*const handleLogout = () => {
         setIsAuthenticated(false); // Atualiza o estado global de autenticação
+        localStorage.clear(); // Limpa todos os dados do localStorage
         navigate("/login"); // Redireciona para a página de login
+    };*/
+
+    //alterei esta merda que nao tavas a mudar o valor no servidor
+    const handleLogout = async () => {
+        try {
+            //comunica com o servidor
+            await fetch("http://localhost:3000/logout", {
+                method: "GET",
+                credentials: "include"
+            });
+
+            
+            //metes a autenticação a falso
+            setIsAuthenticated(false);
+
+            //Aqui limpas o localstorage no navegador do utilizador
+            localStorage.setItem("isAuthenticated", "false");
+
+            navigate("/login");
+        } catch (err) {
+            console.error("Error ao fazer logout:", err);
+            setIsAuthenticated(false);
+            localStorage.setItem("isAuthenticated", "false");
+            navigate("/login");
+        }
     };
 
     const changePage = (page) => {

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import ButtonSimple from "../../src/components/buttonSimple/buttonSimple";
 import "./UnlockRoom.css";
@@ -8,16 +7,18 @@ import "../Global.css";
 import Sidebar from '../../src/components/Menu/Menu.jsx';
 
 
+
 function UnlockRoom(){
     const [isPrivate, setIsPrivate] = useState(false);
     const [passwordValue, setPasswordValue] = useState("");
     const [code, setCode] = useState("");
-    const { roomId } = useParams();
+    const [errorMessage, setErrorMessage] = useState("");
+    const userId = localStorage.getItem("userId");
 
     const requestBody = {
         code:code,
         password: passwordValue,
-        roomId: roomId,
+        userId: userId,
     }
 
     useEffect(() => {
@@ -30,7 +31,9 @@ function UnlockRoom(){
           }, []);
 
           const handleErros = (res) => {
+         
             if (!res.ok) {
+                
                 throw Error(res.status + " - " + res.url);
             }
             return res;
@@ -50,6 +53,11 @@ function UnlockRoom(){
                 });
                 handleErros(res);
                 const json = await res.json();
+                console.log(json.errorMessage);
+                if(json.errorMessage){
+                    setErrorMessage(json.errorMessage);
+                    return;
+                }
                 setIsPrivate(json.isPrivate);
                 if(!json.isPrivate){
                     changePage(json.view);
@@ -95,6 +103,7 @@ function UnlockRoom(){
                         <ButtonSimple text = "Enter the room" variant = "grey_purple" size = "w400h90" />
                     
                 </form>
+                {errorMessage && <p className="error-message-create">{errorMessage}</p>}
             </div>
         </div>
     );

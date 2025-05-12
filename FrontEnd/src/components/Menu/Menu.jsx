@@ -5,7 +5,7 @@ import MindChainLogo_2 from '../../../public/Icon-Menu/MindChainLogo_2.png';
 
 const menuItems = [
   { label: "HomePage", icon: "/Icon-Menu/Home.png", href: "/home" },
-  { label: "User Panel", icon: "/Icon-Menu/UserPanel.png", href: "/reset-password" },
+  { label: "User Panel", icon: "/Icon-Menu/UserPanel.png", href: "/personal-data" },
   { label: "Activities", icon: "/Icon-Menu/Activity.png", href: "/activities" },
   { label: "Premium", icon: "/Icon-Menu/Premium.png", href: "/premium" },
   { label: "About Us", icon: "/Icon-Menu/AboutUs.png", href: "/about" },

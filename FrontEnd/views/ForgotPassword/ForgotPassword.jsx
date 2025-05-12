@@ -6,7 +6,6 @@ import ButtonSimple from '../../src/components/buttonSimple/buttonSimple.jsx';
 import './ForgotPassword.css';
 import '../Global.css';
 
-
 function ForgotPassword() {
     useEffect(() => {
         document.title = "Forgot Password";
@@ -23,6 +22,7 @@ function ForgotPassword() {
 
     const handleErros = (res) => {
         if (!res.ok) {
+            setEmailError("Email not found or invalid please try again");
             throw Error(res.status + " - " + res.url);
         }
         return res;

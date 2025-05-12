@@ -32,9 +32,40 @@
     height: 25px;
 }
 
+.w90h47{
+    width: 90px;
+    height: 47.2px;
+    padding: 10px 20px 10px 20px;
+    font-size: 20px;
+    margin-top: 5px;
+}
+
+.w180h47{
+    width: 180px;
+    height: 47.2px;
+    padding: 10px 20px 10px 20px;
+    font-size: 20px;
+    margin-top: 5px;
+}
+
 .w250h50{
     width: 250px;
     height: 50px;
+}
+
+
+.purple_dark{
+    background: linear-gradient(
+        #3D093D 0%,
+        rgba(37,22,57, 0.25) 100%
+    );
+    color: white;
+    border-radius: 30px;
+}
+
+.purple_dark:hover{
+    background-color: #654A65;
+    
 }
 
 .grey_purple{
@@ -84,4 +115,33 @@
 
 .purple:hover{
     background-color: #654A65;
+}
+
+.green{
+    background-color: #099a15;
+    color: white;
+    border-radius: 30px;
+}
+
+.loading-container-chat{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.spinner-chat{
+    border: 6px solid #eee;
+    border-top: 6px solid #7c3aed;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
 }

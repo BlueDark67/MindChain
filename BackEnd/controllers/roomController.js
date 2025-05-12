@@ -2,6 +2,9 @@ import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+
+//const bcrypt = require("bcrypt");
+
 import fs from "fs";
 
 const require = createRequire(import.meta.url);
@@ -14,8 +17,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const roomModel = require("../models/roomModel").default;
-
-import user from "../controllers/userController.js";
+const userModel = require("../models/userModel").default;
+const messageModel = require("../models/messageModel").default;
 
 var nodemailer = require("nodemailer");
 
@@ -31,7 +34,7 @@ function generateRandomCode(length) {
 }
 
 const roomPost = async function (req, res) {
-  const { theme, password, time } = req.body;
+  const { theme, password, time, isPrivate } = req.body;
   const code = generateRandomCode(6);
   const creatorId = req.user ? req.user._id : null;
   const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
@@ -42,6 +45,7 @@ const roomPost = async function (req, res) {
       time,
       password: hashedPassword,
       users: creatorId ? [creatorId] : [],
+      isPrivate: isPrivate,
     });
     res.json({ view: "invite", roomId: newRoom._id });
   } catch (error) {
@@ -92,8 +96,8 @@ const sendEmailInviteRoom = async (req, res) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD,
@@ -115,7 +119,7 @@ const sendEmailInviteRoom = async (req, res) => {
             <p style="color: #555; text-align: center;">Seems like you where invited by ${creator} to a brainstorming session. If this is true, click below to enter the session</p>
             <div style="text-align: center;">
             <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
-              <a href="http://localhost:5173/unlock-room/${roomId}" style="text-decoration: none; color: white;">Enter session</a>
+              <a href="http://localhost:5173/chatroom/${roomId}" style="text-decoration: none; color: white;">Enter session</a>
             </button>
           </div>
           <p style="color: #555; text-align: center;">If you don't know who ${creator} is, please ignore this email.</p>
@@ -139,19 +143,23 @@ const sendEmailInviteRoom = async (req, res) => {
 };
 
 const enterRoom = async (req, res) => {
-  const { password, code, roomId } = req.body;
+  const { password, code, userId } = req.body;
   try {
-    const room = await roomModel.findById(roomId);
+    // Busca a sala pelo código e ativa
+    const room = await roomModel.findOne({ code, isActive: true });
 
     if (!room) {
-      return res.status(404).json({ error: "Room not found" });
+      return res.json({ errorMessage: "Room not found or inactive" });
     }
 
-    if (room.code !== code) {
-      return res.status(401).json({ error: "Invalid code" });
+    const user = await userModel.findOne({ userId: userId });
+    if (!user) {
+      room.users.push(userId);
+      await room.save();
     }
-    if (room.password === null) {
-      return res.json({ view: "room" });
+
+    if (!room.isPrivate) {
+      return res.json({ view: `chatroom/${room._id}` });
     } else {
       if (!password) {
         return res.json({ isPrivate: true });
@@ -159,11 +167,52 @@ const enterRoom = async (req, res) => {
 
       const isMatch = await bcrypt.compare(password, room.password);
       if (!isMatch) {
-        return res.status(401).json({ error: "Incorrect password" });
+        return res.json({ errorMessage: "Incorrect password" });
       }
 
-      return res.json({ view: "room" });
+      return res.json({ view: `chatroom/${room._id}` });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchHistory = async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const rooms = await roomModel
+      .find({ users: userId })
+      .sort({ createdAt: -1 })
+      .populate("users", "username");
+
+    res.json(rooms);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchRoomInfo = async (req, res) => {
+  const roomId = req.body.roomId;
+  try {
+    const room = await roomModel.findById(roomId).populate("users", "username");
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+    res.json(room);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const restartRoom = async (req, res) => {
+  const roomId = req.body.roomId;
+  try {
+    await messageModel.deleteMany({ room: roomId });
+    const room = await roomModel.findById(roomId);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    room.messages = [];
+    await room.save();
+    res.json({ deleted: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -175,4 +224,7 @@ export default {
   getRoomCode,
   sendEmailInviteRoom,
   enterRoom,
+  fetchHistory,
+  fetchRoomInfo,
+  restartRoom,
 };

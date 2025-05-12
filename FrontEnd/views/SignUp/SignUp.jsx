@@ -4,7 +4,7 @@ import'../Global.css';
 import MindChain from "../../public/MindChain.png"
 import ButtonSubmit from "../../src/components/buttonSubmit/buttonSubmit.jsx";
 import { useNavigate } from 'react-router-dom';
-import { handleErros, isPasswordCriterionMet, validateForm,isEmail } from "../../public/js/SignUp.js";
+import { isPasswordCriterionMet, validateForm } from "../../public/js/SignUp.js";
 function SignUp(){
     {/*Constantes para o registo*/}
     const [username, setUsername] = useState("");
@@ -40,7 +40,13 @@ function SignUp(){
         setPage(page);
     }
     
-    
+    const handleErros = (res) => {
+        if (!res.ok) {
+            setIsSubmitting(false);
+            throw Error(res.status + " - " + res.url);
+        }
+        return res;
+    };
     
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -82,16 +88,17 @@ function SignUp(){
             <div className="container">
                 <img className="logo" src={MindChain} alt="MindChain logo" />
                 <h1 className="title">Create an Account</h1>
-                <form className="register-form" onSubmit={handleSubmit} method="POST">
+                <form className="register-form" onSubmit={handleSubmit} method="POST" autoComplete="off">
                     {/*Parte do username*/}
                     <label htmlFor="username" className="form-label">Username</label>
                     <input 
                     type="text"
                     className="form-input-register"
-                    id="username"
+                    id="register-username"
                     placeholder="Enter a username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    autoComplete="off"
                     />
                     {/*Parte do email*/}
                     <label htmlFor="email" className="form-label">Email</label>
@@ -102,6 +109,7 @@ function SignUp(){
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="new-email"
                     />
                     {/*Parte do email*/}
                     <div className="password-label-container">
@@ -140,10 +148,12 @@ function SignUp(){
                     <input
                     type="password"
                     id="password"
+                    name="register-password"
                     className="form-input-register"
                     placeholder="Choose a password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
                     />
 
                     {/*Parte de confirmar a pass*/}
@@ -151,14 +161,16 @@ function SignUp(){
                     <input
                     type="password"
                     id="confirmPassword"
+                    name="register-confirm-password"
                     className="form-input-register"
                     placeholder="Confirm the password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+
                     />
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                     
-                    <div className="buttons-container">
                         <ButtonSubmit 
                             type="submit"
                             text={isSubmitting ? "Creating Account..." : "Create Account"} 
@@ -167,7 +179,6 @@ function SignUp(){
                             disabled={isSubmitting}
                         />
                         
-                    </div>
                 </form>
 
                 <div className="additional-links">

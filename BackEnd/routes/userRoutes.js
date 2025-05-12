@@ -8,15 +8,21 @@ router.get("/signup", user.userGet);
 router.post("/signup", user.userPost);
 router.get("/login", user.loginGet);
 router.get("/loginFail", user.loginFail);
-router.post(
-  "/login",
-  passport.authenticate("local", { failureRedirect: "/loginFail" }),
-  function (req, res) {
-    res.json({ view: "home", isAuthenticated: true });
-  }
-);
+router.post("/login", user.login);
+
 router.get("/logout", user.logout);
 
 router.post("/sendEmailResetPassword", user.sendEmailResetPassword);
+
+router.post("/resetPassword", user.resetPassword);
+
+router.get("/check-auth", (req, res) => {
+  // req.isAuthenticated() é uma função do Passport que verifica se o usuário está autenticado
+  if (req.isAuthenticated()) {
+    res.json({ isAuthenticated: true });
+  } else {
+    res.json({ isAuthenticated: false });
+  }
+});
 
 export default router;
