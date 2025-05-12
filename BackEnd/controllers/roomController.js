@@ -223,6 +223,8 @@ export const generateChatResponse = async (req, res) => {
   try {
     const { roomId } = req.body;
 
+    const roomTheme = await roomModel.findById(roomId).populate("theme");
+
     const roomIdeas = await roomModel
       .findById(roomId)
       .populate("messages", "content");
@@ -231,13 +233,13 @@ export const generateChatResponse = async (req, res) => {
       return res.status(404).json({ error: "Room not found" });
     }
 
-    const systemPrompt = `You will receive a list of ideas submitted by different participants during a brainstorming session.
+    const systemPrompt = `You will receive a list of ideas submitted by different participants during a brainstorming session on the theme "${roomTheme}".
     Your task is to:
-    - Interpret and organize these ideas logically.
+    - Interpret and organize these ideas logically according to the theme.
     - Fill in any gaps to ensure smooth flow and coherence.
-    - Write a final text that integrates all the ideas into a [choose: creative / professional / inspiring / technical] format, following a clear structure (introduction, body, and conclusion).
-    - Avoid repetition, enhance the writing style, and give the text a good rhythm.
-    - Please create a text of around 1000 words.`;
+    - Write only the final text, structured with introduction, body, and conclusion, in a [choose: creative / professional / inspiring / technical] tone.
+    - Do not include any explanations, reasoning, thoughts, comments, or <think> tags, nor any text outside the final article.
+    - The text should be around 1000 words, avoid repetition, and have an engaging style.`;
 
     const userPrompt = `Here are the ideas:
     ${roomIdeas.messages.map((message) => message.content).join("\n")}
@@ -245,20 +247,26 @@ export const generateChatResponse = async (req, res) => {
 
     const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
 
-    console.log("Métodos disponíveis em client.llm:", Object.keys(client.llm));
-
-    const response = await client.llm.completion({
-      model: "deepseek-r1-distill-qwen-7b",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.6,
-      maxTokens: 1000,
-      stream: false,
+    const response = await fetch("http://localhost:1234/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "deepseek-r1-distill-qwen-7b",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.6,
+        max_tokens: 1000,
+        stream: false,
+      }),
     });
 
-    const generatedText = response.choices[0].message.content;
+    const data = await response.json();
+
+    const generatedText = data.choices[0].message.content;
+
+    console.log("Generated text:", generatedText);
 
     const room = await roomModel.findById(roomId);
 
