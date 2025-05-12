@@ -19,6 +19,13 @@ import UnlockRoom from '../views/UnlockRoom/UnlockRoom';
 import LogOut from '../views/UserRelatedPage/Logout/LogOut';
 import Chatroom from '../views/ChatRoom/Chatroom';
 import ChatRoomAiText from '../views/ChatRoomAiText/ChatRoomAiText';
+import Payment from '../views/UserRelatedPage/Payment/Payment'; 
+import Premium from '../views/UserRelatedPage/Premium/Premium';
+import NewPassword from '../views/UserRelatedPage/NewPassword/NewPassword';
+import Metrics from '../views/UserRelatedPage/MetricsPage/Metrics';
+import DeleteAccount from '../views/UserRelatedPage/DeleteAccount/DeleteAccount';
+import Userpage from '../views/UserRelatedPage/UserPage/UserPage';
+
 
 function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
   return (
@@ -43,6 +50,13 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/unlock-room" element={<UnlockRoom />} />
         <Route path="/logout" element={<LogOut setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/chatroom/:roomId" element={<Chatroom />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/premium" element={<Premium />} />
+        <Route path="/new-password" element={<NewPassword />} />
+        <Route path="/metrics" element={<Metrics />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
+        <Route path="/userpage" element={<Userpage />} />
+
         {/**Quero que metas isto a funcionar */}
         <Route path='/chatroom-aitext' element={< ChatRoomAiText/>} />
       </Route>
