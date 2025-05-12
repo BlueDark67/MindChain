@@ -13,6 +13,12 @@ import CreationRoom from "../views/CreationRoom/CreationRoom.jsx";
 import InvitePage from "../views/InvitePage/InvitePage.jsx";
 import UnlockRoom from "../views/UnlockRoom/UnlockRoom.jsx";
 import LogOut from "../views/UserRelatedPage/Logout/LogOut.jsx";
+import UserPage from "../views/UserRelatedPage/UserPage/UserPage.jsx";
+import Metrics from "../views/UserRelatedPage/MetricsPage/Metrics.jsx";
+import DeleteAccount from "../views/UserRelatedPage/DeleteAccount/DeleteAccount.jsx";
+import Premium from "../views/UserRelatedPage/Premium/Premium.jsx";
+import NewPassword from "../views/UserRelatedPage/NewPassword/NewPassword.jsx";
+import Payment from "../views/UserRelatedPage/Payment/Payment.jsx";
 
 function App(){
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -38,6 +44,12 @@ function App(){
                     <Route path="/invite/:roomId" element={<InvitePage />} />
                     <Route path="/unlock-room/:roomId" element={<UnlockRoom />} />
                     <Route path="/logout" element={<LogOut setIsAuthenticated={setIsAuthenticated} />} />
+                    <Route path="/userpage" element={<UserPage />} />
+                    <Route path="/metrics" element={<Metrics />} />
+                    <Route path="/delete-account" element={<DeleteAccount setIsAuthenticated={setIsAuthenticated} />} />
+                    <Route path="/premium" element={<Premium />} />
+                    <Route path="/new-password" element={<NewPassword />} />
+                    <Route path="/payment" element={<Payment />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

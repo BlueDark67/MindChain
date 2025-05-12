@@ -3,7 +3,6 @@
     justify-content: center; 
     align-items: center; 
     height: 100vh; 
-    padding: 20px;
 }
 
 .containerPD {
@@ -45,6 +44,9 @@
     transition: color 0.3s ease, text-decoration 0.3s ease;
     text-decoration: none; 
     margin-top: 15px;
+    margin-left: 0; 
+    display: block; 
+    margin: 10px auto 0; 
 }
 
 .changeavatar:hover {
@@ -82,7 +84,7 @@
 
 
 
-b {
+.bpersonaldata {
     display: block;
     font-size: 18px; 
     color: #171B85;
@@ -91,17 +93,26 @@ b {
     transition: color 0.3s ease;
 }
 
-b:hover {
+.bpersonaldata:hover {
     color: #0d1260;
 }
 
-p {
+.ppersonaldata {
     font-size: 16px;
     color: #555; 
     margin-bottom: 10px;
     line-height: 1.5; 
 }
 
-p:hover {
+.ppersonaldata:hover {
     color: #222; 
+}
+.inputuserpage {
+    color: #000; 
+    background-color: #fff; 
+    border: 1px solid #ccc; 
+    padding: 5px;
+    border-radius: 5px;
+    width: 100%; 
+    box-sizing: border-box;
 }

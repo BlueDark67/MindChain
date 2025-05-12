@@ -3,6 +3,7 @@ import editIcon from '../../../public/editlogo.png';
 import { useState, useEffect } from 'react';
 import './PersonalData.css';
 import '../../Global.css';
+import { useNavigate } from 'react-router-dom';
 
 function PersonalData() {
     useEffect(() => {
@@ -21,6 +22,7 @@ function PersonalData() {
         birthdate: "2005-08-27",
         nationality: "Portuguese",
     });
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -28,78 +30,78 @@ function PersonalData() {
             [name]: value,
         }));
     };
-    
-    return (
-        <div className="container-wrapperPD">
-            <div className="containerPD">
-                <img className="avatar" src={profilePic} alt="profile picture" />
-                <b className="changeavatar">Change Avatar</b>
-                <h1 className="edit" onClick={() => setIsEditing(!isEditing)}>
-                    {isEditing ? "Save" : "Edit"}
-                    <img className="editicon" src={editIcon} alt="edit logo" />
-                </h1>
-                {isEditing ? (
-                    <div>
-                        <label>
-                            <b>Username</b>
-                            <p>
+    const navigate = useNavigate();
+
+        const changePage = (page) => {
+            navigate(`/${page}`);
+        }
+
+        return (
+            <div className="container-wrapperPD">
+                <div className="containerPD">
+                    <img className="avatar" src={profilePic} alt="profile picture" />
+                    <b className="changeavatar">Change Avatar</b>
+                    <h1 className="edit" onClick={() => setIsEditing(!isEditing)}>
+                        {isEditing ? "Save" : "Edit"}
+                        <img className="editicon" src={editIcon} alt="edit logo" />
+                    </h1>
+                    {isEditing ? (
+                        <form onSubmit={(e) => e.preventDefault()}>
+                            <label>
+                                <b className="bpersonaldata">Username</b>
                                 <input
+                                    className="inputuserpage"
                                     type="text"
                                     name="username"
                                     value={formData.username}
                                     onChange={handleInputChange}
                                 />
-                            </p>
-                        </label>
-                        <label>
-                            <b>E-mail</b>
-                            <p>
+                            </label>
+                            <label>
+                                <b className="bpersonaldata">E-mail</b>
                                 <input
+                                    className="inputuserpage"
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
                                 />
-                            </p>
-                        </label>
-                        <label>
-                            <b>BirthDate</b>
-                            <p>
+                            </label>
+                            <label>
+                                <b className="bpersonaldata">BirthDate</b>
                                 <input
+                                    className="inputuserpage"
                                     type="date"
                                     name="birthdate"
                                     value={formData.birthdate}
                                     onChange={handleInputChange}
                                 />
-                            </p>
-                        </label>
-                        <label>
-                            <b>Nationality</b>
-                            <p>
+                            </label>
+                            <label>
+                                <b className="bpersonaldata">Nationality</b>
                                 <input
+                                    className="inputuserpage"
                                     type="text"
                                     name="nationality"
                                     value={formData.nationality}
                                     onChange={handleInputChange}
                                 />
-                            </p>
-                        </label>
-                    </div>
-                ) : (
-                    <div>
-                        <b>Username</b>
-                        <p>{formData.username}</p>
-                        <b>E-mail</b>
-                        <p>{formData.email}</p>
-                        <b>Birthdate</b>
-                        <p>{formData.birthdate}</p>
-                        <b>Nationality</b>
-                        <p>{formData.nationality}</p>
-                    </div>
-                )}
+                            </label>
+                        </form>
+                    ) : (
+                        <div>
+                            <b className="bpersonaldata">Username</b>
+                            <p className="ppersonaldata">{formData.username}</p>
+                            <b className="bpersonaldata">E-mail</b>
+                            <p className="ppersonaldata">{formData.email}</p>
+                            <b className="bpersonaldata">Birthdate</b>
+                            <p className="ppersonaldata">{formData.birthdate}</p>
+                            <b className="bpersonaldata">Nationality</b>
+                            <p className="ppersonaldata">{formData.nationality}</p>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
-    );
-}
-
+        );
+    }
 export default PersonalData;

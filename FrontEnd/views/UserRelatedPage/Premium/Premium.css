@@ -1,0 +1,55 @@
+.container-wrapperpremium {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 10%
+}
+.containerstandard, .containerpremium {
+    width: 20%;
+    height: 60%;
+    background-color: rgba(217, 217, 217, 0.8);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+.titlepremium,.titlestandard {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 13%; 
+    border-bottom: 2px solid #000; 
+}
+
+.textstandard,.textpremium {
+    font-size: 14px;
+    font-weight: 650;
+    color: #080808;
+    text-align: left;
+    margin-bottom: 20px;
+    margin-top: 15%;
+}
+
+.buttonpremium {
+    background: linear-gradient(to bottom, #382B38, #ffffff);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    margin-top: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    display: block; /* Garante que o botão ocupe uma linha inteira */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.buttonpremium:hover {
+    transform: scale(1.05);
+}
