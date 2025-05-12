@@ -2,6 +2,7 @@ import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+import { LMStudioClient } from "@lmstudio/sdk";
 
 //const bcrypt = require("bcrypt");
 
@@ -218,6 +219,63 @@ export const restartRoom = async (req, res) => {
   }
 };
 
+export const generateChatResponse = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+
+    const roomIdeas = await roomModel
+      .findById(roomId)
+      .populate("messages", "content");
+
+    if (!roomIdeas) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    const systemPrompt = `You will receive a list of ideas submitted by different participants during a brainstorming session.
+    Your task is to:
+    - Interpret and organize these ideas logically.
+    - Fill in any gaps to ensure smooth flow and coherence.
+    - Write a final text that integrates all the ideas into a [choose: creative / professional / inspiring / technical] format, following a clear structure (introduction, body, and conclusion).
+    - Avoid repetition, enhance the writing style, and give the text a good rhythm.
+    - Please create a text of around 1000 words.`;
+
+    const userPrompt = `Here are the ideas:
+    ${roomIdeas.messages.map((message) => message.content).join("\n")}
+    `;
+
+    const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
+
+    console.log("Métodos disponíveis em client.llm:", Object.keys(client.llm));
+
+    const response = await client.llm.completion({
+      model: "deepseek-r1-distill-qwen-7b",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.6,
+      maxTokens: 1000,
+      stream: false,
+    });
+
+    const generatedText = response.choices[0].message.content;
+
+    const room = await roomModel.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    room.themesText = generatedText;
+    room.lastActivity = new Date();
+    await room.save();
+
+    res.json({ generatedText: generatedText, setLoading: false });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   roomPost,
   readFile,
@@ -227,4 +285,5 @@ export default {
   fetchHistory,
   fetchRoomInfo,
   restartRoom,
+  generateChatResponse,
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
@@ -8,8 +9,6 @@ import Button from "../../src/components/button/Button";
 import BackButton from "../../src/components/backButton/backButton.jsx";
 import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
-
-
 
 const socket = io("ws://localhost:3000")
 
@@ -39,6 +38,13 @@ const Chatroom = () => {
     
     // Trocar a referência do elemento final para o container de mensagens
     const messagesContainerRef = useRef(null);
+
+    const navigate = useNavigate();
+
+    const changePage = (page) => {
+        navigate("/" + page);
+    }
+
     
     // Função para fazer scroll até o final usando scrollTop em vez de scrollIntoView
     const scrollToBottom = () => {
@@ -344,6 +350,18 @@ const Chatroom = () => {
         return () => socket.off("activeUsers");
     }, []);
 
+    useEffect(() => {
+        function handleRedirect({roomId}){
+            changePage(`chatroom-aitext/${roomId}`);
+        }
+    socket.on("redirectToAiText", handleRedirect);
+    return () => socket.off("redirectToAiText", handleRedirect);
+    }, [changePage]);
+
+    const handleRedirect = () => {
+        socket.emit("finishRoom", { roomId });
+    }
+
     if(loading){
         return (
             <div className="loading-container-chat">
@@ -447,6 +465,7 @@ const Chatroom = () => {
                                         text="Finish"
                                         variant="grey_purple"
                                         size="w90h47"
+                                        onClick={handleRedirect}
                                     />
                                 )}
                             </>

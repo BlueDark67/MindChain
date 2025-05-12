@@ -91,5 +91,9 @@ export default function (io) {
         io.to(roomId).emit("activeUsers", activeUsersByRoom[roomId]);
       }
     });
+
+    socket.on("finishRoom", ({ roomId }) => {
+      io.to(roomId).emit("redirectToAiText", { roomId });
+    });
   });
 }
