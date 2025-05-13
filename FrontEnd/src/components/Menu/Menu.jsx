@@ -11,7 +11,7 @@ const menuItems = [
   { label: "Activities", icon: "/Icon-Menu/Activity.png", href: "/metrics" },
   { label: "Premium", icon: "/Icon-Menu/Premium.png", href: "/premium" },
   { label: "About Us", icon: "/Icon-Menu/AboutUs.png", href: "/aboutus" },
-  { label: "Log out", icon: "/Icon-Menu/Logout.png", href: "/logouta" },
+  { label: "Log out", icon: "/Icon-Menu/Logout.png", href: "/logout" },
 ];
 
 const Sidebar = () => {
