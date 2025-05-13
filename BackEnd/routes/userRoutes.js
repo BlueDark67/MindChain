@@ -25,4 +25,6 @@ router.get("/check-auth", (req, res) => {
   }
 });
 
+router.post("/fetch-user-name", user.fetchUserName);
+
 export default router;

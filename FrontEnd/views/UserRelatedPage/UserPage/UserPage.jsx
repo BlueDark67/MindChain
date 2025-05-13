@@ -4,15 +4,31 @@ import avatar from '../../../public/avatarfundo.png';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import flag from '../../../public/flag.png';
+import { fetchUserName } from '../../../public/js/UserPage';
+import { useState } from 'react';
+
 
 function UserPage() {
+    const [username, setUsername] = useState("");
+
+    const userId = localStorage.getItem("userId");
+
     useEffect(() => {
             document.title = "User Page";
             document.body.classList.add('gradient_background_BB');
-    
-            return () => {
-                document.body.classList.remove('gradient_background_BB');
-            };
+
+            fetchUserName(userId).then((data) => {
+                console.log(data);
+                if (data){
+                    console.log(data.username);
+                    setUsername(data.username);
+                }
+            
+                return () => {
+                    document.body.classList.remove('gradient_background_BB');
+                }
+            });
+
         }, []);
 
         const navigate = useNavigate();
@@ -27,7 +43,7 @@ function UserPage() {
                     <img className="avataruserpage" src={avatar} alt="profile" />
     
                     <div className="info-box">
-                        <div className="usernameuserpage">Jorge Santos</div>
+                        <div className="usernameuserpage">{username}</div>
                         <div className="language">
                         pt <img className="flag" src={flag} alt="flag" />
                         </div>
@@ -51,6 +67,5 @@ function UserPage() {
                 </div>
             </div>
         );
-    }
-    
+}
 export default UserPage;
