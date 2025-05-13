@@ -182,7 +182,7 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({ error: "Error setting new password" });
       }
       await userFound.save();
-      res.json({ view: "login" });
+      res.json({ view: "login", confirmation: true });
     });
   } catch (error) {
     console.error("Error finding user:", error);
@@ -256,12 +256,11 @@ const userMetrics = async (req, res) => {
     if (!rooms || rooms.length === 0) {
       return res.status(404).json({ error: "No rooms found for this user" });
     }
-    console.log("Rooms:", rooms);
+
     const messages = await MessageModel.find({ user: userId });
     if (!messages || messages.length === 0) {
       return res.status(404).json({ error: "No messages found for this user" });
     }
-    console.log("Messages:", messages);
 
     const averageTime =
       rooms.length > 0

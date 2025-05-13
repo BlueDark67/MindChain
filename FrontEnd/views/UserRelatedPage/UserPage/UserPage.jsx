@@ -53,7 +53,7 @@ function UserPage() {
                     <div className="button-containeruserpage">
                         <button className="buttonuserpage" onClick={() => changePage("personal-data")}>Personal Data</button>
                         <button className="buttonuserpage" onClick={() => changePage("metrics")}>Metrics</button>
-                        <button className="buttonuserpage" onClick={() => changePage("security")}>Security</button>
+                        <button className="buttonuserpage" onClick={() => changePage("new-password")}>Security</button>
                         <button className="buttonuserpage" onClick={() => changePage("progress")}>Progress</button>
                         <button className="buttonuserpage" onClick={() => changePage("premium")}>Premium</button>
                         <button className="buttonuserpage" onClick={() => changePage("delete-account")}>Delete Account</button>
