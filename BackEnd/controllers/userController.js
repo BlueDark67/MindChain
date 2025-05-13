@@ -13,6 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const UserModel = require("../models/userModel").default;
+const MessageModel = require("../models/messageModel").default;
+const RoomModel = require("../models/roomModel").default;
 
 var nodemailer = require("nodemailer");
 
@@ -242,6 +244,62 @@ const changeUserInfo = async (req, res) => {
   }
 };
 
+const userMetrics = async (req, res) => {
+  const { userId: userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const rooms = await RoomModel.find({ users: userId });
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({ error: "No rooms found for this user" });
+    }
+    console.log("Rooms:", rooms);
+    const messages = await MessageModel.find({ user: userId });
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ error: "No messages found for this user" });
+    }
+    console.log("Messages:", messages);
+
+    const averageTime =
+      rooms.length > 0
+        ? rooms.reduce((acc, room) => acc + room.timeOfSession, 0) /
+          rooms.length
+        : 0;
+    const timeBrainstorming = rooms.reduce(
+      (acc, room) => acc + room.timeOfSession,
+      0
+    );
+
+    const messagesByRoom = {};
+    messages.forEach((msg) => {
+      messagesByRoom[msg.room] = (messagesByRoom[msg.room] || 0) + 1;
+    });
+    const favoriteRoomId = Object.keys(messagesByRoom).reduce(
+      (a, b) => (messagesByRoom[a] > messagesByRoom[b] ? a : b),
+      null
+    );
+    const favoriteThemeByMessages = favoriteRoomId
+      ? rooms.find((room) => room._id.toString() === favoriteRoomId)?.theme ||
+        null
+      : null;
+
+    const favoriteTheme = favoriteThemeByMessages;
+
+    res.json({
+      numberSessions: rooms.length,
+      averageTime: averageTime,
+      timeBrainstorming: timeBrainstorming,
+      favoriteTheme: favoriteTheme,
+    });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -254,4 +312,5 @@ export default {
   fetchUserName,
   fetchUserInfo,
   changeUserInfo,
+  userMetrics,
 };
