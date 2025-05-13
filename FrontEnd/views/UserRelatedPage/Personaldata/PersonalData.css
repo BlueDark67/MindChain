@@ -61,8 +61,14 @@
     margin-top: 20px;
     text-align: center;
     position: relative;
-
-    display: flex; 
+    background: none;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    padding: 0; /* opcional, para remover espaço extra */
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
     justify-content: center; 
     align-items: center; 
     gap: 5px; 

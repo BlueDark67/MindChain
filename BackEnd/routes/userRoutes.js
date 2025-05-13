@@ -26,5 +26,7 @@ router.get("/check-auth", (req, res) => {
 });
 
 router.post("/fetch-user-name", user.fetchUserName);
+router.post("/fetch-user-info", user.fetchUserInfo);
+router.post("/change-user-info", user.changeUserInfo);
 
 export default router;

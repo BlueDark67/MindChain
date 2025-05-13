@@ -18,9 +18,7 @@ function UserPage() {
             document.body.classList.add('gradient_background_BB');
 
             fetchUserName(userId).then((data) => {
-                console.log(data);
                 if (data){
-                    console.log(data.username);
                     setUsername(data.username);
                 }
             

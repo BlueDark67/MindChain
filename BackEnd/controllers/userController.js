@@ -202,6 +202,46 @@ const fetchUserName = async (req, res) => {
   }
 };
 
+const fetchUserInfo = async (req, res) => {
+  const { userId: userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ user });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const changeUserInfo = async (req, res) => {
+  const { userId, username, email, birthdate, nationality } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (username !== "") {
+      user.username = username;
+    }
+    if (email !== "") {
+      user.email = email;
+    }
+    if (birthdate !== "") {
+      user.birthdate = birthdate;
+    }
+    if (nationality !== "") {
+      user.nationality = nationality;
+    }
+    await user.save();
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -212,4 +252,6 @@ export default {
   loginFail,
   resetPassword,
   fetchUserName,
+  fetchUserInfo,
+  changeUserInfo,
 };
