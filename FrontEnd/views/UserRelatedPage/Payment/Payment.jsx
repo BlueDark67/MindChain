@@ -60,7 +60,7 @@ function Payment() {
                     </p>
 
                     <div className="form-buttons">
-                        <button className="cancelpay-button" type="button" onClick={() => navigate('/userpage')}>Cancel</button>
+                        <button className="cancelpay-button" type="button" onClick={() => navigate(-1)}>Cancel</button>
                         <button className="paybuttons" type="submit" onClick={() => navigate('/home')}>Continue</button>
                     </div>
                 </form>

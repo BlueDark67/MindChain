@@ -299,6 +299,33 @@ const userMetrics = async (req, res) => {
   }
 };
 
+const deleteAccount = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    // Delete messages associated with the user
+    await MessageModel.deleteMany({ user: userId });
+
+    // Delete rooms associated with the user
+    const rooms = await RoomModel.find({ users: userId });
+    for (const room of rooms) {
+      room.users = room.users.filter((user) => user.toString() !== userId);
+      await room.save();
+    }
+
+    await UserModel.findByIdAndDelete(userId);
+
+    req.logout(function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.clearCookie("remember_token");
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -312,4 +339,5 @@ export default {
   fetchUserInfo,
   changeUserInfo,
   userMetrics,
+  deleteAccount,
 };

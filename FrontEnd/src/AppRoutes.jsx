@@ -54,7 +54,7 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/premium" element={<Premium />} />
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/metrics" element={<Metrics />} />
-        <Route path="/delete-account" element={<DeleteAccount />} />
+        <Route path="/delete-account" element={<DeleteAccount setIsAuthenticated={setIsAuthenticated}/>} />
         <Route path="/userpage/:userId" element={<Userpage />} />
 
         {/**Quero que metas isto a funcionar */}

@@ -29,5 +29,6 @@ router.post("/fetch-user-name", user.fetchUserName);
 router.post("/fetch-user-info", user.fetchUserInfo);
 router.post("/change-user-info", user.changeUserInfo);
 router.post("/user-metrics", user.userMetrics);
+router.post("/delete-account", user.deleteAccount);
 
 export default router;
