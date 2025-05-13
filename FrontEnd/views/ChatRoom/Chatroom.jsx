@@ -19,7 +19,7 @@ const Chatroom = () => {
     const [theme, setTheme] = useState("");
     const [isCreator, setIsCreator] = useState(false);
     const [endTime, setEndTime] = useState(null);
-    const[time, setTime] = useState(null);
+    const [time, setTime] = useState(null);
     const [preCountdown, setPreCountdown] = useState(null);
     const [canSend, setCanSend] = useState(true);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -34,6 +34,7 @@ const Chatroom = () => {
     const [activeUsers, setActiveUsers] = useState([]); 
     const [haveFinished, setHaveFinished] = useState(false);
     const [elapsedTimeDB, setElapsedTimeDB] = useState(0);
+    const [redirecting, setRedirecting] = useState(false);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -149,15 +150,15 @@ const Chatroom = () => {
     }, [roomId]);
 
     useEffect(() => {
-    let interval;
-    // Só inicia o timer se o tempo for ilimitado, a sala não tiver terminado e não houver timeOfSession guardado
-    if (time === -1 && !haveFinished && elapsedTimeDB === 0) {
-        interval = setInterval(() => {
-            setElapsedTime((prev) => prev + 1);
-        }, 1000);
-    }
-    return () => clearInterval(interval);
-}, [time, haveFinished, elapsedTime]);
+        let interval;
+        // Só inicia o timer se o tempo for ilimitado, a sala não tiver terminado e não houver timeOfSession guardado
+        if (time === -1 && !haveFinished && elapsedTimeDB === 0) {
+            interval = setInterval(() => {
+                setElapsedTime((prev) => prev + 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [time, haveFinished, elapsedTime]);
 
     useEffect(() => {
         function handleChatStarted({ start, duration }) {
@@ -195,6 +196,9 @@ const Chatroom = () => {
                 setChatStarted(false);
                 setCanSend(true);
                 socket.emit("stopChat", { roomId });
+                if(isCreator && !haveFinished){
+                    socket.emit("finishRoom", { roomId, elapsedTime: time});
+                }
             };
         }, 1000);
     
@@ -360,17 +364,29 @@ const Chatroom = () => {
 
     useEffect(() => {
         function handleRedirect({roomId}){
-            changePage(`chatroom-aitext/${roomId}`);
+
+            setRedirecting(true);
+            setTimeout(() => {
+                changePage(`chatroom-aitext/${roomId}`);
+            }, 2000);
         }
     socket.on("redirectToAiText", handleRedirect);
     return () => socket.off("redirectToAiText", handleRedirect);
     }, [changePage]);
 
     const handleRedirect = () => {
-        socket.emit("finishRoom", { roomId, elapsedTime });
+        if(isCreator && !haveFinished){
+            if(time === -1){
+                socket.emit("finishRoom", { roomId, elapsedTime: elapsedTime });
+            }else{
+                socket.emit("finishRoom", { roomId, elapsedTime: time });
+            }
+        }else if(haveFinished){
+            changePage(`chatroom-aitext/${roomId}`);
+        }
     }
 
-    if(loading){
+    if(loading || redirecting){
         return (
             <div className="loading-container-chat">
                 <div className="spinner-chat"></div>
@@ -483,7 +499,7 @@ const Chatroom = () => {
                                     <ButtonSimple
                                         text="Show AI text"
                                         variant="grey_purple"
-                                        size="w90h47"
+                                        size="w150h47"
                                         onClick={handleRedirect}
                                     />
                                 )}

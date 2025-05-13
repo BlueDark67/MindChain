@@ -223,6 +223,8 @@ export const generateChatResponse = async (req, res) => {
   try {
     const { roomId } = req.body;
 
+    const room = await roomModel.findById(roomId);
+
     const roomTheme = await roomModel.findById(roomId).populate("theme");
 
     const roomIdeas = await roomModel
@@ -265,10 +267,6 @@ export const generateChatResponse = async (req, res) => {
     const data = await response.json();
 
     const generatedText = data.choices[0].message.content;
-
-    console.log("Generated text:", generatedText);
-
-    const room = await roomModel.findById(roomId);
 
     if (!room) {
       return res.status(404).json({ error: "Room not found" });

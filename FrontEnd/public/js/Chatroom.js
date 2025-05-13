@@ -35,7 +35,6 @@ export const fetchMessages = async (roomId) => {
     });
     handleErros(res);
     const json = await res.json();
-    console.log(json);
     return json;
   } catch (err) {
     console.error(err);
@@ -60,4 +59,4 @@ export const restartRoom = async (roomId) => {
     console.error(err);
     return null;
   }
-}
+};
