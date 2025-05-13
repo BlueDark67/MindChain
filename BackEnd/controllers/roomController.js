@@ -274,8 +274,9 @@ export const generateChatResponse = async (req, res) => {
       return res.status(404).json({ error: "Room not found" });
     }
 
-    room.themesText = generatedText;
+    room.text = generatedText;
     room.lastActivity = new Date();
+    room.isActive = false;
     await room.save();
 
     res.json({ generatedText: generatedText, setLoading: false });

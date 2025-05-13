@@ -32,6 +32,8 @@ const Chatroom = () => {
     const [showUserTooltip, setShowUserTooltip] = useState(false);
     const [allUsers, setAllUsers] = useState([]); 
     const [activeUsers, setActiveUsers] = useState([]); 
+    const [haveFinished, setHaveFinished] = useState(false);
+    const [elapsedTimeDB, setElapsedTimeDB] = useState(0);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
@@ -116,6 +118,11 @@ const Chatroom = () => {
                 setAllUsers(data.users);
                 if(data.users[0]._id === userId){
                     setIsCreator(true);
+                }
+                setHaveFinished(!data.isActive);
+                if (!data.isActive && data.timeOfSession !== 0) {
+                    setElapsedTimeDB(data.timeOfSession);
+                    setCanSend(true);
                 }      
                 fetchMessages(roomId).then((messagesData) => {
                     if(messagesData){
@@ -142,14 +149,15 @@ const Chatroom = () => {
     }, [roomId]);
 
     useEffect(() => {
-        let interval;
-        if (time === -1) {
-            interval = setInterval(() => {
-                setElapsedTime((prev) => prev + 1);
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [time]);
+    let interval;
+    // Só inicia o timer se o tempo for ilimitado, a sala não tiver terminado e não houver timeOfSession guardado
+    if (time === -1 && !haveFinished && elapsedTimeDB === 0) {
+        interval = setInterval(() => {
+            setElapsedTime((prev) => prev + 1);
+        }, 1000);
+    }
+    return () => clearInterval(interval);
+}, [time, haveFinished, elapsedTime]);
 
     useEffect(() => {
         function handleChatStarted({ start, duration }) {
@@ -359,7 +367,7 @@ const Chatroom = () => {
     }, [changePage]);
 
     const handleRedirect = () => {
-        socket.emit("finishRoom", { roomId });
+        socket.emit("finishRoom", { roomId, elapsedTime });
     }
 
     if(loading){
@@ -405,13 +413,11 @@ const Chatroom = () => {
                     <h1 className="theme-title">Theme: {theme}</h1>
                     <div className={isCreator ? "creator-container" : "non-creator-container"}>
                         <div className="timer">
-                            {chatSynced ? (
+                            {haveFinished ? (
+                                `Elapsed time: ${Math.floor(elapsedTimeDB / 60).toString().padStart(2, '0')}:${(elapsedTimeDB % 60).toString().padStart(2, '0')} min`
+                            ) : chatSynced ? (
                                 time === -1
-                                    ? `Elapsed time: ${Math.floor(elapsedTime / 60)
-                                        .toString()
-                                        .padStart(2, '0')}:${(elapsedTime % 60)
-                                        .toString()
-                                        .padStart(2, '0')} min`
+                                    ? `Elapsed time: ${Math.floor(elapsedTime / 60).toString().padStart(2, '0')}:${(elapsedTime % 60).toString().padStart(2, '0')} min`
                                     : `Time left: ${timeLeft} s`
                             ) : (
                                 time === -1
@@ -421,7 +427,7 @@ const Chatroom = () => {
                         </div>
                         {isCreator && (
                             <>
-                                {!chatStarted && !pausedTime && (
+                                {!chatStarted && !pausedTime && !haveFinished &&(
                                     <ButtonSimple
                                         onClick={startChat}
                                         text="Start"
@@ -431,7 +437,7 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Stop: só aparece quando o chat está a decorrer */}
-                                {time === -1 && chatStarted && (
+                                {time === -1 && chatStarted && !haveFinished && (
                                     <ButtonSimple
                                         onClick={handleStopChat}
                                         text="Stop"
@@ -441,7 +447,7 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Continue aparece quando chat está parado, há tempo restante e não está em modo ilimitado */}
-                                {time === -1 && !chatStarted && pausedTime && (
+                                {time === -1 && !chatStarted && pausedTime && !haveFinished && (
                                     <ButtonSimple
                                         onClick={handleContinueChat}
                                         text="Continue"
@@ -460,7 +466,7 @@ const Chatroom = () => {
                                     />
                                 )}
 
-                                {time === -1 && !chatStarted && (canSend || pausedTime) && (
+                                {time === -1 && !chatStarted && (canSend || pausedTime)&& !haveFinished && (
                                     <ButtonSimple
                                         text="Finish"
                                         variant="grey_purple"
@@ -468,8 +474,19 @@ const Chatroom = () => {
                                         onClick={handleRedirect}
                                     />
                                 )}
+
+                                
                             </>
                         )}
+
+                        {haveFinished &&(
+                                    <ButtonSimple
+                                        text="Show AI text"
+                                        variant="grey_purple"
+                                        size="w90h47"
+                                        onClick={handleRedirect}
+                                    />
+                                )}
                     </div>  
                 </div>
 

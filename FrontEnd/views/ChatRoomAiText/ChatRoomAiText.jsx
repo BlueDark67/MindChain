@@ -4,16 +4,16 @@ import './ChatRoomAiText.css';
 import BackButton from '../../src/components/backButton/backButton';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { generateChatResponse } from '../../public/js/ChatroomAI.js';
+import { generateChatResponse, fetchRoomInfo } from '../../public/js/ChatroomAI.js';
+
 
 
 const ChatRoomAiText = () => {
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState("");
   const { roomId } = useParams();
 
   // Hardcoded content instead of database import
-  const theme = "Farm animals";
-  const title = "Exploring Farm Animals: Inspired by Shared Ideas";
   /*const textContent = [
     "This text was created based on the ideas submitted, which included \"Rabbit,\" \"Carrot,\" \"Food,\" and \"Pig.\" These elements offer a glimpse into the rich and diverse environment of farm life, where animals and agriculture thrive together.",
     "Farm animals play a crucial role in providing food, labor, and companionship to humans. Rabbits, for example, are commonly found on farms, known for their soft fur and quick breeding cycles. While rabbits are often seen as pets, they also contribute to sustainable farming through their efficient manure production, which enriches the soil for crops like carrots. Carrots, being a popular root vegetable, serve as both a nutritious food source for humans and a tasty treat for various farm animals.",
@@ -33,12 +33,24 @@ const ChatRoomAiText = () => {
     document.title = "ChatRoom Final";
     document.body.classList.add('gradient_background_BP');
 
-    generateChatResponse(roomId).then((data) => {
+    fetchRoomInfo(roomId).then((data) => {
       if(data){
-        setLoading(data.setLoading);
-        setTextContent(data.generatedText);
+        setTheme(data.theme);
+        if(data.text !== null){
+          setTextContent(data.text);
+          setLoading(false);
+        }else{
+          generateChatResponse(roomId).then((response) => {
+            if(response){
+              setTextContent(response.generatedText);
+              setLoading(response.setLoading);
+            }
+          });
+        }
       }
     });
+
+    
     
     return () => {
       document.body.classList.remove('gradient_background_BP');
@@ -60,12 +72,8 @@ const ChatRoomAiText = () => {
         <h1 className="theme-heading">Theme : {theme}</h1>
         
         <div className="content-box">
-          <h2 className="title">Title: {title}</h2>
-          
+                  
           <div className="text-content">
-            {/*{textContent.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}*/}
             <p>{textContent}</p>
           </div>
         </div>

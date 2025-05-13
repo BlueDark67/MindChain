@@ -144,6 +144,14 @@
     gap: 25px;
 }
 
+.non-creator-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 25px;
+}
+
 .pre-countdown{
     font-size: 24px;
     font-weight: bold;

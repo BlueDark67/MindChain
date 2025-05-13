@@ -6,7 +6,7 @@ const BackButton = ({ customClass = "" }) => {
   const navigate = useNavigate();
   
   const handleGoBack = () => {
-    navigate(-1); 
+    navigate(-1);
   };
 
   return (
