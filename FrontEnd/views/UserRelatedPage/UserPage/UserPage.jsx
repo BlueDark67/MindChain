@@ -10,6 +10,7 @@ import { useState } from 'react';
 
 function UserPage() {
     const [username, setUsername] = useState("");
+    const [subscriptionPlan, setSubscriptionPlan] = useState("");
 
     const userId = localStorage.getItem("userId");
 
@@ -18,8 +19,10 @@ function UserPage() {
             document.body.classList.add('gradient_background_BB');
 
             fetchUserName(userId).then((data) => {
+                console.log("data", data);
                 if (data){
                     setUsername(data.username);
+                    setSubscriptionPlan(data.subscriptionPlan);
                 }
             
                 return () => {
@@ -42,6 +45,7 @@ function UserPage() {
     
                     <div className="info-box">
                         <div className="usernameuserpage">{username}</div>
+                        <div className='usernameuserpage'>Subscription Plan: {subscriptionPlan}</div> 
                         <div className="language">
                         pt <img className="flag" src={flag} alt="flag" />
                         </div>

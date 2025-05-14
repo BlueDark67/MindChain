@@ -197,7 +197,10 @@ const fetchUserName = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json({ username: user.username });
+    res.json({
+      username: user.username,
+      subscriptionPlan: user.subscriptionPlan,
+    });
   } catch (error) {
     console.error("Error fetching user info:", error);
     return res.status(500).json({ error: error.message });
@@ -326,6 +329,23 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const changeSubscriptionPlan = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const newSubscriptionPlan = "Premium";
+    user.subscriptionPlan = newSubscriptionPlan;
+    await user.save();
+    res.json({ changeConfirmation: true });
+  } catch (error) {
+    console.error("Error changing subscription plan:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -340,4 +360,5 @@ export default {
   changeUserInfo,
   userMetrics,
   deleteAccount,
+  changeSubscriptionPlan,
 };

@@ -30,5 +30,6 @@ router.post("/fetch-user-info", user.fetchUserInfo);
 router.post("/change-user-info", user.changeUserInfo);
 router.post("/user-metrics", user.userMetrics);
 router.post("/delete-account", user.deleteAccount);
+router.post("/change-subscription-plan", user.changeSubscriptionPlan);
 
 export default router;

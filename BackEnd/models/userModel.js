@@ -12,6 +12,8 @@ var userSchema = new mongoose.Schema({
   // Campos para lembrar o usuário
   rememberToken: { type: String },
   tokenExpires: { type: Date },
+  subscriptionPlan: { type: String, required: true, default: "Standard" },
+  paymentMethod: { type: String, required: false },
 });
 //alterei isto
 //Como é que querias que ele usasse o email se nao defenias isso
