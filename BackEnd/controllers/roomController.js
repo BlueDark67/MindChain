@@ -247,7 +247,7 @@ export const generateChatResponse = async (req, res) => {
     ${roomIdeas.messages.map((message) => message.content).join("\n")}
     `;
 
-    const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
+    //const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
 
     const response = await fetch("http://localhost:1234/v1/chat/completions", {
       method: "POST",
