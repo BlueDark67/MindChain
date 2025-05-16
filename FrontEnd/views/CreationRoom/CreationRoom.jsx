@@ -81,7 +81,7 @@ function CreationRoom() {
   }
        
   return (
-    <div>
+    <div className="creation-room-container">
       <Sidebar/>
       <h1 className="h1-create">Creation Room</h1>
       <form className="creation-room-form-inputs" method="POST" onSubmit={handleSubmit}>
