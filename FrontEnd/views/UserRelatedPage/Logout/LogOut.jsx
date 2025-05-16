@@ -5,6 +5,7 @@ import '../../Global.css';
 
 function LogOut({ setIsAuthenticated }) {
     const navigate = useNavigate();
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         document.title = "Log Out";
@@ -55,7 +56,7 @@ function LogOut({ setIsAuthenticated }) {
             <div className="containerLogout">
                 <h1 className="logout">Are you sure you want to log out?</h1>
                 <div className="button-container">
-                    <button className="cancel-button" onClick={() => changePage("UserPage")}>Cancel</button>
+                    <button className="cancel-button" onClick={() => changePage(`userpage/${userId}`)}>Cancel</button>
                     <button className="logout-button" onClick={handleLogout}>Log Out</button>
                 </div>
             </div>
