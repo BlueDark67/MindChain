@@ -4,15 +4,32 @@ import avatar from '../../../public/avatarfundo.png';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import flag from '../../../public/flag.png';
+import { fetchUserName } from '../../../public/js/UserPage';
+import { useState } from 'react';
+
 
 function UserPage() {
+    const [username, setUsername] = useState("");
+    const [subscriptionPlan, setSubscriptionPlan] = useState("");
+
+    const userId = localStorage.getItem("userId");
+
     useEffect(() => {
             document.title = "User Page";
             document.body.classList.add('gradient_background_BB');
-    
-            return () => {
-                document.body.classList.remove('gradient_background_BB');
-            };
+
+            fetchUserName(userId).then((data) => {
+                console.log("data", data);
+                if (data){
+                    setUsername(data.username);
+                    setSubscriptionPlan(data.subscriptionPlan);
+                }
+            
+                return () => {
+                    document.body.classList.remove('gradient_background_BB');
+                }
+            });
+
         }, []);
 
         const navigate = useNavigate();
@@ -27,7 +44,8 @@ function UserPage() {
                     <img className="avataruserpage" src={avatar} alt="profile" />
     
                     <div className="info-box">
-                        <div className="usernameuserpage">Jorge Santos</div>
+                        <div className="usernameuserpage">{username}</div>
+                        <div className='usernameuserpage'>Subscription Plan: {subscriptionPlan}</div> 
                         <div className="language">
                         pt <img className="flag" src={flag} alt="flag" />
                         </div>
@@ -39,7 +57,7 @@ function UserPage() {
                     <div className="button-containeruserpage">
                         <button className="buttonuserpage" onClick={() => changePage("personal-data")}>Personal Data</button>
                         <button className="buttonuserpage" onClick={() => changePage("metrics")}>Metrics</button>
-                        <button className="buttonuserpage" onClick={() => changePage("security")}>Security</button>
+                        <button className="buttonuserpage" onClick={() => changePage("new-password")}>Security</button>
                         <button className="buttonuserpage" onClick={() => changePage("progress")}>Progress</button>
                         <button className="buttonuserpage" onClick={() => changePage("premium")}>Premium</button>
                         <button className="buttonuserpage" onClick={() => changePage("delete-account")}>Delete Account</button>
@@ -51,6 +69,5 @@ function UserPage() {
                 </div>
             </div>
         );
-    }
-    
+}
 export default UserPage;

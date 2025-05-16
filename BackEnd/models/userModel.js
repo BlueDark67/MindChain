@@ -11,13 +11,15 @@ var userSchema = new mongoose.Schema({
   nationality: { type: String, required: false },
   // Campos para lembrar o usuário
   rememberToken: { type: String },
-  tokenExpires: { type: Date }
+  tokenExpires: { type: Date },
+  subscriptionPlan: { type: String, required: true, default: "Standard" },
+  paymentMethod: { type: String, required: false },
 });
 //alterei isto
 //Como é que querias que ele usasse o email se nao defenias isso
 userSchema.plugin(passportLocalMongoose, {
-  usernameField: 'username',
-  usernameQueryFields: ['email'] // Permite pesquisar pelo email além do username
+  usernameField: "username",
+  usernameQueryFields: ["email"], // Permite pesquisar pelo email além do username
 });
 //module.exports = mongoose.model("User", userSchema);
 export default mongoose.model("User", userSchema);

@@ -13,6 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const UserModel = require("../models/userModel").default;
+const MessageModel = require("../models/messageModel").default;
+const RoomModel = require("../models/roomModel").default;
 
 var nodemailer = require("nodemailer");
 
@@ -180,10 +182,166 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({ error: "Error setting new password" });
       }
       await userFound.save();
-      res.json({ view: "login" });
+      res.json({ view: "login", confirmation: true });
     });
   } catch (error) {
     console.error("Error finding user:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchUserName = async (req, res) => {
+  const { userId: userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({
+      username: user.username,
+      subscriptionPlan: user.subscriptionPlan,
+    });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const fetchUserInfo = async (req, res) => {
+  const { userId: userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ user });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const changeUserInfo = async (req, res) => {
+  const { userId, username, email, birthdate, nationality } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (username !== "") {
+      user.username = username;
+    }
+    if (email !== "") {
+      user.email = email;
+    }
+    if (birthdate !== "") {
+      user.birthdate = birthdate;
+    }
+    if (nationality !== "") {
+      user.nationality = nationality;
+    }
+    await user.save();
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const userMetrics = async (req, res) => {
+  const { userId: userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const rooms = await RoomModel.find({ users: userId });
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({ error: "No rooms found for this user" });
+    }
+
+    const messages = await MessageModel.find({ user: userId });
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ error: "No messages found for this user" });
+    }
+
+    const averageTime =
+      rooms.length > 0
+        ? rooms.reduce((acc, room) => acc + room.timeOfSession, 0) /
+          rooms.length
+        : 0;
+    const timeBrainstorming = rooms.reduce(
+      (acc, room) => acc + room.timeOfSession,
+      0
+    );
+
+    const messagesByRoom = {};
+    messages.forEach((msg) => {
+      messagesByRoom[msg.room] = (messagesByRoom[msg.room] || 0) + 1;
+    });
+    const favoriteRoomId = Object.keys(messagesByRoom).reduce(
+      (a, b) => (messagesByRoom[a] > messagesByRoom[b] ? a : b),
+      null
+    );
+    const favoriteThemeByMessages = favoriteRoomId
+      ? rooms.find((room) => room._id.toString() === favoriteRoomId)?.theme ||
+        null
+      : null;
+
+    const favoriteTheme = favoriteThemeByMessages;
+
+    res.json({
+      numberSessions: rooms.length,
+      averageTime: averageTime,
+      timeBrainstorming: timeBrainstorming,
+      favoriteTheme: favoriteTheme,
+    });
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    // Delete messages associated with the user
+    await MessageModel.deleteMany({ user: userId });
+
+    // Delete rooms associated with the user
+    const rooms = await RoomModel.find({ users: userId });
+    for (const room of rooms) {
+      room.users = room.users.filter((user) => user.toString() !== userId);
+      await room.save();
+    }
+
+    await UserModel.findByIdAndDelete(userId);
+
+    req.logout(function (err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.clearCookie("remember_token");
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const changeSubscriptionPlan = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const newSubscriptionPlan = "Premium";
+    user.subscriptionPlan = newSubscriptionPlan;
+    await user.save();
+    res.json({ changeConfirmation: true });
+  } catch (error) {
+    console.error("Error changing subscription plan:", error);
     return res.status(500).json({ error: error.message });
   }
 };
@@ -197,4 +355,10 @@ export default {
   sendEmailResetPassword,
   loginFail,
   resetPassword,
+  fetchUserName,
+  fetchUserInfo,
+  changeUserInfo,
+  userMetrics,
+  deleteAccount,
+  changeSubscriptionPlan,
 };

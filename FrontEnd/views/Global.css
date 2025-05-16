@@ -9,10 +9,11 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
          #000000 100%
       );
       min-height: 100vh;
+      margin: 0;
       width: 100vw;
       position: relative;
       overflow-x: hidden;
-      overflow-y: hidden;
+      overflow-y: auto;
       font-family: "Inter-Regular", sans-serif;
       color: white;
 
@@ -67,5 +68,5 @@ nao pode ser aplicado em tudo senao ficas sem ver o conteudo se*/
 }
 
 .allow_scroll{
-    overflow-y: scroll !important;
+    /*overflow-y: scroll !important;*/
 }

@@ -1,4 +1,5 @@
 import userModel from "./models/userModel.js";
+import roomModel from "./models/roomModel.js";
 
 const roomStates = {};
 const activeUsersByRoom = {};
@@ -90,6 +91,14 @@ export default function (io) {
         );
         io.to(roomId).emit("activeUsers", activeUsersByRoom[roomId]);
       }
+    });
+
+    socket.on("finishRoom", async ({ roomId, elapsedTime }) => {
+      const room = await roomModel.findById(roomId);
+      if (!room) return;
+      room.timeOfSession = elapsedTime;
+      await room.save();
+      io.to(roomId).emit("redirectToAiText", { roomId });
     });
   });
 }

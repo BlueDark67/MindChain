@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Chatroom.css";
 import '../Global.css';
 import MessageBubble from "../../src/components/messageBubble/messageBubble";
@@ -8,8 +9,6 @@ import Button from "../../src/components/button/Button";
 import BackButton from "../../src/components/backButton/backButton.jsx";
 import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
-
-
 
 const socket = io("ws://localhost:3000")
 
@@ -20,7 +19,7 @@ const Chatroom = () => {
     const [theme, setTheme] = useState("");
     const [isCreator, setIsCreator] = useState(false);
     const [endTime, setEndTime] = useState(null);
-    const[time, setTime] = useState(null);
+    const [time, setTime] = useState(null);
     const [preCountdown, setPreCountdown] = useState(null);
     const [canSend, setCanSend] = useState(true);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -33,12 +32,22 @@ const Chatroom = () => {
     const [showUserTooltip, setShowUserTooltip] = useState(false);
     const [allUsers, setAllUsers] = useState([]); 
     const [activeUsers, setActiveUsers] = useState([]); 
+    const [haveFinished, setHaveFinished] = useState(false);
+    const [elapsedTimeDB, setElapsedTimeDB] = useState(0);
+    const [redirecting, setRedirecting] = useState(false);
     
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
     
     // Trocar a referência do elemento final para o container de mensagens
     const messagesContainerRef = useRef(null);
+
+    const navigate = useNavigate();
+
+    const changePage = (page) => {
+        navigate("/" + page);
+    }
+
     
     // Função para fazer scroll até o final usando scrollTop em vez de scrollIntoView
     const scrollToBottom = () => {
@@ -110,6 +119,11 @@ const Chatroom = () => {
                 setAllUsers(data.users);
                 if(data.users[0]._id === userId){
                     setIsCreator(true);
+                }
+                setHaveFinished(!data.isActive);
+                if (!data.isActive && data.timeOfSession !== 0) {
+                    setElapsedTimeDB(data.timeOfSession);
+                    setCanSend(true);
                 }      
                 fetchMessages(roomId).then((messagesData) => {
                     if(messagesData){
@@ -137,13 +151,14 @@ const Chatroom = () => {
 
     useEffect(() => {
         let interval;
-        if (time === -1) {
+        // Só inicia o timer se o tempo for ilimitado, a sala não tiver terminado e não houver timeOfSession guardado
+        if (time === -1 && !haveFinished && elapsedTimeDB === 0) {
             interval = setInterval(() => {
                 setElapsedTime((prev) => prev + 1);
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [time]);
+    }, [time, haveFinished, elapsedTime]);
 
     useEffect(() => {
         function handleChatStarted({ start, duration }) {
@@ -181,6 +196,9 @@ const Chatroom = () => {
                 setChatStarted(false);
                 setCanSend(true);
                 socket.emit("stopChat", { roomId });
+                if(isCreator && !haveFinished){
+                    socket.emit("finishRoom", { roomId, elapsedTime: time});
+                }
             };
         }, 1000);
     
@@ -344,7 +362,31 @@ const Chatroom = () => {
         return () => socket.off("activeUsers");
     }, []);
 
-    if(loading){
+    useEffect(() => {
+        function handleRedirect({roomId}){
+
+            setRedirecting(true);
+            setTimeout(() => {
+                changePage(`chatroom-aitext/${roomId}`);
+            }, 2000);
+        }
+    socket.on("redirectToAiText", handleRedirect);
+    return () => socket.off("redirectToAiText", handleRedirect);
+    }, [changePage]);
+
+    const handleRedirect = () => {
+        if(isCreator && !haveFinished){
+            if(time === -1){
+                socket.emit("finishRoom", { roomId, elapsedTime: elapsedTime });
+            }else{
+                socket.emit("finishRoom", { roomId, elapsedTime: time });
+            }
+        }else if(haveFinished){
+            changePage(`chatroom-aitext/${roomId}`);
+        }
+    }
+
+    if(loading || redirecting){
         return (
             <div className="loading-container-chat">
                 <div className="spinner-chat"></div>
@@ -387,13 +429,11 @@ const Chatroom = () => {
                     <h1 className="theme-title">Theme: {theme}</h1>
                     <div className={isCreator ? "creator-container" : "non-creator-container"}>
                         <div className="timer">
-                            {chatSynced ? (
+                            {haveFinished ? (
+                                `Elapsed time: ${Math.floor(elapsedTimeDB / 60).toString().padStart(2, '0')}:${(elapsedTimeDB % 60).toString().padStart(2, '0')} min`
+                            ) : chatSynced ? (
                                 time === -1
-                                    ? `Elapsed time: ${Math.floor(elapsedTime / 60)
-                                        .toString()
-                                        .padStart(2, '0')}:${(elapsedTime % 60)
-                                        .toString()
-                                        .padStart(2, '0')} min`
+                                    ? `Elapsed time: ${Math.floor(elapsedTime / 60).toString().padStart(2, '0')}:${(elapsedTime % 60).toString().padStart(2, '0')} min`
                                     : `Time left: ${timeLeft} s`
                             ) : (
                                 time === -1
@@ -403,7 +443,7 @@ const Chatroom = () => {
                         </div>
                         {isCreator && (
                             <>
-                                {!chatStarted && !pausedTime && (
+                                {!chatStarted && !pausedTime && !haveFinished &&(
                                     <ButtonSimple
                                         onClick={startChat}
                                         text="Start"
@@ -413,7 +453,7 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Stop: só aparece quando o chat está a decorrer */}
-                                {time === -1 && chatStarted && (
+                                {time === -1 && chatStarted && !haveFinished && (
                                     <ButtonSimple
                                         onClick={handleStopChat}
                                         text="Stop"
@@ -423,7 +463,7 @@ const Chatroom = () => {
                                 )}
 
                                 {/* Botão Continue aparece quando chat está parado, há tempo restante e não está em modo ilimitado */}
-                                {time === -1 && !chatStarted && pausedTime && (
+                                {time === -1 && !chatStarted && pausedTime && !haveFinished && (
                                     <ButtonSimple
                                         onClick={handleContinueChat}
                                         text="Continue"
@@ -442,15 +482,27 @@ const Chatroom = () => {
                                     />
                                 )}
 
-                                {time === -1 && !chatStarted && (canSend || pausedTime) && (
+                                {time === -1 && !chatStarted && (canSend || pausedTime)&& !haveFinished && (
                                     <ButtonSimple
                                         text="Finish"
                                         variant="grey_purple"
                                         size="w90h47"
+                                        onClick={handleRedirect}
                                     />
                                 )}
+
+                                
                             </>
                         )}
+
+                        {haveFinished &&(
+                                    <ButtonSimple
+                                        text="Show AI text"
+                                        variant="grey_purple"
+                                        size="w150h47"
+                                        onClick={handleRedirect}
+                                    />
+                                )}
                     </div>  
                 </div>
 

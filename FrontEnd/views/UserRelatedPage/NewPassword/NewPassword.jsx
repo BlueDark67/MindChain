@@ -2,6 +2,7 @@ import './NewPassword.css';
 import '../../Global.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { changePassword } from '../../../public/js/NewPassword';
 
 function NewPassword() {
     useEffect(() => {
@@ -15,17 +16,34 @@ function NewPassword() {
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     const handlePasswordChange = (e) => setPassword(e.target.value);
     const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
 
+    const userId = localStorage.getItem('userId');
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        if(password === ""){
+            setError("New password cannot be empty");
+            return;
+        }
+        if(confirmPassword === ""){
+            setError("Confirm password cannot be empty");
+            return;
+        }
         if (password === confirmPassword) {
-            console.log('Password changed successfully!');
+            changePassword(userId, password).then((response) => {
+                if (response && response.confirmation) {
+                    navigate('/home');
+                } else {
+                    setError('Error changing password');
+                }
+            });
         } else {
-            console.error('Passwords do not match!');
+            setError('Passwords do not match');
         }
     };
 
@@ -35,33 +53,36 @@ function NewPassword() {
         <div className="container-wrappernewpassword">
             <div className="password-container">
                 {/* Contêiner para os campos de senha e botões */}
-                <div className="password-fields">
-                    <label>
-                        New Password
-                        <input
-                            placeholder="@A_12bd4"
-                            type="password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            required
-                        />
-                    </label>
-                    <label>
-                        Confirm Password
-                        <input
-                            placeholder="@A_12bd4"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={handleConfirmPasswordChange}
-                            required
-                        />
-                    </label>
-                    <div className="button-group">
-                        <button type="button" className="cancelnewpassword" onClick={() => changePage("userpage")}>Cancel</button>
-                        <button type="submit" className="buttonnewpassword">Continue</button>
+                <form onSubmit={handleSubmit} className="password-form">
+                    <div className="password-fields">
+                        <label>
+                            New Password
+                            <input
+                                placeholder="New password"
+                                type="password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                
+                            />
+                        </label>
+                        <label>
+                            Confirm Password
+                            <input
+                                placeholder="Confirm new password"
+                                type="password"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                
+                            />
+                        </label>
+                        {error && <p className="error-message">{error}</p>}
+                        <div className="button-group">
+                            <button type="button" className="cancelnewpassword" onClick={() => changePage("userpage")}>Cancel</button>
+                            <button type="submit" className="buttonnewpassword">Continue</button>
+                        </div>
+                
                     </div>
-                </div>
-    
+                </form>
                 {/* Contêiner para os requisitos da senha */}
                 <div className="password-requirements">
                     <p>Password must contain:</p>

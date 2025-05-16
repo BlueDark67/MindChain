@@ -2,6 +2,7 @@ import { createRequire } from "module";
 import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
+import { LMStudioClient } from "@lmstudio/sdk";
 
 //const bcrypt = require("bcrypt");
 
@@ -218,6 +219,117 @@ export const restartRoom = async (req, res) => {
   }
 };
 
+export const generateChatResponse = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+
+    const room = await roomModel.findById(roomId);
+
+    const roomTheme = await roomModel.findById(roomId).populate("theme");
+
+    const roomIdeas = await roomModel
+      .findById(roomId)
+      .populate("messages", "content");
+
+    if (!roomIdeas) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    const systemPrompt = `You will receive a list of ideas submitted by different participants during a brainstorming session on the theme "${roomTheme}".
+    Your task is to:
+    - Interpret and organize these ideas logically according to the theme.
+    - Fill in any gaps to ensure smooth flow and coherence.
+    - Write only the final text, structured with introduction, body, and conclusion, in a [choose: creative / professional / inspiring / technical] tone.
+    - Do not include any explanations, reasoning, thoughts, comments, or <think> tags, nor any text outside the final article.
+    - The text should be around 1000 words, avoid repetition, and have an engaging style.`;
+
+    const userPrompt = `Here are the ideas:
+    ${roomIdeas.messages.map((message) => message.content).join("\n")}
+    `;
+
+    //const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
+
+    /*const response = await fetch("http://localhost:1234/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "deepseek-r1-distill-qwen-7b",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.6,
+        max_tokens: 1000,
+        stream: false,
+      }),
+    });
+
+    
+
+    const data = await response.json();
+
+    const generatedText = data.choices[0].message.content;*/
+
+    const LM_STUDIO_URL = process.env.LM_STUDIO_URL;
+
+    const payload = {
+      model: "llama-3.2-1b-claude-3.7-sonnet-reasoning-distilled",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.6,
+      max_tokens: 1000,
+      stream: true,
+    };
+
+    const lmResponse = await fetch(LM_STUDIO_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    const reader = lmResponse.body.getReader();
+    const decoder = new TextDecoder();
+    let generatedText = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value);
+      // Processa cada linha do chunk
+      chunk.split("\n").forEach((line) => {
+        if (line.startsWith("data: ")) {
+          try {
+            const json = JSON.parse(line.replace("data: ", ""));
+            // Usa o json como quiseres
+            generatedText += json.choices?.[0]?.delta?.content || "";
+          } catch (e) {
+            // ignora linhas que não são JSON válidas
+          }
+        }
+      });
+    }
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    room.text = generatedText;
+    room.lastActivity = new Date();
+    room.isActive = false;
+    await room.save();
+
+    res.json({ generatedText: generatedText, setLoading: false });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   roomPost,
   readFile,
@@ -227,4 +339,5 @@ export default {
   fetchHistory,
   fetchRoomInfo,
   restartRoom,
+  generateChatResponse,
 };

@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import "./Menu.css";
 import MindChainLogo_2 from '../../../public/Icon-Menu/MindChainLogo_2.png';
 
+const userId = localStorage.getItem("userId");
+
 const menuItems = [
   { label: "HomePage", icon: "/Icon-Menu/Home.png", href: "/home" },
-  { label: "User Panel", icon: "/Icon-Menu/UserPanel.png", href: "/personal-data" },
-  { label: "Activities", icon: "/Icon-Menu/Activity.png", href: "/activities" },
+  { label: "User Panel", icon: "/Icon-Menu/UserPanel.png", href: `/userpage/${userId}` },
+  { label: "Activities", icon: "/Icon-Menu/Activity.png", href: "/metrics" },
   { label: "Premium", icon: "/Icon-Menu/Premium.png", href: "/premium" },
-  { label: "About Us", icon: "/Icon-Menu/AboutUs.png", href: "/about" },
+  { label: "About Us", icon: "/Icon-Menu/AboutUs.png", href: "/aboutus" },
   { label: "Log out", icon: "/Icon-Menu/Logout.png", href: "/logout" },
 ];
 
