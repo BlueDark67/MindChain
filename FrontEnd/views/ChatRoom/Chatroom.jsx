@@ -9,6 +9,8 @@ import Button from "../../src/components/button/Button";
 import BackButton from "../../src/components/backButton/backButton.jsx";
 import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
+import { generateChatResponse } from "../../public/js/Chatroom.js"; // importa a função se necessário
+
 
 const socket = io("ws://localhost:3000")
 
@@ -374,11 +376,15 @@ const Chatroom = () => {
     return () => socket.off("redirectToAiText", handleRedirect);
     }, [changePage]);
 
-    const handleRedirect = () => {
+
+
+    const handleRedirect = async () => {
         if(isCreator && !haveFinished){
             if(time === -1){
+                await generateChatResponse(roomId)
                 socket.emit("finishRoom", { roomId, elapsedTime: elapsedTime });
             }else{
+                await generateChatResponse(roomId)
                 socket.emit("finishRoom", { roomId, elapsedTime: time });
             }
         }else if(haveFinished){

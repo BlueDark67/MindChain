@@ -278,8 +278,8 @@ export const generateChatResponse = async (req, res) => {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.6,
-      max_tokens: 1000,
+      temperature: 0.7,
+      max_tokens: 10000,
       stream: true,
     };
 
@@ -297,17 +297,43 @@ export const generateChatResponse = async (req, res) => {
     const decoder = new TextDecoder();
     let generatedText = "";
 
+    let isInThinkingBlock = false;
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       const chunk = decoder.decode(value);
-      // Processa cada linha do chunk
+
       chunk.split("\n").forEach((line) => {
         if (line.startsWith("data: ")) {
           try {
             const json = JSON.parse(line.replace("data: ", ""));
-            // Usa o json como quiseres
-            generatedText += json.choices?.[0]?.delta?.content || "";
+            let content = json.choices?.[0]?.delta?.content || "";
+
+            // Lógica para remover texto entre <think> e </think>
+            while (content.length > 0) {
+              if (!isInThinkingBlock) {
+                const thinkStart = content.indexOf("<think>");
+                if (thinkStart === -1) {
+                  generatedText += content;
+                  content = "";
+                } else {
+                  generatedText += content.slice(0, thinkStart);
+                  content = content.slice(thinkStart + 7); // 7 = "<think>".length
+                  isInThinkingBlock = true;
+                }
+              } else {
+                const thinkEnd = content.indexOf("</think>");
+                if (thinkEnd === -1) {
+                  // Ignora tudo até encontrar </think>
+                  content = "";
+                } else {
+                  // Sai do bloco <think>
+                  content = content.slice(thinkEnd + 8); // 8 = "</think>".length
+                  isInThinkingBlock = false;
+                }
+              }
+            }
           } catch (e) {
             // ignora linhas que não são JSON válidas
           }
