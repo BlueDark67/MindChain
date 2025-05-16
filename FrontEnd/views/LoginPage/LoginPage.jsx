@@ -4,9 +4,10 @@ import '../Global.css';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import MindChain from '../../public/MindChain.png';
-import { handleErros, validateForm} from '../../public/js/LoginPage.js';
+import { validateForm, loginUser, saveRememberMeData, loadRememberMeData,detectBrowserAutofill} from '../../public/js/LoginPage.js';
 import PasswordToggle from '../../src/components/passwordToggle/passwordToggle.jsx';
 import ButtonSubmit from '../../src/components/buttonSubmit/buttonSubmit.jsx';
+
 function LoginPage({setIsAuthenticated, isAuthenticated}) {
     const [loginIdentifier, setLoginIdentifier] = useState("");
     const [password, setPassword] = useState("");
@@ -18,93 +19,58 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
-
-
-
     useEffect(() => {
-            document.title = "Login Page";
-            document.body.classList.add('gradient_background_BPB');
+        document.title = "Login Page";
+        document.body.classList.add('gradient_background_BPB');
 
-            if(isAuthenticated){
-                navigate("/home");
-            }
+        if(isAuthenticated){
+            navigate("/home");
+        }
 
-            if(page){
-                navigate(`/${page}`);
-            }
+        if(page){
+            navigate(`/${page}`);
+        }
 
-            return () => {
-                document.body.classList.remove('gradient_background_BPB');
-            }
-        }, [page, isAuthenticated, navigate]);
-
+        return () => {
+            document.body.classList.remove('gradient_background_BPB');
+        }
+    }, [page, isAuthenticated, navigate]);
         
-    const changePage = ( page) => {
+    const changePage = (page) => {
         setPage(page);
     }
 
-        // Adicione logo após a declaração dos estados e navigate
+    // Carrega dados salvos do "Remember Me"
     useEffect(() => {
-        // Verifica se há dados salvos no localStorage
-        const savedUser = localStorage.getItem('login_rememberedUser');
-        if (savedUser) {
-            try {
-                // Tenta fazer o parse dos dados salvos
-                const userData = JSON.parse(savedUser);
-                setLoginIdentifier(userData.loginIdentifier || "");
-                // Não carregamos a senha por questões de segurança
-            } catch (error) {
-                console.error("Erro ao carregar dados salvos:", error);
-                localStorage.removeItem('login_rememberedUser');
-            }
+        const userData = loadRememberMeData();
+        if (userData && userData.loginIdentifier) {
+            setLoginIdentifier(userData.loginIdentifier);
         }
     }, []);
 
-    // useEffect para detectar preenchimento automático - executado apenas UMA VEZ
+    // Detecta autopreenchimento do navegador
     useEffect(() => {
-        // Primeiro ativa o foco/desfoco para "provocar" o preenchimento
-        const usernameInput = document.getElementById('loginIdentifier');
-        const passwordInput = document.getElementById('password');
-        
-        // Pequeno atraso antes de iniciar a sequência
-        const initialDelay = setTimeout(() => {
-        // Sequência de foco e desfoco
-        if (usernameInput) usernameInput.focus();
-        setTimeout(() => {
-            if (usernameInput) usernameInput.blur();
-            if (passwordInput) passwordInput.focus();
-            setTimeout(() => {
-            if (passwordInput) passwordInput.blur();
-            }, 10);
-        }, 10);
-        
-        // Depois de dar tempo para o navegador preencher, verifica o resultado
-        const detectionTimeout = setTimeout(() => {
-            // Várias maneiras de detectar preenchimento automático
-            const hasAutofill = 
-            document.querySelector('input:-webkit-autofill') || 
-            (usernameInput && usernameInput.value && loginIdentifier === "") ||
-            (passwordInput && passwordInput.value && password === "");
+        const checkAutofill = async () => {
+            const hasAutofill = await detectBrowserAutofill(
+                (inputValue) => inputValue !== loginIdentifier
+            );
             
             if (hasAutofill) {
-            setHasSavedCredentials(true);
-            
-            // Sincroniza apenas o nome de usuário se estiver preenchido automaticamente
-            if (usernameInput && usernameInput.value && loginIdentifier === "") {
-                setLoginIdentifier(usernameInput.value);
+                setHasSavedCredentials(true);
+                
+                // Atualiza o estado se o input foi preenchido automaticamente
+                const usernameInput = document.getElementById('loginIdentifier');
+                if (usernameInput && usernameInput.value && usernameInput.value !== loginIdentifier) {
+                    setLoginIdentifier(usernameInput.value);
+                }
             }
-            }
-        }, 500);
+        };
         
-        return () => clearTimeout(detectionTimeout);
-        }, 100); // Atraso antes de iniciar a sequência
-        
-        return () => clearTimeout(initialDelay);
-    }, []); // Array vazio = executa apenas uma vez quando o componente monta
+        checkAutofill();
+    }, []);
 
     useEffect(() => {
-        // If user is authenticated and has previously logged in this session,
-        // redirect back to home
+        // Redireciona para home se já estiver autenticado nesta sessão
         if (isAuthenticated && sessionStorage.getItem('authenticated') === 'true') {
             navigate('/home', { replace: true });
         }
@@ -115,53 +81,21 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
         setLoading(true);
         setErrorMessage("");
 
-        //Para validar o formulario
+        // Validação do formulário
         const error = validateForm(loginIdentifier, password);
         if (error) {
             setErrorMessage(error);
             setLoading(false);
             return;
         }
-        /*
-        const loginType = isEmail(loginIdentifier) ? 'email' : 'username';
-            
-        const requestBody = {[loginType]: loginIdentifier, password: password};
-        */
-        const requestBody = { 
-            username: loginIdentifier, 
-            password: password, 
-            rememberMe: rememberMe // Passa o estado do checkbox para o servidor
-        };
-
 
         try {
-            const res = await fetch("http://localhost:3000/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include", 
-                body: JSON.stringify(requestBody),
-            });
-            handleErros(res);
-            const json = await res.json();
+            // Usa a função do serviço para fazer login
+            const json = await loginUser(loginIdentifier, password, rememberMe);
             setIsAuthenticated(json.isAuthenticated);
 
-                // Salva ou remove os dados com base no checkbox "lembrar-me"
-            if (json.isAuthenticated) {
-                if (rememberMe) {
-                    // Salva apenas o identificador de login, NUNCA a senha
-                    localStorage.setItem('login_rememberedUser', JSON.stringify({
-                        loginIdentifier: loginIdentifier
-                    }));
-                } else {
-                    // Remove os dados caso "lembrar-me" não esteja marcado
-                    localStorage.removeItem('login_rememberedUser');
-                }
-                // Set this after successful login
-                sessionStorage.setItem('authenticated', 'true');
-            }
-
+            // Gerencia dados de "Remember Me"
+            saveRememberMeData(json.isAuthenticated, rememberMe, loginIdentifier);
 
             if(!json.isAuthenticated){
                 setErrorMessage("Invalid credentials"); 
@@ -169,23 +103,19 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
             localStorage.setItem("userId", json.userId); 
             changePage(json.view);
         } catch (err) {
-            console.error("Login error:",err);
+            console.error("Login error:", err);
             setErrorMessage("Something went wrong. Please try again later.");
         } finally {
             setLoading(false);
         }
-
-          
     };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
     
-    
-    
     return (
-        <div className="center">
+        <div className="center-register">
             {/*Container*/}
             <div className="container">
                 {/*Parte da Logo e titulo de Login*/}
@@ -197,7 +127,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                     {/*parte do input do loginIdentifier*/}
                     <input type="text" 
                     id="loginIdentifier" 
-                    name="username" // Adicione o atributo name (importante!)
+                    name="username"
                     className="form-input-login" 
                     placeholder="Enter your username or email" 
                     value={loginIdentifier}
@@ -205,9 +135,8 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                     autoComplete='username'
                     />
 
-
                     <label htmlFor="password" className="form-label">Password</label>
-                    <div className="password-field">
+                    <div className="password-field-signup">
                         <input 
                             type={showPassword ? "text" : "password"} 
                             id="password" 
@@ -223,29 +152,26 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                             toggleVisibility={togglePasswordVisibility}
                             />
                     </div>
-                    
 
                     <div className="form-remember">
                         <input type="checkbox" 
                         id="remember-me" 
                         name="remember-me" 
                         className="custom-checkbox"
-                        checked ={rememberMe}
-                        onChange={(e) => setRememberMe (e.target.checked)} />
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)} />
                         <label htmlFor="remember-me">Remember Me</label>
                     </div>
-                    <ButtonSubmit 
-                            type="submit"
-                            text={loading ? "Logging in..." : "Log In"} 
-                            variant="primary" 
-                            size="w100p" 
-                            disabled={loading}
-                        />
-                    {errorMessage && <p className="error-message">{errorMessage}</p>}
-
-
-
                     
+                    <ButtonSubmit 
+                        type="submit"
+                        text={loading ? "Logging in..." : "Log In"} 
+                        variant="primary" 
+                        size="w100p" 
+                        disabled={loading}
+                    />
+                    
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </form>
 
                 <div className="additional-links">
@@ -256,7 +182,6 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                 </div>
             </div>
         </div>
-      
     );
 }
 

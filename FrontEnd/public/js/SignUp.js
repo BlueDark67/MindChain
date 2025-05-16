@@ -74,3 +74,34 @@ export const validateForm = (username, email, password, confirmPassword) => {
   }
   return null;
 };
+
+// Novas funções para adicionar ao arquivo
+
+// Função para tratamento de erros HTTP
+export const handleErros = (res) => {
+  if (!res.ok) {
+    throw Error(res.status + " - " + res.url);
+  }
+  return res;
+};
+
+// Função para requisição de cadastro
+export const signupUser = async (username, email, password) => {
+  const requestBody = {username, email, password};
+  
+  try {
+    const res = await fetch("http://localhost:3000/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+    
+    handleErros(res);
+    return await res.json();
+  } catch (err) {
+    console.error("Register error:", err);
+    throw err;
+  }
+};

@@ -7,6 +7,7 @@ import ButtonSimple from '../../src/components/buttonSimple/buttonSimple';
 import './ResetPassword.css';
 import '../Global.css';
 import PasswordToggle from '../../src/components/passwordToggle/passwordToggle';
+import { validateNewPassword, validatePassword } from '../../public/js/resetPassword';
 
 function ResetPassword(){
     const [newPassword, setNewPassword] = useState("");
@@ -36,11 +37,23 @@ function ResetPassword(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if(newPassword !== confirmPassword) {
-            setPasswordError("Passwords do not match");
+        
+        // Verificar requisitos de senha
+        const passwordErrors = validatePassword(newPassword);
+        if (passwordErrors.length > 0) {
+            setPasswordError(`Password requirements: ${passwordErrors.join(", ")}`);
             return;
-        }    
+        }
+        
+        // Verificar se as senhas coincidem
+        const matchError = validateNewPassword(newPassword, confirmPassword);
+        if (matchError) {
+            setPasswordError(matchError);
+            return;
+        }
+        
+        // Continua com o reset da senha...
+
         console.log(userId);
         const requestBody = {userId: userId,newPassword: newPassword};
         
