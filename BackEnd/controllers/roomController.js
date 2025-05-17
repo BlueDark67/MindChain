@@ -151,7 +151,6 @@ const sendEmailInviteRoom = async (req, res) => {
 
       await transporter.sendMail(mailOptions);
     }
-    res.json({ view: "email-sent" });
   } catch (error) {
     console.error("Error sending email:", error);
     res.status(500).json({ error: error.message });
