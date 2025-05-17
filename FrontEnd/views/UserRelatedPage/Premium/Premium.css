@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    gap: 10%
+    gap: 10%;
 }
 .containerstandard, .containerpremium {
     width: 20%;
@@ -52,4 +52,10 @@
 
 .buttonpremium:hover {
     transform: scale(1.05);
+}
+
+.chat-room-back-button {
+  position: absolute;
+  top: 200px;
+  left: 200px;
 }

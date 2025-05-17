@@ -5,6 +5,7 @@ import '../../Global.css';
 import Cartao from '../../../public/cartaocredit.png';
 import Paypal from '../../../public/paypall.png';
 import {changeSubscriptionPlan} from '../../../public/js/Payment.js';
+import BackButton from '../../../src/components/backButton/backButton.jsx';
 
 function Payment() {
     useEffect(() => {
@@ -99,6 +100,7 @@ function Payment() {
 
     return (
         <div className="container-wrapperpayment">
+            <BackButton customClass="chat-room-back-button" />
             <div className="payment-box">
                 <h3 className="payment-title">Payment methods</h3>
                 <div className="payment-method-select">

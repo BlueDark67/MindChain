@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./Metrics.css";
 import "../../Global.css";
 import { fetchUserMetrics } from "../../../public/js/Metrics";
+import BackButton from "../../../src/components/backButton/backButton";
 
 function Metrics() {
     const userId = localStorage.getItem("userId");
@@ -32,33 +33,36 @@ function Metrics() {
     }, []);
 
     return (
-        <div className="container-wrapperMetrics">
-            <div className="containerMetrics">
-                <h1 className="metrics">Metrics</h1>
-                <div className="info-box-metrics">
-                    <label className="label-metrics">
-                        <b className="bmetrics">Number of brainstorming sessions</b>
-                        <p className="pmetrics"> {numberOfSessions}</p>
-                    </label>
-                    <label className="label-metrics">
-                        <b className="bmetrics">Average time per session</b>
-                        <p className="pmetrics">{Math.floor(averageTime / 60)} min {Math.round(averageTime % 60)} s</p>
-                    </label>
-                    <label className="label-metrics">
-                        <b className="bmetrics">Time brainstorming</b>
-                        <p className="pmetrics">{Math.floor(timeBrainstorming / 86400)} day{" "}
-                                                {Math.floor((timeBrainstorming % 86400) / 3600)} hours{" "}
-                                                {Math.floor((timeBrainstorming % 3600) / 60)} min{" "}
-                                                {Math.round(timeBrainstorming % 60)} s
-                        </p>
-                    </label>
-                    <label className="label-metrics">
-                        <b className="bmetrics">Favorite theme</b>
-                        <p className="pmetrics">{favoriteTheme}</p>
-                    </label>
+        <>
+        <div className="chat-room-back-button"><BackButton/></div>
+            <div className="container-wrapperMetrics">
+                <div className="containerMetrics">
+                    <h1 className="metrics">Metrics</h1>
+                    <div className="info-box-metrics">
+                        <label className="label-metrics">
+                            <b className="bmetrics">Number of brainstorming sessions</b>
+                            <p className="pmetrics"> {numberOfSessions}</p>
+                        </label>
+                        <label className="label-metrics">
+                            <b className="bmetrics">Average time per session</b>
+                            <p className="pmetrics">{Math.floor(averageTime / 60)} min {Math.round(averageTime % 60)} s</p>
+                        </label>
+                        <label className="label-metrics">
+                            <b className="bmetrics">Time brainstorming</b>
+                            <p className="pmetrics">{Math.floor(timeBrainstorming / 86400)} day{" "}
+                                                    {Math.floor((timeBrainstorming % 86400) / 3600)} hours{" "}
+                                                    {Math.floor((timeBrainstorming % 3600) / 60)} min{" "}
+                                                    {Math.round(timeBrainstorming % 60)} s
+                            </p>
+                        </label>
+                        <label className="label-metrics">
+                            <b className="bmetrics">Favorite theme</b>
+                            <p className="pmetrics">{favoriteTheme}</p>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 export default Metrics;

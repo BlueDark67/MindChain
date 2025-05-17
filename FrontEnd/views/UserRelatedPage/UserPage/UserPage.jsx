@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import flag from '../../../public/flag.png';
 import { fetchUserName } from '../../../public/js/UserPage';
 import { useState } from 'react';
+import BackButton from '../../../src/components/backButton/backButton';
 
 
 function UserPage() {
@@ -25,12 +26,16 @@ function UserPage() {
                     setSubscriptionPlan(data.subscriptionPlan);
                 }
             
-                return () => {
-                    document.body.classList.remove('gradient_background_BB');
-                }
+                
             });
 
+            return () => {
+                    document.body.classList.remove('gradient_background_BB');
+                }
+
         }, []);
+
+    
 
         const navigate = useNavigate();
 
@@ -39,6 +44,7 @@ function UserPage() {
         };
         return (
             <div className="container-wrapperuserpage">
+                <BackButton customClass="chat-room-back-button" />
                 {/* Cabeçalho com avatar, nome e idioma */}
                 <div className="headeruserpage">
                     <img className="avataruserpage" src={avatar} alt="profile" />

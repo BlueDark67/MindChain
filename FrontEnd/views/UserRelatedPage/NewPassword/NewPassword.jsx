@@ -3,6 +3,7 @@ import '../../Global.css';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { changePassword } from '../../../public/js/NewPassword';
+import BackButton from '../../../src/components/backButton/backButton';
 
 function NewPassword() {
     useEffect(() => {
@@ -51,6 +52,7 @@ function NewPassword() {
 
     return (
         <div className="container-wrappernewpassword">
+            <BackButton customClass="chat-room-back-button" />
             <div className="password-container">
                 {/* Contêiner para os campos de senha e botões */}
                 <form onSubmit={handleSubmit} className="password-form">
