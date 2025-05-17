@@ -54,7 +54,7 @@ function DeleteAccount({ setIsAuthenticated }) {
                 <h1 className="delete">Are you sure you want to delete your account?</h1>
                 <p className="deletewarning">This action cannot be undone.</p>
                 <div className="button-container">
-                    <button className="cancel-button" onClick={() => changePage("UserPage")}>Cancel</button>
+                    <button className="cancel-button" onClick={() => changePage(`userpage/${userId}`)}>Cancel</button>
                     <button className="delete-button" onClick={() => setShowDeleteConfirm(true)}>Delete</button>
                 </div>
             </div>
