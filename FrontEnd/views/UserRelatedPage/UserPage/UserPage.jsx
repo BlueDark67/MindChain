@@ -20,13 +20,10 @@ function UserPage() {
             document.body.classList.add('gradient_background_BB');
 
             fetchUserName(userId).then((data) => {
-                console.log("data", data);
                 if (data){
                     setUsername(data.username);
                     setSubscriptionPlan(data.subscriptionPlan);
-                }
-            
-                
+                }                
             });
 
             return () => {

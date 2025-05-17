@@ -17,11 +17,16 @@ function PersonalData() {
         birthdate: "",
         nationality: "",
     });
+    const [avatar, setAvatar] = useState(profilePic);
 
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [birthdate, setBirthdate] = useState("");
-    const [nationality, setNationality] = useState("");
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => setAvatar(reader.result);
+            reader.readAsDataURL(file);
+        }
+    };
 
     useEffect(() => {
         document.title = "Personal Data";
@@ -46,31 +51,37 @@ function PersonalData() {
     
 
     const handleInputChange = (e) => {
-        e.preventDefault();
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }));
-        //hangeUserInfo(userId, formData);
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
-        setUsername(formData.username);
-        setEmail(formData.email);
-        setBirthdate(formData.birthdate);
-        setNationality(formData.nationality);
-        changeUserInfo(userId, username, email, birthdate, nationality)
-
+        changeUserInfo(userId, formData.username, formData.email, formData.birthdate, formData.nationality);
+        setIsEditing(false);
     }
         return (            
             <div className="container-wrapperPD">
                 <BackButton customClass="chat-room-back-button" />
             
             <div className="containerPD">
-                <img className="avatar" src={profilePic} alt="profile picture" />
-                <b className="changeavatar">Change Avatar</b>
+                <img className="avatar" src={avatar} alt="profile picture" />
+                {isEditing && (
+                <label className="changeavatar">
+                    Change Avatar
+                    <input
+                        type="file"
+                        accept="image/*"
+                        className="changeavatar"
+                        style={{ display: "none" }}
+                        onChange={handleAvatarChange}
+                        disabled={!isEditing}
+                    />
+                </label>
+                )}
                 {!isEditing ? (
                     <button
                         className="edit" 
@@ -83,7 +94,7 @@ function PersonalData() {
                 ) : null}
                     {isEditing ? (
                         <form onSubmit={handleSave}>
-                            <button type="submit" className="edit" onClick={() => setIsEditing(false)}>
+                            <button type="submit" className="edit">
                                 Save
                                 <img className="editicon" src={editIcon} alt="edit logo" />
                             </button>
