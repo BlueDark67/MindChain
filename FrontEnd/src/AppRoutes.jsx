@@ -26,7 +26,7 @@ import Metrics from '../views/UserRelatedPage/MetricsPage/Metrics';
 import DeleteAccount from '../views/UserRelatedPage/DeleteAccount/DeleteAccount';
 import Userpage from '../views/UserRelatedPage/UserPage/UserPage';
 import AboutUs from '../views/UserRelatedPage/AboutUs/AboutUs';
-
+import Progress from '../views/UserRelatedPage/Progress/Progress';
 
 function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
   return (
@@ -58,6 +58,7 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/delete-account" element={<DeleteAccount setIsAuthenticated={setIsAuthenticated}/>} />
         <Route path="/userpage/:userId" element={<Userpage />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/progress" element={<Progress />} />
 
         {/**Quero que metas isto a funcionar */}
         <Route path='/chatroom-aitext/:roomId' element={< ChatRoomAiText/>} />
