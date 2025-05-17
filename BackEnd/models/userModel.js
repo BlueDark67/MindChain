@@ -14,7 +14,8 @@ var userSchema = new mongoose.Schema({
   tokenExpires: { type: Date },
   subscriptionPlan: { type: String, required: true, default: "Standard" },
   paymentMethod: { type: String, required: false },
-});
+},{ timestamps: true }
+);
 //alterei isto
 //Como é que querias que ele usasse o email se nao defenias isso
 userSchema.plugin(passportLocalMongoose, {
