@@ -7,6 +7,7 @@ import { LMStudioClient } from "@lmstudio/sdk";
 //const bcrypt = require("bcrypt");
 
 import fs from "fs";
+import { subscribe } from "diagnostics_channel";
 
 const require = createRequire(import.meta.url);
 const dotenv = require("dotenv");
@@ -35,11 +36,35 @@ function generateRandomCode(length) {
 }
 
 const roomPost = async function (req, res) {
-  const { theme, password, time, isPrivate } = req.body;
+  const { theme, password, time, isPrivate, userId } = req.body;
   const code = generateRandomCode(6);
-  const creatorId = req.user ? req.user._id : null;
+  const creatorId = userId;
   const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
   try {
+    const user = await userModel.findById(creatorId).select("subscriptionPlan");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.subscriptionPlan === "Standard") {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const roomsToday = await roomModel.countDocuments({
+        users: creatorId,
+        createdAt: { $gte: startOfDay, $lte: endOfDay },
+      });
+
+      if (roomsToday >= 5) {
+        return res.status(403).json({
+          error: "Daily limit of 5 rooms reached for the Standard plan.",
+        });
+      }
+    }
+
     const newRoom = await roomModel.create({
       theme,
       code,
@@ -80,16 +105,6 @@ const getCreatorUsername = async (roomId) => {
     throw new Error("Room or creator not found");
   }
   return room.users[0].username;
-};
-
-const getRoomCreator = async (req, res) => {
-  const { roomId } = req.params;
-  try {
-    const creatorUsername = await getCreatorUsername(roomId);
-    res.json({ username: creatorUsername });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 };
 
 const sendEmailInviteRoom = async (req, res) => {
@@ -153,26 +168,41 @@ const enterRoom = async (req, res) => {
       return res.json({ errorMessage: "Room not found or inactive" });
     }
 
-    const user = await userModel.findOne({ userId: userId });
+    const user = await userModel.findById(userId);
     if (!user) {
-      room.users.push(userId);
-      await room.save();
+      return res.status(404).json({ errorMessage: "User not found" });
     }
 
-    if (!room.isPrivate) {
-      return res.json({ view: `chatroom/${room._id}` });
-    } else {
+    if (room.isPrivate) {
       if (!password) {
         return res.json({ isPrivate: true });
       }
-
       const isMatch = await bcrypt.compare(password, room.password);
       if (!isMatch) {
         return res.json({ errorMessage: "Incorrect password" });
       }
-
+    }
+    if (room.users.includes(userId)) {
       return res.json({ view: `chatroom/${room._id}` });
     }
+
+    const creator = await userModel.findById(room.users[0]);
+    const creatorPlan = creator.subscriptionPlan;
+    if (
+      creatorPlan === "Standard" &&
+      !room.users.includes(userId) &&
+      room.users.length >= 5
+    ) {
+      return res.json({
+        errorMessage: "Room is full. Please try another room.",
+      });
+    }
+
+    if (!room.users.includes(userId)) {
+      room.users.push(userId);
+      await room.save();
+    }
+    return res.json({ view: `chatroom/${room._id}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -181,9 +211,15 @@ const enterRoom = async (req, res) => {
 const fetchHistory = async (req, res) => {
   const userId = req.body.userId;
   try {
+    const user = await userModel.findById(userId).select("subscriptionPlan");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     const rooms = await roomModel
       .find({ users: userId })
       .sort({ createdAt: -1 })
+      .limit(user.subscriptionPlan === "premium" ? 0 : 10)
       .populate("users", "username");
 
     res.json(rooms);
