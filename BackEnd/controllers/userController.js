@@ -375,11 +375,18 @@ const userProgress = async (req, res) => {
       brainstormingByMonth[month] = (brainstormingByMonth[month] || 0) + 1;
     });
 
+    // Cria um mapa de roomId para theme
+    const roomIdToTheme = {};
+    rooms.forEach((room) => {
+      roomIdToTheme[room._id.toString()] = room.theme;
+    });
+
     // Dados para o gráfico de barras: mensagens por sessão
     const messagesBySession = {};
     messages.forEach((message) => {
       const roomId = message.room.toString();
-      messagesBySession[roomId] = (messagesBySession[roomId] || 0) + 1;
+      const theme = roomIdToTheme[roomId] || "Unknown";
+      messagesBySession[theme] = (messagesBySession[theme] || 0) + 1;
     });
 
     res.json({

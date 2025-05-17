@@ -7,7 +7,6 @@ import './Progress.css';
 function Progress() {
     const [brainstormingData, setBrainstormingData] = useState({});
     const [messagesData, setMessagesData] = useState({});
-    const [comparisonText, setComparisonText] = useState("");
 
     useEffect(() => {
         document.title = "Progress";
@@ -18,9 +17,6 @@ function Progress() {
             if (data) {
                 setBrainstormingData(data.brainstormingByMonth);
                 setMessagesData(data.messagesBySession);
-
-                // Calcula a comparação de brainstorming
-                calculateComparison(data.brainstormingByMonth);
             }
         });
 
@@ -29,45 +25,27 @@ function Progress() {
         };
     }, []);
 
-
-    // Dados fictícios para o gráfico de linha (Brainstorming por mês)
-    const mockBrainstormingData = {
-        January: 5,
-        February: 3,
-        March: 8,
-        April: 6,
-        May: 4,
-    };
-
-    // Dados fictícios para o gráfico de barras (Mensagens por sessão)
-    const mockMessagesData = {
-        "Session 1": 10,
-        "Session 2": 15,
-        "Session 3": 7,
-        "Session 4": 12,
-        "Session 5": 9,
-    };
-
     // Configuração do gráfico de linha
     const lineChartData = {
-        labels: Object.keys(mockBrainstormingData), // Meses
+        labels: Object.keys(brainstormingData), // Meses
         datasets: [
             {
                 label: "Brainstorming Sessions",
-                data: Object.values(mockBrainstormingData), // Quantidade de sessões por mês
+                data: Object.values(brainstormingData), // Quantidade de sessões por mês
                 borderColor: "rgba(75, 192, 192, 1)",
                 backgroundColor: "rgba(75, 192, 192, 0.2)",
             },
         ],
     };
 
+
     // Configuração do gráfico de barras
     const barChartData = {
-        labels: Object.keys(mockMessagesData), // Sessões
+        labels: Object.keys(messagesData), // Sessões
         datasets: [
             {
                 label: "Messages per Session",
-                data: Object.values(mockMessagesData), // Quantidade de mensagens por sessão
+                data: Object.values(messagesData), // Quantidade de mensagens por sessão
                 backgroundColor: "rgba(153, 102, 255, 0.6)",
                 borderColor: "rgba(153, 102, 255, 1)",
                 borderWidth: 1,
