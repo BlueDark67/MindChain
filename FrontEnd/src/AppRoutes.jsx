@@ -57,6 +57,8 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/metrics" element={<Metrics />} />
         <Route path="/delete-account" element={<DeleteAccount setIsAuthenticated={setIsAuthenticated}/>} />
         <Route path="/userpage/:userId" element={<Userpage />} />
+        <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/progress" element={<Progress />} />
 
         {/**Quero que metas isto a funcionar */}
         <Route path='/chatroom-aitext/:roomId' element={< ChatRoomAiText/>} />
