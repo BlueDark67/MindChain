@@ -95,8 +95,6 @@ function InvitePage(){
                 
             });
             handleErros(res);
-            const json = await res.json();
-            changePage(json.view);
           } catch (err) {
             console.error(err);
           }

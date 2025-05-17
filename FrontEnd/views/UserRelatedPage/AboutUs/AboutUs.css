@@ -1,0 +1,64 @@
+.Aboutus-pictures {
+  display: flex;
+  justify-content: center; 
+  gap: 50px; 
+  align-items: flex-start; 
+}
+
+.Aboutus-pictures > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap : 8px;
+}
+
+.Aboutus-name{
+    font-size: 25px;
+}
+
+.Aboutus-role{
+    font-size: 20px;
+}
+
+.Aboutus-picture {
+  width: 350px; 
+  height: 350px;
+
+}
+
+.Aboutus-text{
+    font-size: 20px;
+    text-align: justify;
+}
+
+.h1-aboutus{
+    margin-top: 0px;
+    margin-bottom: 50px;
+}
+
+.container-wrapperAboutUs{
+    padding-top: 50px;
+}
+.h1-aboutus-text{
+    margin-top: 50px;
+}
+
+.container-wrapperAboutUs{
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Aboutus-textname-paragraph {
+  margin-bottom: 2px; /* ou um valor menor que o atual */
+    font-size: 22\px;
+}
+
+.Aboutus-text-paragraph{
+    font-size: 18px;
+}
+
+.Aboutus-span-paragraph {
+  margin-top: 0; /* garante que não há espaço extra acima */
+  font-size: 17px;
+}

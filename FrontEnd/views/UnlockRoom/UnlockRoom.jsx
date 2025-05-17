@@ -53,7 +53,6 @@ function UnlockRoom(){
                 });
                 handleErros(res);
                 const json = await res.json();
-                console.log(json.errorMessage);
                 if(json.errorMessage){
                     setErrorMessage(json.errorMessage);
                     return;
