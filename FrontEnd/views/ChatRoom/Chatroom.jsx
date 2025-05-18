@@ -197,7 +197,7 @@ const Chatroom = () => {
     useEffect(() => {
         if (!endTime) return;
     
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
             const now = Date.now();
             const secondsLeft = Math.max(0, Math.ceil((endTime - now) / 1000));
             setTimeLeft(secondsLeft);
@@ -207,6 +207,7 @@ const Chatroom = () => {
                 setCanSend(true);
                 socket.emit("stopChat", { roomId });
                 if(isCreator && !haveFinished){
+                    await generateChatResponse(roomId);
                     socket.emit("finishRoom", { roomId, elapsedTime: time});
                 }
             };
