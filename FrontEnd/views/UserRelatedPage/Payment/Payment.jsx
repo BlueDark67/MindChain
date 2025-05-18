@@ -100,7 +100,6 @@ function Payment() {
 
     return (
         <div className="container-wrapperpayment">
-            <BackButton customClass="chat-room-back-button" />
             <div className="payment-box">
                 <h3 className="payment-title">Payment methods</h3>
                 <div className="payment-method-select">
