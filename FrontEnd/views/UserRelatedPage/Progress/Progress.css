@@ -1,0 +1,30 @@
+.progress-container {  
+    padding: 20px;
+    color:#A37E07;
+}
+
+.progresscontent-container {
+    margin: 50px auto;
+    display: flex;
+    flex-direction: row; /* Mantém os gráficos lado a lado */
+    align-items: center; /* Centraliza os gráficos verticalmente */
+    justify-content: center; /* Centraliza os gráficos horizontalmente */
+    gap: 80px;/* Espaçamento entre os gráficos */
+}
+
+.chart-container {
+    width: 60%; 
+    max-width: 500px; 
+    background-color: #ffffff; /* Fundo branco para destacar */
+    padding: 20px;
+    border-radius: 10px; /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+}
+
+.chart-container h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333; /* Cor do título */
+    font-weight: bold;
+    text-align: center;
+}

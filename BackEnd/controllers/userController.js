@@ -346,6 +346,59 @@ const changeSubscriptionPlan = async (req, res) => {
   }
 };
 
+const userProgress = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Busca todas as salas associadas ao usuário
+    const rooms = await RoomModel.find({ users: userId });
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({ error: "No rooms found for this user" });
+    }
+
+    // Busca todas as mensagens associadas ao usuário
+    const messages = await MessageModel.find({ user: userId });
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ error: "No messages found for this user" });
+    }
+
+    // Dados para o gráfico de linha: sessões de brainstorming por mês
+    const brainstormingByMonth = {};
+    rooms.forEach((room) => {
+      const month = new Date(room.createdAt).toLocaleString("default", {
+        month: "long",
+      });
+      brainstormingByMonth[month] = (brainstormingByMonth[month] || 0) + 1;
+    });
+
+    // Cria um mapa de roomId para theme
+    const roomIdToTheme = {};
+    rooms.forEach((room) => {
+      roomIdToTheme[room._id.toString()] = room.theme;
+    });
+
+    // Dados para o gráfico de barras: mensagens por sessão
+    const messagesBySession = {};
+    messages.forEach((message) => {
+      const roomId = message.room.toString();
+      const theme = roomIdToTheme[roomId] || "Unknown";
+      messagesBySession[theme] = (messagesBySession[theme] || 0) + 1;
+    });
+
+    res.json({
+      brainstormingByMonth, // Dados para o gráfico de linha
+      messagesBySession, // Dados para o gráfico de barras
+    });
+  } catch (error) {
+    console.error("Error fetching user metrics:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 export default {
   userGet,
   userPost,
@@ -361,4 +414,5 @@ export default {
   userMetrics,
   deleteAccount,
   changeSubscriptionPlan,
+  userProgress,
 };

@@ -18,6 +18,8 @@ function CreationRoom() {
   const [sessionTime, setSessionTime] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const userId = localStorage.getItem("userId");
+
   useEffect(() => {
           document.title = "Create Room";
           document.body.classList.add('gradient_background_BP','allow_scroll');
@@ -60,6 +62,7 @@ function CreationRoom() {
       password: isPrivate ? passwordValue : null,
       time: sessionTimeValue,
       isPrivate: isPrivate,
+      userId: userId,
     }
 
     try {
@@ -71,6 +74,11 @@ function CreationRoom() {
           credentials: "include", 
           body: JSON.stringify(requestBody),
       });
+      if (res.status === 403){
+        const data = await res.json();
+        setErrorMessage(data.error);
+        return;
+      }
       handleErros(res);
       const json = await res.json();
       var page = json.view+"/"+json.roomId; 
