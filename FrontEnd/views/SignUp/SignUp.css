@@ -19,8 +19,6 @@
     margin-bottom: 10px;
 }
 
-/* Add to your existing CSS */
-
 .password-label-container {
     display: flex;
     align-items: center;
@@ -85,19 +83,19 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
-  width: 350px; /* Changed from 250px to be responsive */
+  width: 350px; 
 
   margin-top: -13px; 
   background-color: rgb(231, 231, 231);
   outline: none;
   box-shadow: none;
-  transition: border 0.2s ease-in-out; /* Suaviza a transição da borda */
-  box-sizing: border-box; /* Critical addition */
+  transition: border 0.2s ease-in-out; 
+  box-sizing: border-box; 
 
 }
 
 .form-input-register:focus {
-  border: 2px solid black; /* Borda preta quando focado */
+  border: 2px solid black; 
 }
 
 .register-form {
@@ -111,13 +109,13 @@
 .center-register {
   display: flex;
   justify-content: center;
-  align-items: center; /* Voltamos para center para centralizar verticalmente */
-  height: 95vh; /* Define uma altura para centralizar verticalmente */
+  align-items: center; 
+  height: 95vh; 
 
-  /* Removemos todas as outras propriedades de posicionamento conflitantes */
+  
 }
 
 .password-field-signup {
     position: relative;
-    width: 330px; /* igual ao input */
+    width: 330px; 
   }

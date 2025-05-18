@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Switch from "react-switch";
 import './switch.css';
 
+//Componente Switch que é usado na criação de sala para escolher o se a sala é privada e para escolher se o tema é escolhido pelo criador
 class SwitchComponent extends Component {
     constructor(props) {
         super(props);

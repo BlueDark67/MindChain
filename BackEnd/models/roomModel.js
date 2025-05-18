@@ -2,6 +2,9 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 import mongoose, { Schema } from "mongoose";
 
+
+//Modelo da sala
+// A sala é criada com um tema, um código, uma senha (opcional), um tempo (opcional), um texto (opcional), uma lista de usuários, uma lista de mensagens, a última atividade, se está ativa ou não, se é privada ou não e o tempo da sessão
 var roomSchema = new mongoose.Schema(
   {
     theme: { type: String, required: true },

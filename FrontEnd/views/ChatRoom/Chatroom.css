@@ -4,7 +4,7 @@
     align-items: center;
     height: 100vh;
     width: 100%;
-    gap: 15px; /* Adds spacing between all child elements */
+    gap: 15px;
 }
 
 .header-section {
@@ -37,7 +37,7 @@
     flex-direction: column;
     width: 100%;
     max-width: 800px;
-    height: 60vh; /* Reduced height to make room for separate input area */
+    height: 60vh; 
     background: rgba(238, 238, 238, 0.8);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -46,29 +46,26 @@
 
 .messages-container {
     flex: 1;
-    overflow-y: auto; /* Crucial para conter o scroll */
-    height: 100%;     /* Importante para calcular corretamente o scroll */
+    overflow-y: auto; 
+    height: 100%;     
     padding: 20px;
     position: relative;
 }
 .messages-container::-webkit-scrollbar {
-    width: 6px;               /* Largura fina */
+    width: 6px;               
 }
 
-/* Deixar a trilha transparente */
 .messages-container::-webkit-scrollbar-track {
     background: transparent;
 }
 
-/* Fazer o polegar (thumb) transparente por padrão */
 .messages-container::-webkit-scrollbar-thumb {
-    background-color: transparent; /* Inicialmente invisível */
+    background-color: transparent; 
     border-radius: 20px;
 }
 
-/* Mostrar o scroll apenas quando passar o mouse sobre o container */
 .messages-container:hover::-webkit-scrollbar-thumb {
-    background-color: rgba(78, 16, 77, 0.8); /* Roxo semi-transparente ao passar o mouse */
+    background-color: rgba(78, 16, 77, 0.8); 
 }
 
 .message-item {
@@ -219,7 +216,7 @@
 .user-tooltip{
     position: absolute;
     top: 100%;
-    left: 50%; /* Centraliza em relação ao ícone */
+    left: 50%; 
     transform: translateX(-50%);
     width: 200px;
     background: linear-gradient(

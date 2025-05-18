@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import './buttonSimple.css'
 
-
+//componente de um botao simples
 function ButtonSimple(props) {
 
     return (

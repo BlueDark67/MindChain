@@ -1,6 +1,7 @@
 import React from 'react';
 import './buttonSubmit.css';
 
+//Componente de um botao de submiting (tbm de loading)
 const ButtonSubmit = ({ 
   onClick, 
   text, 

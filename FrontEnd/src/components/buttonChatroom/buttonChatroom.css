@@ -13,13 +13,12 @@
     border: none;
     cursor: pointer;
     overflow: hidden;
-    /* Remova white-space: nowrap; */
 }
 
 .buttonChatroom-theme {
-    max-width: 350px;       /* ajuste conforme necessário */
-    min-width: 200px; /* garante um espaço mínimo */
-    margin-right: 30px; /* espaço fixo à direita */
+    max-width: 350px;      
+    min-width: 200px; 
+    margin-right: 30px; 
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -40,12 +39,11 @@
     z-index: 1;
     background: transparent;
     position: relative;
-    /* Defina uma largura fixa ou padding-right se quiser mais espaço */
 }
 
 .participants-marquee {
     display: block;
-    width: 250px;         /* ajuste conforme necessário */
+    width: 250px;         
     overflow: hidden;
     position: relative;
     white-space: nowrap;

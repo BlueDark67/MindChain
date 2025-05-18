@@ -50,7 +50,7 @@
 }
 
 .Aboutus-textname-paragraph {
-  margin-bottom: 2px; /* ou um valor menor que o atual */
+  margin-bottom: 2px; 
     font-size: 22\px;
 }
 
@@ -59,6 +59,6 @@
 }
 
 .Aboutus-span-paragraph {
-  margin-top: 0; /* garante que não há espaço extra acima */
+  margin-top: 0; 
   font-size: 17px;
 }

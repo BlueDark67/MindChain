@@ -24,8 +24,8 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div className={`sidebar ${isOpen ? "sidebar-open" : "sidebar-closed"}`}>
         {/* Botão de abrir/fechar */}
-        <div className={`hamburger ${isOpen ? "menu-open" : "menu-closed"}`} onClick={() => setIsOpen(!isOpen)}>
-
+        <div className={`sidemenu ${isOpen ? "menu-open" : "menu-closed"}`} onClick={() => setIsOpen(!isOpen)}>
+          {/**Se tiver aberto aparece a imagem de aberto, se nao aparece a imagem de fechado*/}
           {isOpen ? (
             <img src="/Icon-Menu/Icon_Menu_Aberto.png" alt="Menu" />
           ) : (
@@ -39,7 +39,7 @@ const Sidebar = () => {
             {isOpen && <span>MINDCHAIN</span>}
           </div>
         </div>
-
+        {/**Quando o menu ta fechado os botoes nao funcinam (só o de abrir é que funciona como é obvio) */}
         <nav className="nav">
           {menuItems.map((item, index) => (
             <Link

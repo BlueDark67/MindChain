@@ -16,13 +16,9 @@ function LogOut({ setIsAuthenticated }) {
         };
     }, []);
 
-    /*const handleLogout = () => {
-        setIsAuthenticated(false); // Atualiza o estado global de autenticação
-        localStorage.clear(); // Limpa todos os dados do localStorage
-        navigate("/login"); // Redireciona para a página de login
-    };*/
+    
 
-    //alterei esta merda que nao tavas a mudar o valor no servidor
+    
     const handleLogout = async () => {
         try {
             //comunica com o servidor
@@ -32,7 +28,7 @@ function LogOut({ setIsAuthenticated }) {
             });
 
             
-            //metes a autenticação a falso
+            //metes a autenticação a falso senao dá problema
             setIsAuthenticated(false);
 
             //Aqui limpas o localstorage no navegador do utilizador

@@ -37,7 +37,7 @@
 
   .copied-msg {
     position: absolute;
-    top: -20px; /* ajuste conforme necessário */
+    top: -20px; 
     right: 0;
     color: white;
     background: rgba(0, 0, 0, 0.75);

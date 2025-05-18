@@ -1,3 +1,4 @@
+//Função que valida a nova palavra passe
 export const validateNewPassword = (newPassword, confirmPassword) => {
   if (newPassword !== confirmPassword) {
     return "Password does not match";
@@ -9,7 +10,7 @@ export const validateNewPassword = (newPassword, confirmPassword) => {
   return null;
 };
 
-
+//Função que valida a palavra passe
 export const validatePassword = (newPassword) => {
   let errors = [];
 
@@ -31,7 +32,7 @@ export const validatePassword = (newPassword) => {
   return errors;
 };
 
-//Codigo paraver se a se o criterio de palavra passe foi obtido
+//Codigo para ver se a se o criterio de palavra passe foi obtido
 export const isPasswordCriterionMet = (criterion, newPassword) => {
   if (!newPassword) return false;
 

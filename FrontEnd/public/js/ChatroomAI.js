@@ -1,3 +1,4 @@
+//Função para tarta dos erros
 const handleErros = (res) => {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -5,6 +6,7 @@ const handleErros = (res) => {
   return res;
 };
 
+//API para ir buscar as informações da sala
 export const fetchRoomInfo = async (roomId) => {
   try {
     const res = await fetch(`http://localhost:3000/fetch-room-info`, {

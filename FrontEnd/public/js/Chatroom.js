@@ -1,3 +1,4 @@
+//Função que trata os erros
 const handleErros = (res) => {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -5,6 +6,7 @@ const handleErros = (res) => {
   return res;
 };
 
+//API que busca as informações do usuário
 export const fetchRoomInfo = async (roomId) => {
   try {
     const res = await fetch("http://localhost:3000/fetch-room-info", {
@@ -24,6 +26,7 @@ export const fetchRoomInfo = async (roomId) => {
   }
 };
 
+//API que busca as mensagens do chat
 export const fetchMessages = async (roomId) => {
   try {
     const res = await fetch(`http://localhost:3000/get-messages/${roomId}`, {
@@ -42,6 +45,7 @@ export const fetchMessages = async (roomId) => {
   }
 };
 
+//API para dar restart a sala
 export const restartRoom = async (roomId) => {
   try {
     const res = await fetch("http://localhost:3000/restart-room", {
@@ -61,6 +65,7 @@ export const restartRoom = async (roomId) => {
   }
 };
 
+//API para gerar a resposta da AI
 export const generateChatResponse = async (roomId) => {
   try {
     const res = await fetch(

@@ -1,3 +1,4 @@
+//Função para verificar se é um email
 export const isEmail = (value) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
@@ -82,7 +83,7 @@ export const handleErros = (res) => {
   return res;
 };
 
-// Função para requisição de cadastro
+//API para a criação de um novo utilizador
 export const signupUser = async (username, email, password) => {
   const requestBody = {username, email, password};
   

@@ -1,3 +1,4 @@
+//Função que trata os erros
 const handleErros = (res) => {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -5,6 +6,7 @@ const handleErros = (res) => {
   return res;
 };
 
+//API que busca o historico de salas do usuario
 export const fetchHistory = async (userId) => {
   try {
     const res = await fetch("http://localhost:3000/fetch-history", {
@@ -24,6 +26,7 @@ export const fetchHistory = async (userId) => {
   }
 };
 
+//Função que agrupa as salas por data
 export function groupRoomsByDate(rooms) {
   const today = new Date();
   const startOfToday = new Date(

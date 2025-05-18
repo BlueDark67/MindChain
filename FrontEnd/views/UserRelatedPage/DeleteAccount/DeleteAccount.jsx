@@ -23,7 +23,7 @@ function DeleteAccount({ setIsAuthenticated }) {
 
     const handleConfirmDelete = () => {
         setIsAuthenticated(false); // Atualiza o estado global de autenticação
-        deleteAccount(userId) // Chama a função para deletar a conta
+        deleteAccount(userId) // Chama a função para apagar a conta
         localStorage.clear(); // Limpa o localStorage
         localStorage.setItem("isAuthenticated", "false"); // Atualiza o estado de autenticação no localStorage
         navigate("/login"); // Redireciona para a página de login

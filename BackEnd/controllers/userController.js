@@ -12,6 +12,7 @@ dotenv.config({ path: "./.env" });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Importando os modelos
 const UserModel = require("../models/userModel").default;
 const MessageModel = require("../models/messageModel").default;
 const RoomModel = require("../models/roomModel").default;
@@ -23,6 +24,8 @@ const login = function (req, res, next) {
   // Verifica se o checkbox "rememberMe" foi enviado
   const rememberMe = req.body.rememberMe || false;
 
+  //Autenticando o usuário com Passport
+  // O "local" refere-se à estratégia de autenticação local
   passport.authenticate("local", function (err, user, info) {
     if (err) {
       return next(err);
@@ -69,16 +72,21 @@ const login = function (req, res, next) {
     });
   })(req, res, next);
 };
-//foi isto que adicionei por isso é rever outro dia ctg gui pedro o userpost
-// para ver se ha alteraçoes
 
 const userGet = function (req, res) {
   res.json({ view: "signup" });
 };
 
+// Função para criar um novo utilizador
 const userPost = async function (req, res) {
+  //Variáveis enviadas pelo cliente
+  //username: username do utilizador
+  //password: password do utilizador
+  //email: email do utilizador
   const { username, password, email } = req.body;
   try {
+    //Regista o utilizador
+    //O método register do passport-local-mongoose já faz a validação do username e password
     await UserModel.register({ username, email }, password);
     res.json({ view: "login" });
   } catch (error) {
@@ -86,14 +94,19 @@ const userPost = async function (req, res) {
   }
 };
 
+// Função para obter a página de login
+// Esta função é chamada quando o utilizador tenta aceder à página de login
 const loginGet = function (req, res) {
   res.json({ view: "login" });
 };
 
+// Função para falhar o login
+// Esta função é chamada quando o utilizador tenta fazer login e falha
 const loginFail = function (req, res) {
   res.json({ view: "login", isAuthenticated: false });
 };
 
+// Função para fazer logout
 const logout = function (req, res, next) {
   // Limpa o token de remember_me do banco de dados
   if (req.user) {
@@ -115,16 +128,30 @@ const logout = function (req, res, next) {
   });
 };
 
+// Função para enviar o email de reset de password
+// Esta função é chamada quando o utilizador clica no botão "Esqueci-me da password"
 const sendEmailResetPassword = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //email: email do utilizador que quer resetar a password
   const { email } = req.body;
   try {
+
+    //Procura o utilizador pelo email se não encontrar retorna erro
     const userFound = await UserModel.findOne({ email: email });
     if (!userFound) {
       return res.status(404).json({ error: "Email not found" });
     }
 
+    //Transforma o id do utilizador em string
     const userId = userFound._id.toString();
 
+    //Cria o transporter do Nodemailer responsável para enviar o email através do SMTP do Gmail
+    //Host: endereço do servidor SMTP (Gmail)
+    //Port: porta do servidor SMTP para enviar emails (587)
+    //Secure: se a conexão é segura ou não (false)
+    //Auth: autenticação do utilizador que envia o email
+    //User: email do utilizador que envia o email
+    //Pass: senha do utilizador que envia o email
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
@@ -135,6 +162,7 @@ const sendEmailResetPassword = async (req, res) => {
       },
     });
 
+    //Envio do email
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
@@ -161,6 +189,8 @@ const sendEmailResetPassword = async (req, res) => {
       ],
     };
 
+    //Envia o email
+    //retorna a view email-sent quando o email é enviado
     await transporter.sendMail(mailOptions);
     res.json({ view: "email-sent" });
   } catch (error) {
@@ -169,14 +199,21 @@ const sendEmailResetPassword = async (req, res) => {
   }
 };
 
+// Função para resetar a password
 const resetPassword = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //newPassword: nova password do utilizador
+  //userId: id do utilizador que quer resetar a password
   const { newPassword, userId } = req.body;
 
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const userFound = await UserModel.findById(userId);
     if (!userFound) {
       return res.status(404).json({ error: "User not found" });
     }
+    //Muda a password do utilizador
+    //O método setPassword do passport-local-mongoose já faz a validação da password
     userFound.setPassword(newPassword, async (err) => {
       if (err) {
         return res.status(500).json({ error: "Error setting new password" });
@@ -190,13 +227,18 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// Função para buscar o nome de utilizador
 const fetchUserName = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer buscar o nome
   const { userId: userId } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    //Retorna o nome de utilizador e o plano de subscrição
     res.json({
       username: user.username,
       subscriptionPlan: user.subscriptionPlan,
@@ -207,13 +249,18 @@ const fetchUserName = async (req, res) => {
   }
 };
 
+// Função para buscar informações do utilizador
 const fetchUserInfo = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer buscar as informações
   const { userId: userId } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    //Retorna as informações do utilizador
     res.json({ user });
   } catch (error) {
     console.error("Error fetching user info:", error);
@@ -221,25 +268,38 @@ const fetchUserInfo = async (req, res) => {
   }
 };
 
+// Função para mudar as informações do utilizador
 const changeUserInfo = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer mudar as informações
+  //username: novo nome de utilizador
+  //email: novo email do utilizador
+  //birthdate: nova data de nascimento do utilizador
+  //nationality: nova nacionalidade do utilizador
   const { userId, username, email, birthdate, nationality } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    //Se o nome de utilizador não for vazio muda o nome de utilizador
     if (username !== "") {
       user.username = username;
     }
+    //Se o email não for vazio muda o email
     if (email !== "") {
       user.email = email;
     }
+    //Se a data de nascimento não for vazia muda a data de nascimento
     if (birthdate !== "") {
       user.birthdate = birthdate;
     }
+    //Se a nacionalidade não for vazia muda a nacionalidade
     if (nationality !== "") {
       user.nationality = nationality;
     }
+    //Guarda as aletrações do utilizador
     await user.save();
   } catch (error) {
     console.error("Error fetching user info:", error);
@@ -247,49 +307,70 @@ const changeUserInfo = async (req, res) => {
   }
 };
 
+// Função para buscar métricas do utilizador
 const userMetrics = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer buscar as métricas
   const { userId: userId } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
+    // Busca todas as salas associadas ao usuário se não encontrar retorna erro
     const rooms = await RoomModel.find({ users: userId });
     if (!rooms || rooms.length === 0) {
       return res.status(404).json({ error: "No rooms found for this user" });
     }
 
+    // Busca todas as mensagens associadas ao usuário se não encontrar retorna erro
     const messages = await MessageModel.find({ user: userId });
     if (!messages || messages.length === 0) {
       return res.status(404).json({ error: "No messages found for this user" });
     }
 
+    // Calcula o número de sessões, tempo médio e tempo total de brainstorming
+    // Soma o tempo de cada sala e divide pelo número de salas para obter o tempo médio
     const averageTime =
       rooms.length > 0
         ? rooms.reduce((acc, room) => acc + room.timeOfSession, 0) /
           rooms.length
         : 0;
+
+    // Soma o tempo total de brainstorming
+    // O tempo total é a soma do tempo de todas as salas
     const timeBrainstorming = rooms.reduce(
       (acc, room) => acc + room.timeOfSession,
       0
     );
 
+    //Busca todas as mensagens do utilizador por sala
     const messagesByRoom = {};
     messages.forEach((msg) => {
       messagesByRoom[msg.room] = (messagesByRoom[msg.room] || 0) + 1;
     });
+    // Busca o tema da sala com mais mensagens
     const favoriteRoomId = Object.keys(messagesByRoom).reduce(
       (a, b) => (messagesByRoom[a] > messagesByRoom[b] ? a : b),
       null
     );
+    // Busca o tema da sala favorita
+    // O tema da sala favorita é o tema da sala com mais mensagens
     const favoriteThemeByMessages = favoriteRoomId
       ? rooms.find((room) => room._id.toString() === favoriteRoomId)?.theme ||
         null
       : null;
 
+    
     const favoriteTheme = favoriteThemeByMessages;
 
+    // Retorna as métricas do utilizador
+    // O número de sessões é o número de salas associadas ao utilizador
+    // O tempo médio é o tempo médio de todas as salas associadas ao utilizador
+    // O tempo total de brainstorming é a soma do tempo de todas as salas associadas ao utilizador
+    // O tema favorito é o tema da sala com mais mensagens do utilizador
     res.json({
       numberSessions: rooms.length,
       averageTime: averageTime,
@@ -302,21 +383,26 @@ const userMetrics = async (req, res) => {
   }
 };
 
+// Função para apagar a conta do utilizador
 const deleteAccount = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer apagar a conta
   const { userId } = req.body;
   try {
-    // Delete messages associated with the user
+    // Apaga todas as mensagens associadas ao utilizador
     await MessageModel.deleteMany({ user: userId });
 
-    // Delete rooms associated with the user
+    //Retira o utilizador de todas as salas
     const rooms = await RoomModel.find({ users: userId });
     for (const room of rooms) {
       room.users = room.users.filter((user) => user.toString() !== userId);
       await room.save();
     }
 
+    // Apaga o utilizador
     await UserModel.findByIdAndDelete(userId);
 
+    // Se o utilizador estiver autenticado, faz logout
     req.logout(function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -329,13 +415,18 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+// Função para mudar o plano de subscrição do utilizador
 const changeSubscriptionPlan = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer mudar o plano de subscrição
   const { userId } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    //Muda o plano de subscrição do utilizador
     const newSubscriptionPlan = "Premium";
     user.subscriptionPlan = newSubscriptionPlan;
     await user.save();
@@ -346,9 +437,13 @@ const changeSubscriptionPlan = async (req, res) => {
   }
 };
 
+// Função para buscar o progresso do utilizador
 const userProgress = async (req, res) => {
+  //Variáveis enviadas pelo cliente
+  //userId: id do utilizador que quer buscar o progresso
   const { userId } = req.body;
   try {
+    //Procura o utilizador pelo id se não encontrar retorna erro
     const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });

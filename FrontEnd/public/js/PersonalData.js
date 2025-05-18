@@ -1,3 +1,4 @@
+//Função que trata os erros
 const handleErros = (res) => {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -5,6 +6,7 @@ const handleErros = (res) => {
   return res;
 };
 
+//API para ir buscar os dados do utilizador
 export const fetchUserInfo = async (userId) => {
   try {
     const res = await fetch("http://localhost:3000/fetch-user-info", {
@@ -24,6 +26,7 @@ export const fetchUserInfo = async (userId) => {
   }
 };
 
+//API para alterar os dados do utilizador
 export const changeUserInfo = async (
   userId,
   username,

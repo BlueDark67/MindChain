@@ -1,10 +1,10 @@
-// Função para identificar se é email ou username
+//Função para identificar se é email ou username
 export const isEmail = (value) => {
-    // Esta expressão verifica se há caracteres antes e depois do @, e pelo menos um ponto após o @
+    //Esta expressão verifica se há caracteres antes e depois do @ e pelo menos um ponto após o @
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
-// Função para verificar se o input parece ser uma tentativa de email (contém @)
+//Função para verificar se o input parece ser uma tentativa de email (contém @)
 export const containsAtSymbol = (value) => {
     return value.includes('@');
 };
@@ -35,8 +35,9 @@ export const validateForm = (loginIdentifier, password) => {
     return null;
 }
 
-// Nova função para gerenciar a autenticação
+//Função para gerenciar a autenticação
 export const loginUser = async (loginIdentifier, password, rememberMe) => {
+    //Cria o corpo da requisição
     const requestBody = { 
         username: loginIdentifier, 
         password: password, 
@@ -60,29 +61,30 @@ export const loginUser = async (loginIdentifier, password, rememberMe) => {
     }
 };
 
-// Funções para gerenciar "Remember Me"
+//Salva os dados do Remember Me
 export const saveRememberMeData = (isAuthenticated, rememberMe, loginIdentifier) => {
     if (isAuthenticated) {
         if (rememberMe) {
-            // Salva apenas o identificador de login, NUNCA a senha
+            //Salva o identificador de login no localStorage para persistência
             localStorage.setItem('login_rememberedUser', JSON.stringify({
                 loginIdentifier: loginIdentifier
             }));
         } else {
-            // Remove os dados caso "lembrar-me" não esteja marcado
+            //Remove dados salvos se "lembrar-me" foi desmarcado
             localStorage.removeItem('login_rememberedUser');
         }
-        // Define a autenticação para a sessão atual
         sessionStorage.setItem('authenticated', 'true');
     }
 };
 
+//Carrega dados salvos da funcionalidade do remember me
 export const loadRememberMeData = () => {
     const savedUser = localStorage.getItem('login_rememberedUser');
     if (savedUser) {
         try {
             return JSON.parse(savedUser);
         } catch (error) {
+            //Se houver erro na conversão, limpa dados corrompidos
             console.error("Erro ao carregar dados salvos:", error);
             localStorage.removeItem('login_rememberedUser');
             return null;
@@ -93,24 +95,28 @@ export const loadRememberMeData = () => {
 
 // Função para detectar o autopreenchimento do navegador
 export const detectBrowserAutofill = (callback) => {
-    // Primeiro ativa o foco/desfoco para "provocar" o preenchimento
+    
     const usernameInput = document.getElementById('loginIdentifier');
     const passwordInput = document.getElementById('password');
     
     return new Promise((resolve) => {
         setTimeout(() => {
-            // Sequência de foco e desfoco
+            //Foca no campo de usuário para ativar o mecanismo de autopreenchimento
             if (usernameInput) usernameInput.focus();
             setTimeout(() => {
+                //Remove o foco do usuário e passa para o campo de senha
                 if (usernameInput) usernameInput.blur();
                 if (passwordInput) passwordInput.focus();
                 setTimeout(() => {
+                    //Remove o foco do campo de senha, completando o ciclo
                     if (passwordInput) passwordInput.blur();
                     
-                    // Verificação de autopreenchimento
+                        //Verifica o autopreenchimento de duas formas
                     setTimeout(() => {
                         const hasAutofill = 
+                            //Usando seletor CSS específico para campos autopreenchidos
                             document.querySelector('input:-webkit-autofill') || 
+                            //Verificando se o campo tem valor e se esse valor difere do estado atual
                             (usernameInput && usernameInput.value && 
                              callback && callback(usernameInput.value));
                         resolve(hasAutofill);

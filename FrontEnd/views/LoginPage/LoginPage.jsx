@@ -9,16 +9,17 @@ import PasswordToggle from '../../src/components/passwordToggle/passwordToggle.j
 import ButtonSubmit from '../../src/components/buttonSubmit/buttonSubmit.jsx';
 
 function LoginPage({setIsAuthenticated, isAuthenticated}) {
-    const [loginIdentifier, setLoginIdentifier] = useState("");
+    const [loginIdentifier, setLoginIdentifier] = useState(""); 
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(""); //para mensagens de erro
+    const [loading, setLoading] = useState(false); ////para saber quando inicio o processo de login e tambem para mudar a animação do botão
+    const [rememberMe, setRememberMe] = useState(false); //para a funcionalidade do remenber me
     const [hasSavedCredentials, setHasSavedCredentials] = useState(false);
     const [page, setPage] = useState("");
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
-
+    const [showPassword, setShowPassword] = useState(false); //para mostrar a password
+    
+    // Para aplicar o background
     useEffect(() => {
         document.title = "Login Page";
         document.body.classList.add('gradient_background_BPB');
@@ -110,6 +111,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
         }
     };
 
+    //Para meter a password visível
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -147,6 +149,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                             onChange={(e) => setPassword(e.target.value)}
                             autoComplete='current-password'
                         />
+                        {/**Componente de ver a password */}
                         <PasswordToggle
                             showPassword={showPassword}
                             toggleVisibility={togglePasswordVisibility}
@@ -162,7 +165,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                         onChange={(e) => setRememberMe(e.target.checked)} />
                         <label htmlFor="remember-me">Remember Me</label>
                     </div>
-                    
+                    {/**Componente de botao que permite dar log in (tem animação) */}
                     <ButtonSubmit 
                         type="submit"
                         text={loading ? "Logging in..." : "Log In"} 
@@ -173,7 +176,7 @@ function LoginPage({setIsAuthenticated, isAuthenticated}) {
                     
                     {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </form>
-
+                {/**Links para criar uma conta e se esquecer da password */}
                 <div className="additional-links">
                     <p className="signup-text">
                         Dont have an account? <a href="/signup" className="signup-link"> Sign up for free</a>

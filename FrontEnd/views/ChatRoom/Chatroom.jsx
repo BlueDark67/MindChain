@@ -9,7 +9,7 @@ import Button from "../../src/components/button/Button";
 import BackButton from "../../src/components/backButton/backButton.jsx";
 import { fetchMessages, fetchRoomInfo, restartRoom } from "../../public/js/Chatroom.js";
 import { io } from "socket.io-client";
-import { generateChatResponse } from "../../public/js/Chatroom.js"; // importa a função se necessário
+import { generateChatResponse } from "../../public/js/Chatroom.js"; 
 
 
 const socket = io("ws://localhost:3000")
@@ -41,7 +41,7 @@ const Chatroom = () => {
     const userId = localStorage.getItem("userId");
     const roomId = useParams().roomId;
     
-    // Trocar a referência do elemento final para o container de mensagens
+    
     const messagesContainerRef = useRef(null);
 
     const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Chatroom = () => {
     }
 
     
-    // Função para fazer scroll até o final usando scrollTop em vez de scrollIntoView
+    // Função para fazer scroll até o final 
     const scrollToBottom = () => {
         if (messagesContainerRef.current) {
             const { scrollHeight, clientHeight } = messagesContainerRef.current;
@@ -59,12 +59,11 @@ const Chatroom = () => {
         }
     };
     
-    // UseEffect para scroll quando mensagens mudam
+    // UseEffect para scroll quando mensagens mudam 
     useEffect(() => {
-        setTimeout(scrollToBottom, 10); // Pequeno atraso para garantir renderização completa
+        setTimeout(scrollToBottom, 10); // Pequeno atraso para garantir a renderização completa
     }, [messages]);
     
-    // Suas funções existentes...
     const handleMessageChange = (e) => {
         setMessage(e.target.value);
     };
@@ -78,6 +77,7 @@ const Chatroom = () => {
     
     const requestBody = {userId: userId, roomId: roomId, content: message};
 
+    //API para guardar mensagens
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!message.trim()) return;
@@ -104,16 +104,19 @@ const Chatroom = () => {
         }
     };
     
+    // Função para dar input com o "ENTER"
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
             handleSendMessage(e);
         }
     };
 
+
     useEffect(() => {
         document.title = "Chat Room";
         document.body.classList.add('gradient_background_BP');
 
+        //API para buscar informações da sala
         fetchRoomInfo(roomId).then((data) => {
             if(data){
                 setTheme(data.theme);
@@ -127,6 +130,7 @@ const Chatroom = () => {
                     setElapsedTimeDB(data.timeOfSession);
                     setCanSend(true);
                 }      
+                //API para buscar mensagens
                 fetchMessages(roomId).then((messagesData) => {
                     if(messagesData){
                         const formattedMessages = messagesData.map(msg => ({
@@ -151,6 +155,7 @@ const Chatroom = () => {
         };
     }, [roomId]);
 
+    //UseEffect para lidar com o tempo decorrido
     useEffect(() => {
         let interval;
         // Só inicia o timer se o tempo for ilimitado, a sala não tiver terminado e não houver timeOfSession guardado
@@ -162,6 +167,7 @@ const Chatroom = () => {
         return () => clearInterval(interval);
     }, [time, haveFinished, elapsedTime]);
 
+    // UseEffect para lidar com o tempo decorrido quando a sala já tiver terminado
     useEffect(() => {
         function handleChatStarted({ start, duration }) {
             setCanSend(false);
@@ -186,6 +192,8 @@ const Chatroom = () => {
         };
     }, [socket]);
     
+
+    // UseEffect para lidar com o tempo restante
     useEffect(() => {
         if (!endTime) return;
     
@@ -208,6 +216,7 @@ const Chatroom = () => {
     }, [endTime]);
     
 
+    // UseEffect para lidar com a entrda de utilizador para entrar na sala
     useEffect(() => {
         socket.emit("joinRoom", { roomId, userId: userId });
         
@@ -228,10 +237,12 @@ const Chatroom = () => {
         }
     }, [roomId]); 
 
+    //Função para iniciar o countdown
     const startChat = () => {
         socket.emit("startPreCountdown", { roomId }); 
     };
 
+    //UseEffect para lidar com o countdown e para iniciar o chat
     useEffect(() => {
         function handlePreCountdown() {
             setPreCountdown(5);
@@ -258,6 +269,7 @@ const Chatroom = () => {
         };
     }, [time, isCreator, roomId, socket]);
 
+    //Função para parar o chat
     function handleStopChat() {
         setChatStarted(false);
         setCanSend(true);
@@ -265,6 +277,7 @@ const Chatroom = () => {
         socket.emit("stopChat", { roomId });
     }
 
+    //Função para continuar o chat
     function handleContinueChat() {
             setCanSend(false);
             setChatStarted(true);
@@ -272,6 +285,7 @@ const Chatroom = () => {
             socket.emit("continueChat", { roomId });
     }
 
+    // UseEffect para lidar com o chat continuado
     useEffect(() => {
         function handleChatContinued() {
             setCanSend(false);
@@ -282,6 +296,7 @@ const Chatroom = () => {
         return () => socket.off("chatContinued", handleChatContinued);
     }, []);
 
+    // UseEffect para lidar com o chat parado
     useEffect(() => {
         function handleChatStopped() {
             setChatStarted(false);
@@ -297,14 +312,17 @@ const Chatroom = () => {
         };
     }, []);
 
+    // Função para lidar com o botão de reiniciar
     const handleRestart = () => {
         setShowRestartConfirm(true);
     };
 
+    // Função para lidar com o cancelamento do reinício
     const handleCancelRestart = () => {
         setShowRestartConfirm(false);
     }
 
+    // Função para lidar com a confirmação do reinício
     const handleConfirmRestart = () => {
         setLoading(true);
         setShowRestartConfirm(false);
@@ -333,6 +351,7 @@ const Chatroom = () => {
             });
     }
 
+    // UseEffect para lidar com a informação de reinício
     useEffect(() => {
         function handleShowResetInfo() {
             setInformation(true);
@@ -342,6 +361,7 @@ const Chatroom = () => {
         return () => socket.off("showResetInfo", handleShowResetInfo);
     }, []);
 
+    // UseEffect para lidar com o reinício da sala
     useEffect(() => {
         function handleRoomRestarted() {
             setMessages([]);
@@ -357,6 +377,7 @@ const Chatroom = () => {
         return () => socket.off("roomRestarted", handleRoomRestarted);
     }, []);
 
+    // UseEffect para lidar com os utilizadores ativos
     useEffect(() => {
         socket.on("activeUsers", (users) => {
             setActiveUsers(users);
@@ -364,6 +385,7 @@ const Chatroom = () => {
         return () => socket.off("activeUsers");
     }, []);
 
+    // UseEffect para lidar com o redirecionamento para a página de texto gerado
     useEffect(() => {
         function handleRedirect({roomId}){
 
@@ -377,7 +399,7 @@ const Chatroom = () => {
     }, [changePage]);
 
 
-
+    // Função para lidar com o redirecionamento
     const handleRedirect = async () => {
         if(isCreator && !haveFinished){
             if(time === -1){

@@ -19,7 +19,7 @@ h1{
 
 
 .content-container {
-  margin-left: 50px; /* Espaço para o menu fechado */
+  margin-left: 50px; 
   flex: 1;
   padding: 20px;
 }
@@ -27,7 +27,7 @@ h1{
 .chatrooms-scroll-container {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* ajuste conforme necessário */
+  gap: 25px; 
   overflow-y: auto;
 }
 

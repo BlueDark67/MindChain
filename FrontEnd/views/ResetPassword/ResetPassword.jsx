@@ -13,7 +13,7 @@ import PasswordCriteriaTooltip from '../../src/components/passwordCriteria/passw
 function ResetPassword(){
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState(""); // Changed from passwordError to errorMessage
+    const [errorMessage, setErrorMessage] = useState(""); 
     const {userId} = useParams();
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
@@ -39,7 +39,7 @@ function ResetPassword(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorMessage(""); // Clear previous errors
+        setErrorMessage(""); 
         
         // Verificar requisitos de senha
         const error = validateNewPassword(newPassword, confirmPassword);
@@ -55,7 +55,6 @@ function ResetPassword(){
             return;
         }
         
-        // Continua com o reset da senha...
 
         console.log(userId);
         const requestBody = {userId: userId, newPassword: newPassword};
@@ -75,7 +74,7 @@ function ResetPassword(){
             console.error("Reset password error:", err);
             setErrorMessage("Something went wrong. Please try again later.");
         } finally {
-            setIsSubmitting(false); // Reset submitting state
+            setIsSubmitting(false); 
         }
     };
 
@@ -128,7 +127,7 @@ function ResetPassword(){
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
 
-                    {/* Changed from span to div with error-message class */}
+                    
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                     
                     <div className='middle'>

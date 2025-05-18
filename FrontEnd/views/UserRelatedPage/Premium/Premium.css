@@ -46,7 +46,7 @@
     font-size: 18px;
     font-weight: bold;
     text-decoration: none;
-    display: block; /* Garante que o botão ocupe uma linha inteira */
+    display: block; 
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 

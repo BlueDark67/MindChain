@@ -1,4 +1,3 @@
-/* Base styles for all buttons */
 .button-Submiting {
   width: 100%;
   padding: 12px;
@@ -10,7 +9,6 @@
   font-weight: 500;
 }
 
-/* Size variants */
 .w100p {
   width: 100%;
   height: 48px;
@@ -29,14 +27,13 @@
   padding: 0 15px;
 }
 
-/* Color variants */
 .primary {
-  background-color: #610e9c; /* Roxo escuro */
+  background-color: #610e9c; 
   color: white;
 }
 
 .primary:hover {
-  background-color: #3a0066; /* Roxo mais escuro */
+  background-color: #3a0066; 
 }
 
 .secondary {
@@ -76,13 +73,11 @@
   background-color: #3d8b40;
 }
 
-/* Disabled state */
 .disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .disabled:hover {
-  /* Prevent hover effects when disabled */
   opacity: 0.6;
 }

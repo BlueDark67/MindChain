@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 
-// Páginas públicas
+//Páginas públicas
 import LoginPage from '../views/LoginPage/LoginPage';
 import SignUp from '../views/SignUp/SignUp';
 import ForgotPassword from '../views/ForgotPassword/ForgotPassword';
@@ -10,7 +10,7 @@ import EmailSent from '../views/EmailSent/EmailSent';
 import ResetPassword from '../views/ResetPassword/ResetPassword';
 import NotFound from '../views/NotFound/NotFound';
 
-// Páginas privadas
+//Páginas privadas
 import HomePage from '../views/HomePage/HomePage';
 import PersonalData from '../views/UserRelatedPage/Personaldata/PersonalData';
 import CreationRoom from '../views/CreationRoom/CreationRoom';
@@ -33,7 +33,7 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
     <Routes>
       <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />} />
       
-      {/* Rotas públicas */}
+      {/*Rotas públicas */}
       <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -41,7 +41,7 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
       <Route path="/reset-password/:userId" element={<ResetPassword />} />
 
       
-      {/* Rotas privadas */}
+      {/*Rotas privadas */}
       <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
         <Route path="/home" element={<HomePage />} />
         <Route path="/personal-data" element={<PersonalData />} />
@@ -60,7 +60,6 @@ function AppRoutes({ isAuthenticated, setIsAuthenticated }) {
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/progress" element={<Progress />} />
 
-        {/**Quero que metas isto a funcionar */}
         <Route path='/chatroom-aitext/:roomId' element={< ChatRoomAiText/>} />
       </Route>
       

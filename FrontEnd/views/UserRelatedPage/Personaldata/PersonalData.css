@@ -65,7 +65,7 @@
     border: none;
     box-shadow: none;
     cursor: pointer;
-    padding: 0; /* opcional, para remover espaço extra */
+    padding: 0; 
     margin-left: auto;
     margin-right: auto;
     display: block;
@@ -74,13 +74,13 @@
     gap: 5px; 
 }
 .edit:hover {
-    transform: scale(1.05); /* Leve aumento ao passar o mouse */
+    transform: scale(1.05);
     color: #0d1260;
     cursor: pointer;
 }
 
 .edit:hover .editicon {
-    transform: scale(1.2) rotate(15deg); /* Aumenta o ícone ao passar o mouse */
+    transform: scale(1.2) rotate(15deg);
 }
 .editicon {
     width: 24px; 

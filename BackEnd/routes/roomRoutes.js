@@ -4,6 +4,7 @@ const router = require("express").Router();
 const passport = require("passport");
 import room from "../controllers/roomController.js";
 
+// Define routes for room-related operations
 router.post("/create-room", room.roomPost);
 router.get("/file-txt", room.readFile);
 router.get("/room-code/:roomId", room.getRoomCode);

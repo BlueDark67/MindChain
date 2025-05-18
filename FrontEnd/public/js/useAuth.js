@@ -7,7 +7,7 @@ export function useAuth() {
   );
   const [isLoading, setIsLoading] = useState(true);
   
-  // Função para verificar autenticação
+  //API para verificar autenticação
   const checkAuthentication = async () => {
     try {
       const res = await fetch("http://localhost:3000/check-auth", {

@@ -1,6 +1,7 @@
 import React from 'react';
 import './passwordToggle.css';
 
+//Componente para ver a password
 function PasswordToggle({ showPassword, toggleVisibility }) {
   return (
     <button 

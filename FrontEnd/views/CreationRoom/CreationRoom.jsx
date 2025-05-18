@@ -52,7 +52,7 @@ function CreationRoom() {
 
     let sessionTimeValue;
     if (sessionTime === "Unlimited") {
-      sessionTimeValue = -1; // ou sessionTimeValue = -1;
+      sessionTimeValue = -1; 
     } else {
       sessionTimeValue = Number(sessionTime);
     }

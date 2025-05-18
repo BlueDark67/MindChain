@@ -1,3 +1,4 @@
+//Função para validar os inputs do formulário de criação de sala
 export function validateRoomForm({
   isThemeChosen,
   themeValue,
@@ -17,6 +18,7 @@ export function validateRoomForm({
   return { valid: true, message: "" };
 }
 
+//Função para tratar os erros
 export function handleErros(res) {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -24,6 +26,7 @@ export function handleErros(res) {
   return res;
 }
 
+//API para obter o tema aleatório
 export async function getRandomTheme() {
   try {
     const res = await fetch("http://localhost:3000/file-txt");

@@ -1,6 +1,8 @@
 import React from 'react';
 import './PasswordCriteria.css';
 
+//Componente de ver os criterios da password
+//À medida que os criterios forem cumpridos vai ficando verde nos criterios cumpridos
 function PasswordCriteriaTooltip({ password, isVisible, isPasswordCriterionMet }) {
   if (!isVisible) return null;
   

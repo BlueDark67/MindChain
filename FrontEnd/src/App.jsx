@@ -4,6 +4,7 @@ import Loading from "./components/Loading/Loading";
 import AppRoutes from "./AppRoutes.jsx";
 
 function App() {
+  //para indicar se o user está autenticado
   const { isAuthenticated, setIsAuthenticated, isLoading } = useAuth();
 
   return (

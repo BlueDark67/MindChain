@@ -1,3 +1,4 @@
+//Função que trata os erros
 const handleErros = (res) => {
   if (!res.ok) {
     throw Error(res.status + " - " + res.url);
@@ -5,6 +6,7 @@ const handleErros = (res) => {
   return res;
 };
 
+//API para trocar a password
 export const changePassword = async (userId, password) => {
   try {
     const res = await fetch("http://localhost:3000/resetPassword", {
@@ -24,6 +26,7 @@ export const changePassword = async (userId, password) => {
   }
 };
 
+//Função que valida a nova password
 export const validateNewPassword = (password, confirmPassword) => {
   if (password !== confirmPassword) {
     return "Password does not match";
@@ -35,7 +38,7 @@ export const validateNewPassword = (password, confirmPassword) => {
   return null;
 };
 
-
+//Função que valida a password
 export const validatePassword = (newPassword) => {
   let errors = [];
 
@@ -57,7 +60,7 @@ export const validatePassword = (newPassword) => {
   return errors;
 };
 
-//Codigo paraver se a se o criterio de palavra passe foi obtido
+//Codigo par aver se a se o criterio de palavra passe foi obtido
 export const isPasswordCriterionMet = (criterion, password) => {
   if (!password) return false;
 
