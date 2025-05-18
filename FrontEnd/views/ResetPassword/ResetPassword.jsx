@@ -7,14 +7,16 @@ import ButtonSimple from '../../src/components/buttonSimple/buttonSimple';
 import './ResetPassword.css';
 import '../Global.css';
 import PasswordToggle from '../../src/components/passwordToggle/passwordToggle';
-import { validateNewPassword, validatePassword } from '../../public/js/resetPassword';
+import { validateNewPassword, validatePassword, isPasswordCriterionMet } from '../../public/js/resetPassword';
+import PasswordCriteriaTooltip from '../../src/components/passwordCriteria/passwordCriteria';
 
 function ResetPassword(){
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordError, setPasswordError] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // Changed from passwordError to errorMessage
     const {userId} = useParams();
     const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
 
     
 
@@ -37,25 +39,26 @@ function ResetPassword(){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(""); // Clear previous errors
         
         // Verificar requisitos de senha
-        const passwordErrors = validatePassword(newPassword);
-        if (passwordErrors.length > 0) {
-            setPasswordError(`Password requirements: ${passwordErrors.join(", ")}`);
+        const error = validateNewPassword(newPassword, confirmPassword);
+        if (error) {
+            setErrorMessage(error);
             return;
         }
         
         // Verificar se as senhas coincidem
         const matchError = validateNewPassword(newPassword, confirmPassword);
         if (matchError) {
-            setPasswordError(matchError);
+            setErrorMessage(matchError);
             return;
         }
         
         // Continua com o reset da senha...
 
         console.log(userId);
-        const requestBody = {userId: userId,newPassword: newPassword};
+        const requestBody = {userId: userId, newPassword: newPassword};
         
         try {
             const res = await fetch("http://localhost:3000/resetPassword",{
@@ -68,14 +71,17 @@ function ResetPassword(){
             handleErros(res);
             const json = await res.json();
             changePage(json.view);
-          } catch (err) {
-            console.error(err);
-          }
+        } catch (err) {
+            console.error("Reset password error:", err);
+            setErrorMessage("Something went wrong. Please try again later.");
+        } finally {
+            setIsSubmitting(false); // Reset submitting state
+        }
     };
 
     const navigate = useNavigate();
 
-    const changePage = ( page) => {
+    const changePage = (page) => {
         navigate("/" + page);
     }
 
@@ -91,6 +97,14 @@ function ResetPassword(){
                 <h1 className='Text-reset'>Reset your password</h1>
                 <form className='resetPasswordForm' onSubmit={handleSubmit}>
                     <label htmlFor="newPassword">New Password</label>
+                    <div className="info-icon" onClick={() => setShowPasswordCriteria(!showPasswordCriteria)}>
+                            ⓘ
+                            <PasswordCriteriaTooltip 
+                                password={newPassword}
+                                isVisible={showPasswordCriteria}
+                                isPasswordCriterionMet={isPasswordCriterionMet}
+                            />
+                    </div>
                     
                     <div className='password-field-reset'>
                         <input 
@@ -114,7 +128,9 @@ function ResetPassword(){
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
 
-                    {passwordError && <span className='error'>{passwordError}</span>}
+                    {/* Changed from span to div with error-message class */}
+                    {errorMessage && <div className="error-message">{errorMessage}</div>}
+                    
                     <div className='middle'>
                     <ButtonSimple text = "Save" variant = "purple" size = "w200h20" className ="middle" />
                     </div>

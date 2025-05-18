@@ -1,7 +1,4 @@
-/* Div principal */
 
-  
-  /* Logo */
   .logo {
     width: 300px;
     margin-bottom: -10px;
@@ -18,7 +15,6 @@
     color: #000000;
   }
   
-  /* Formulário */
   .login-form {
     display: flex;
     flex-direction: column;
@@ -47,11 +43,11 @@
     background-color: rgb(231, 231, 231);
     outline: none;
     box-shadow: none;
-    transition: border 0.2s ease-in-out; /* Suaviza a transição da borda */
+    transition: border 0.2s ease-in-out; 
   }
   
   .form-input-login:focus {
-    border: 2px solid black; /* Borda preta quando focado */
+    border: 2px solid black; 
   }
   
   .form-remember {
@@ -62,27 +58,24 @@
     color: #333;
   }
   
-  /* Remove o estilo padrão do checkbox */
   .custom-checkbox {
     appearance: none;
     width: 20px;
     height: 20px;
-    border: 1px solid #ccc; /* Cor da borda */
-    border-radius: 5px; /* Bordas arredondadas */
-    background-color: white; /* Cor de fundo */
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    background-color: white; 
     display: inline-block;
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
   }
   
-  /* Quando o checkbox está marcado */
   .custom-checkbox:checked {
-    background-color: #4E104D; /* Cor quando marcado */
+    background-color: #4E104D; 
     border-color: rgb(0, 0, 0);
   }
   
-  /* Adicionando um check (✓) quando marcado */
   .custom-checkbox:checked::after {
     content: "✔";
     color: white;
@@ -94,9 +87,8 @@
     font-weight: bold;
   }
   
-  /* Botão de login */
   .login-button {
-    background-color: #610e9c; /* Roxo escuro */
+    background-color: #610e9c; 
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -107,10 +99,9 @@
   }
   
   .login-button:hover {
-    background-color: #3a0066; /* Roxo mais escuro */
+    background-color: #3a0066; 
   }
   
-  /* Links adicionais */
   .additional-links {
     margin-top: 20px;
     font-size: 14px;
@@ -148,10 +139,9 @@
 
   }
   
-  /* Password field with eye icon */
   .password-field {
     position: relative;
-    width: 330px; /* igual ao input */
+    width: 330px; 
   }
 
   .error-message {

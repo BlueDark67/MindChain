@@ -1,4 +1,3 @@
-  /* Sidebar geral */
 .sidebar {
   position: fixed;
   top: 50%;
@@ -14,29 +13,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 25px; /* Bordas arredondadas no lado direito */
+  border-radius: 25px; 
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
   margin-left: 10px;
 }
 
-/* Menu aberto */
 .sidebar-open {
   width: 250px;
   padding: 20px;
 }
 
-/* Menu fechado */
 .sidebar-closed {
   width: 60px;
   padding: 10px;
 }
 
-/* Botão de abrir/fechar */
 .hamburger {
   position: absolute;
-  top: 15px; /* Ajuste para alinhar o botão */
-  right: 15px; /* Ajuste para manter o botão dentro da sidebar */
-  z-index: 1100; /* Garante que o botão fique acima de outros elementos */
+  top: 15px; 
+  right: 15px; 
+  z-index: 1100; 
   cursor: pointer;
   transition: transform 0.3s ease;
   display: flex;
@@ -45,7 +41,7 @@
 }
 
 .hamburger.menu-closed{
-  width: calc(100% - 30px); /* Subtrai os 15px de cada lado */
+  width: calc(100% - 30px); 
   left: 15px;
   right: auto;
   justify-content: center;
@@ -56,30 +52,28 @@
 }
 
 .hamburger img {
-  width: 35px; /* Ajusta o tamanho do ícone */
+  width: 35px; 
   display: block;
 }
 
 .hamburger:hover {
-  transform: scale(1.1); /* Efeito de hover */
+  transform: scale(1.1); 
 }
 
-/* Cabeçalho */
 .header {
   display: flex;
-  justify-content: center; /* Centraliza quando fechado */
+  justify-content: center; 
   width: 100%;
   margin-bottom: 20px;
-  padding-top: 60px; /* Espaço para o botão de hambúrguer */
+  padding-top: 60px; 
 }
 
-/* Logo */
 .logo-do-demonio {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centraliza quando fechado */
+  justify-content: center; 
   gap: 10px;
-  margin-bottom: 30px; /* Espaço entre o logo e os itens do menu */
+  margin-bottom: 30px; 
   width: 100%;
 }
 
@@ -93,21 +87,19 @@
 }
 
 .logo-do-demonio img {
-  width: 30px; /* Diminuindo o tamanho do logo (era 40px) */
-  height: 30px; /* Diminuindo o tamanho do logo (era 40px) */
+  width: 30px; 
+  height: 30px; 
 }
 
 .logo-do-demonio span {
-  font-size: 16px; /* Era 18px - ajuste se necessário */
+  font-size: 16px; 
   font-weight: bold;
 }
 
-/* Quando o menu está aberto, ajustar o alinhamento do logo */
 .sidebar-open .logo-do-demonio {
-  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+  justify-content: flex-start; 
 }
 
-/* Navegação */
 .nav {
   display: flex;
   flex-direction: column;
@@ -116,9 +108,8 @@
   width: 100%;
 }
 
-/* Garantir que a navegação não funcione quando o menu estiver fechado */
 .sidebar-closed .nav {
-  pointer-events: none; /* Impede cliques em toda a navegação */
+  pointer-events: none; 
 }
 
 .nav-item {
@@ -130,12 +121,11 @@
   border-radius: 25px;
   transition: background-color 0.3s;
   width: 100%;
-  justify-content: center; /* Centraliza quando fechado */
+  justify-content: center; 
 }
 
-/* Quando o menu está aberto, ajustar o alinhamento do conteúdo */
 .sidebar-open .nav-item {
-  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+  justify-content: flex-start; 
 }
 
 .nav-item:hover {
@@ -144,17 +134,16 @@
 
 .nav-item img {
   display: block;
-  width: 24px; /* Ajuste o tamanho dos ícones */
+  width: 24px; 
   height: 24px;
 }
 
-/* Esconde o texto dos itens quando o menu está fechado */
 .sidebar-closed .nav-item span {
   display: none;
 }
 
 .disabled-link {
-  opacity: 0.6; /* Opcional: visualização de que está desabilitado */
+  opacity: 0.6; 
 }
 
 .nav-link {
@@ -162,11 +151,11 @@
   text-decoration: none;
   color: white;
   display: flex;
-  justify-content: center; /* Centraliza quando fechado */
+  justify-content: center;
 }
 
 .sidebar-open .nav-link {
-  justify-content: flex-start; /* Alinha à esquerda quando aberto */
+  justify-content: flex-start; 
 }
 
 .nav-link:visited,

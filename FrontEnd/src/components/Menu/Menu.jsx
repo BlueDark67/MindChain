@@ -5,6 +5,7 @@ import MindChainLogo_2 from '../../../public/Icon-Menu/MindChainLogo_2.png';
 
 const userId = localStorage.getItem("userId");
 
+//adiciona os icons que quiser
 const menuItems = [
   { label: "HomePage", icon: "/Icon-Menu/Home.png", href: "/home" },
   { label: "User Panel", icon: "/Icon-Menu/UserPanel.png", href: `/userpage/${userId}` },
@@ -22,12 +23,8 @@ const Sidebar = () => {
     <div className="sidebar-container">
       {/* Sidebar */}
       <div className={`sidebar ${isOpen ? "sidebar-open" : "sidebar-closed"}`}>
-        {/* Botão de abrir/fechar - removido elemento button */}
+        {/* Botão de abrir/fechar */}
         <div className={`hamburger ${isOpen ? "menu-open" : "menu-closed"}`} onClick={() => setIsOpen(!isOpen)}>
-          {/*<img
-            src={isOpen ? "/Icon-Menu/Icon_Menu_Aberto.png" : "/Icon-Menu/Icon_Menu_Fechado.png"}
-            alt="Menu"
-          />*/}
 
           {isOpen ? (
             <img src="/Icon-Menu/Icon_Menu_Aberto.png" alt="Menu" />
@@ -36,7 +33,6 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Cabeçalho */}
         <div className="header">
           <div className={`logo-do-demonio ${isOpen ? "logo-open" : "logo-closed"}`}>
             <img src={MindChainLogo_2} alt="Logo" />
@@ -44,7 +40,6 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* Navegação */}
         <nav className="nav">
           {menuItems.map((item, index) => (
             <Link

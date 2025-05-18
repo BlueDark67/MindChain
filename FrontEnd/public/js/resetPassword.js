@@ -2,46 +2,54 @@ export const validateNewPassword = (newPassword, confirmPassword) => {
   if (newPassword !== confirmPassword) {
     return "Password does not match";
   }
+  const passwordErrors = validatePassword(newPassword);
+  if (passwordErrors.length > 0) {
+    return "Password does not meet all the requirements";
+  }
   return null;
 };
 
-export const validatePassword = (password) => {
+
+export const validatePassword = (newPassword) => {
   let errors = [];
 
-  if (password.length < 6) {
+  if (newPassword.length < 6) {
     errors.push("At least 6 characters");
   }
-  if (!/[A-Z]/.test(password)) {
+  if (!/[A-Z]/.test(newPassword)) {
     errors.push("At least one uppercase");
   }
-  if (!/[a-z]/.test(password)) {
+  if (!/[a-z]/.test(newPassword)) {
     errors.push("At least one lowercase");
   }
-  if (!/[0-9]/.test(password)) {
+  if (!/[0-9]/.test(newPassword)) {
     errors.push("At least one number");
   }
-  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+  if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword)) {
     errors.push("At least one symbol");
   }
   return errors;
 };
 
 //Codigo paraver se a se o criterio de palavra passe foi obtido
-export const isPasswordCriterionMet = (criterion, password) => {
-  if (!password) return false;
+export const isPasswordCriterionMet = (criterion, newPassword) => {
+  if (!newPassword) return false;
 
   switch (criterion) {
     case "length":
-      return password.length >= 6;
+      return newPassword.length >= 6;
     case "uppercase":
-      return /[A-Z]/.test(password);
+      return /[A-Z]/.test(newPassword);
     case "lowercase":
-      return /[a-z]/.test(password);
+      return /[a-z]/.test(newPassword);
     case "number":
-      return /[0-9]/.test(password);
+      return /[0-9]/.test(newPassword);
     case "symbol":
-      return /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+      return /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword);
     default:
       return false;
   }
 };
+
+
+

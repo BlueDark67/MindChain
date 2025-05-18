@@ -14,10 +14,10 @@ function SignUp(){
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(""); //para as mensagens de erro
+    const [isSubmitting, setIsSubmitting] = useState(false); //para saber quando inicio o processo de criar conta e tambem para mudar a animação do botão
+    const [showPasswordCriteria, setShowPasswordCriteria] = useState(false); //para mostrar os criterios da password
+    const [showPassword, setShowPassword] = useState(false); //para mostrar a password
     const [page, setPage] = useState("");
     const navigate = useNavigate();
 
@@ -39,9 +39,11 @@ function SignUp(){
         setPage(page);
     }
     
+    //Para meter a password visível
     const togglePasswordVisibility = () => {
     setShowPassword(prevState => !prevState);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -50,6 +52,8 @@ function SignUp(){
         // Para validar o formulario
         const error = validateForm(username, email, password, confirmPassword);
         if (error) {
+            //se tiver algum erro no input do username, email, password ou confirmPassword 
+            //vai dar o erro em especifico escrito na função validateForm
             setErrorMessage(error);
             setIsSubmitting(false);
             return;
@@ -128,7 +132,7 @@ function SignUp(){
                     {/*Parte de confirmar a pass*/}
                     <label htmlFor="confirmPassword" className="form-label-register">Confirm Password</label>
                     <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}                   
                     id="confirmPassword"
                     name="register-confirm-password"
                     className="form-input-register"

@@ -2,9 +2,7 @@ export const isEmail = (value) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
-{
-  /*Codigo para validar a palavra passe com todos os seu criterios*/
-}
+//Codigo para meter os erros no array para depois usar no validateForm
 export const validatePassword = (password) => {
   let errors = [];
 
@@ -26,7 +24,7 @@ export const validatePassword = (password) => {
   return errors;
 };
 
-//Codigo paraver se a se o criterio de palavra passe foi obtido
+//Codigo para ver se o criterio de palavra passe foi obtido
 export const isPasswordCriterionMet = (criterion, password) => {
   if (!password) return false;
 
@@ -65,6 +63,7 @@ export const validateForm = (username, email, password, confirmPassword) => {
   }
   //Para validar se a palavra passe abrangiu todos os criterios
   const passwordErrors = validatePassword(password);
+  //se tiver algum erro no array a password nao tem todos os criterios
   if (passwordErrors.length > 0) {
     return "Password does not meet all the requirements";
   }
@@ -74,8 +73,6 @@ export const validateForm = (username, email, password, confirmPassword) => {
   }
   return null;
 };
-
-// Novas funções para adicionar ao arquivo
 
 // Função para tratamento de erros HTTP
 export const handleErros = (res) => {
