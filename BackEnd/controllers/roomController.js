@@ -282,29 +282,6 @@ export const generateChatResponse = async (req, res) => {
     ${roomIdeas.messages.map((message) => message.content).join("\n")}
     `;
 
-    //const client = new LMStudioClient({ baseUrl: "ws://192.168.56.1:1234" });
-
-    /*const response = await fetch("http://localhost:1234/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "deepseek-r1-distill-qwen-7b",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        temperature: 0.6,
-        max_tokens: 1000,
-        stream: false,
-      }),
-    });
-
-    
-
-    const data = await response.json();
-
-    const generatedText = data.choices[0].message.content;*/
-
     const LM_STUDIO_URL = process.env.LM_STUDIO_URL;
 
     const payload = {
